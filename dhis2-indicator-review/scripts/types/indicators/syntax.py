@@ -1,6 +1,6 @@
 """Server syntax check of every indicator numerator and denominator.
 
-    python3 scripts/types/indicators/syntax.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
+    python3 scripts/types/indicators/syntax.py [--config review.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
                                                [--threads 6]
 
 Sends each text to GET /api/expressions/description?expression=<text> (read-only; the response is {"status": "OK" |
@@ -11,7 +11,7 @@ and analytics then reads it as 0 without an error (A20), so a rejection here is 
 Input:  the export (+ overlays, e.g. a proposed payload to check before import).
 Output: <work_dir>/syntax.json (syntax-<tag>.json): list of
         {"id", "name", "where": "numerator|denominator", "text", "status": "OK|ERROR", "message", "description", "ok"}
-Config keys: metadata, work_dir. Connection: DHIS2_URL + DHIS2_TOKEN or DHIS2_USER/DHIS2_PASSWORD.
+Config keys: metadata, work_dir. Connection: DHIS2_BASE_URL + DHIS2_API_TOKEN or DHIS2_USERNAME/DHIS2_PASSWORD.
 """
 import concurrent.futures as F, os, sys, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

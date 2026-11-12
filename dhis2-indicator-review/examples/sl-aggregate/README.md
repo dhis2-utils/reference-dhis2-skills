@@ -4,7 +4,7 @@ A full run of the method with `"type": "indicators"` on the public Sierra Leone 
 
 | File | What it is |
 |---|---|
-| `pireview.json` | run configuration (`export/` and `out/` are created by the run) |
+| `review.json` | run configuration (`export/` and `out/` are created by the run) |
 | `export_sl.py` | test fixture: export from a Sierra Leone 2.43 instance (data set dependency exports + indicators, types, constants, groups, legend sets) |
 | `inject_defects.py` | test fixture: the injected defects D1–D6 (listed in its docstring) |
 | `decisions.json` | the (simulated) meeting decisions, in the shape the review page exports |
@@ -13,12 +13,12 @@ A full run of the method with `"type": "indicators"` on the public Sierra Leone 
 ## How it was run
 
 ```bash
-export DHIS2_URL=http://<empty 2.43 test instance> DHIS2_USER=… DHIS2_PASSWORD=…     # never production
+export DHIS2_BASE_URL=http://<empty 2.43 test instance> DHIS2_USERNAME=… DHIS2_PASSWORD=…     # never production
 SRC_URL=<SL demo> SRC_USER=… SRC_PASSWORD=… python3 export_sl.py   # -> export/metadata-raw.json
 python3 inject_defects.py                                          # -> export/metadata.json
 # import with the dhis2-metadata skill:
 #   transform_metadata.py export/metadata.json --unshare --delocalize --split-dir export/split
-#   import_metadata.py --src export/split --url $DHIS2_URL --auth … --passes 2
+#   import_metadata.py --src export/split --passes 2      (reads DHIS2_BASE_URL and the credentials above)
 R="python3 <skill>/scripts/run.py"
 $R lint && $R syntax && $R gen && $R import-data && $R query && $R compare && $R assemble
 $R topics && $R dictionary

@@ -1,6 +1,6 @@
 """Static lint of every program indicator and every program category mapping against the metadata export.
 
-    python3 scripts/types/program-indicators/lint.py [--config pireview.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
+    python3 scripts/types/program-indicators/lint.py [--config review.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
 
 Input:  the export (cfg.metadata) of cfg.program, plus optional overlays (e.g. a proposed payload, see common.py).
 Output: <work_dir>/findings.json (findings-<tag>.json with --tag): list of

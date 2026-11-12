@@ -1,6 +1,6 @@
 """Server syntax check of every proposed text of the changed items and aux objects (read-only).
 
-    python3 scripts/fix/syntax_check.py [--config pireview.json] [--all-options]
+    python3 scripts/fix/syntax_check.py [--config review.json] [--all-options]
 
 Input   work_dir/fixes.json (after build_payload.py, or straight after build_fixes.py)
 Output  work_dir/syntax-check.json  {"items": {"<code or uid>": {"<field>": {status, message, description}}},

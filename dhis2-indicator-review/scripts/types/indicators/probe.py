@@ -3,7 +3,7 @@ print the values, delete them.
 
     python3 scripts/types/indicators/probe.py 'NUMERATOR | DENOMINATOR' ['NUM | DEN' ...] [--factor 100]
             [--annualized] [--decimals N] [--pe 2026Q1 202601 ...] [--ou UID ...] [--skip-rounding] [--keep]
-            [--config pireview.json]
+            [--config review.json]
 
 Use it to verify an engine behaviour before relying on it (references/indicators/behaviours.md), e.g. whether a
 numerator with no data gives no value or 0:

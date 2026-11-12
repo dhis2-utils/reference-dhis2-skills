@@ -1,7 +1,7 @@
 """Merge lint, server syntax, runtime and engine-test results into one status per item, a findings table and a
 skeleton write-up. Type-neutral: what is specific to the metadata type comes from its adapter.
 
-    python3 scripts/validate/assemble.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS]
+    python3 scripts/validate/assemble.py [--config review.json] [--metadata OVERLAY ...] [--items IDS]
                                          [--manual manual-findings.json] [--overwrite-md]
 
 Inputs (work_dir; missing optional files are skipped, so assemble can run after lint alone):

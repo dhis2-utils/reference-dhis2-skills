@@ -1,8 +1,8 @@
 """Run configuration shared by every script (core and type adapters).
 
-A run is described by one JSON file (default ./pireview.json, or --config / $PIREVIEW_CONFIG; the variable keeps its
-historical name for every type). Paths in it are relative to the config file. Credentials never go in the file: they
-come from the environment (DHIS2_URL plus DHIS2_TOKEN, or DHIS2_USER and DHIS2_PASSWORD).
+A run is described by one JSON file (default ./review.json, falling back to an older ./pireview.json; or --config /
+$PIREVIEW_CONFIG, a variable that keeps its historical name for every type). Paths in it are relative to the config file. Credentials never go in the file: they
+come from the environment (DHIS2_BASE_URL plus DHIS2_API_TOKEN, or DHIS2_USERNAME and DHIS2_PASSWORD; see d2.py).
 
     {
       "type": "program-indicators",           # metadata type under review = a folder in scripts/types/ (the default)
@@ -30,6 +30,17 @@ import argparse, datetime as dt, json, os, sys
 LIB = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.dirname(LIB)
 DEFAULT_TYPE = 'program-indicators'
+CONFIG_NAME, LEGACY_CONFIG_NAME = 'review.json', 'pireview.json'
+
+
+def default_config_path():
+    """$PIREVIEW_CONFIG, else ./review.json, else an older ./pireview.json (else ./review.json, for the error message)."""
+    env = os.environ.get('PIREVIEW_CONFIG')
+    if env:
+        return env
+    if not os.path.exists(CONFIG_NAME) and os.path.exists(LEGACY_CONFIG_NAME):
+        return LEGACY_CONFIG_NAME
+    return CONFIG_NAME
 
 
 class Config:
@@ -46,6 +57,9 @@ class Config:
         self.title = r.get('title') or self.DEFAULT_TITLE
         self.metadata_path = self.resolve(r['metadata'])
         self.work_dir = self.resolve(r.get('work_dir', 'out'))
+        if os.path.join(self.work_dir, 'review.json') == self.path:
+            sys.exit(f'{self.path}: the "topics" step writes work_dir/review.json, which would overwrite this config; '
+                     'set "work_dir" to a subfolder (default "out")')
         os.makedirs(self.work_dir, exist_ok=True)
         self.test_period = r.get('test_period', f'{dt.date.today().year}Q1')
         ou = r.get('org_units', {})
@@ -90,7 +104,7 @@ class Config:
     def require_test_instance(self):
         """Call before writing to the instance. Writes are only allowed on a declared test instance."""
         if not self.test_instance:
-            sys.exit(f'refusing to write: set "test_instance": true in {self.path} only if {os.environ.get("DHIS2_URL")} '
+            sys.exit(f'refusing to write: set "test_instance": true in {self.path} only if {os.environ.get("DHIS2_BASE_URL") or os.environ.get("DHIS2_URL")} '
                      'is a disposable test instance. Never run the data and fix steps against production.')
 
 
@@ -115,8 +129,8 @@ def shift_quarter(pe, months):
 def arg_parser(description, **kw):
     """argparse with the shared --config option."""
     ap = argparse.ArgumentParser(description=description, **kw)
-    ap.add_argument('--config', default=os.environ.get('PIREVIEW_CONFIG', 'pireview.json'),
-                    help='run configuration (default ./pireview.json or $PIREVIEW_CONFIG)')
+    ap.add_argument('--config', default=default_config_path(),
+                    help='run configuration (default $PIREVIEW_CONFIG, else ./review.json, else ./pireview.json)')
     return ap
 
 
@@ -127,8 +141,8 @@ def config_type(path):
 
 def load(args=None):
     """The run configuration, as an instance of its type's class (adapter.CONFIG) when the type defines one."""
-    path = getattr(args, 'config', None) or os.environ.get('PIREVIEW_CONFIG', 'pireview.json')
+    path = getattr(args, 'config', None) or default_config_path()
     if not os.path.exists(path):
-        sys.exit(f'no run configuration at {path}: copy scripts/pireview.example.json and edit it')
+        sys.exit(f'no run configuration at {path}: copy scripts/review.example.json and edit it')
     import adapters  # noqa: E402  (same folder; imported here to keep config importable on its own)
     return adapters.config_class(config_type(path))(path)

@@ -234,11 +234,15 @@ def with_retry(fn, what, tries=5, backoff=2.0):
 
 
 def default_auth():
-    auth = os.environ.get("DHIS2_AUTH")
-    if auth:
-        return auth
+    """Canonical env first: DHIS2_API_TOKEN, else DHIS2_USERNAME + DHIS2_PASSWORD.
+    Falls back to the older DHIS2_AUTH (user:pass or token:<PAT>)."""
     token = os.environ.get("DHIS2_API_TOKEN")
-    return f"token:{token}" if token else None
+    if token:
+        return f"token:{token}"
+    user = os.environ.get("DHIS2_USERNAME")
+    if user:
+        return f"{user}:{os.environ.get('DHIS2_PASSWORD', '')}"
+    return os.environ.get("DHIS2_AUTH") or None
 
 
 def post_metadata(session, base_url, payload, params, timeout, what="metadata"):
@@ -422,7 +426,8 @@ def main():
                    help="Target DHIS2 base URL (default: $DHIS2_BASE_URL)")
     p.add_argument("--auth", default=default_auth(),
                    help="user:password or 'token:<PAT>' "
-                        "(default: $DHIS2_AUTH, or token:$DHIS2_API_TOKEN)")
+                        "(default: token:$DHIS2_API_TOKEN, else "
+                        "$DHIS2_USERNAME:$DHIS2_PASSWORD; legacy $DHIS2_AUTH)")
     p.add_argument("--src", required=True, help="Directory of per-type *.json files")
     p.add_argument("--schemas", default=None,
                    help="Path to schemas.json (from fetch_metadata.py --schemas). "
@@ -475,7 +480,7 @@ def main():
 
     if not args.url or not args.auth:
         p.error("--url and --auth are required (or set DHIS2_BASE_URL and "
-                "DHIS2_AUTH or DHIS2_API_TOKEN)")
+                "DHIS2_API_TOKEN, or DHIS2_USERNAME + DHIS2_PASSWORD)")
 
     excluded = {t.strip() for t in args.exclude.split(",") if t.strip()}
     if not args.include_embedded_owned:

@@ -2,26 +2,27 @@
 
 File names use the type's prefix `<p>` (`pi` for program indicators, `indicator` for aggregate indicators; `<P>` in capitals, `<Short>` the capitalised short label). Items, their fields and the aux objects (category mappings or data elements) come from the type adapter (`describe()`, `diff_fields()`), so every page works for every type.
 
-Four pages and a printed reviewer guide. Each page is one HTML file with its data embedded (`__DATA__` in the template), written to `work_dir`. Paths are relative to the skill.
+Four pages and a printed reviewer guide. Each page is one self-contained HTML file with its data embedded (`__DATA__` in the template), written to `work_dir`. Paths are relative to the skill.
+
+**Default: share the files.** Every page opens straight from disk in any current browser, works offline, and needs no account or server. Send the meeting page, the dictionary and `<p>-fix-review-standalone.html` (with the reviewer guide) by email, a shared drive or a chat. Decisions are kept in each viewer's browser and travel as JSON files: the meeting page exports and loads a decisions file; reviewers save decisions files from the approval page, and a coordinator merges them on the page or with `export_approved.py --decisions`. Optionally, the meeting and approval pages can instead be hosted with a shared database; see [Hosted mode](#hosted-mode-optional).
 
 | Page (file) | Purpose | Audience | State | Built by |
 |---|---|---|---|---|
-| **Meeting page** (`<p>-review.html`) | Decide on topics in a meeting | Programme team in a room, on a big screen | Shared: one decision per topic | `scripts/review/build_review.py` + `review_template.html` |
+| **Meeting page** (`<p>-review.html`) | Decide on topics in a meeting | Programme team in a room, on a big screen | One decision per topic: in the browser, exported/loaded as a decisions file (hosted mode: shared) | `scripts/review/build_review.py` + `review_template.html` |
 | **Dictionary** (`<p>-dictionary.html`) | Look up what any item counts (program indicators: and how it maps to the aggregate data set) | Anyone | None (read-only) | `scripts/types/<type>/build_dictionary.py` → `assemble_dict.py` (+ the type's template) |
-| **Fix approvals** (`<p>-fix-review.html`) | Approve or reject each proposed fix; download import files | Reviewers with Claude accounts | Shared: per fix group and item, plus edited descriptions | `scripts/approve/build_fix_review.py` + `fix_review_template.html` (mode `artifact`) |
-| **Fix approvals, standalone** (`<p>-fix-review-standalone.html`) | Same, offline, no account | Reviewers without accounts; a coordinator who merges | Browser storage + decisions files | `scripts/approve/make_standalone.py` (same template, mode `standalone`) |
+| **Fix approvals, standalone** (`<p>-fix-review-standalone.html`) | Approve or reject each proposed fix; download import files. The file to send | Reviewers; a coordinator who merges | Browser storage + decisions files | `scripts/approve/make_standalone.py` (`fix_review_template.html`, mode `standalone`; `run.py approval` builds it) |
+| **Fix approvals, hosted** (`<p>-fix-review.html`) | Same, for [hosted mode](#hosted-mode-optional) only | Reviewers signed in to the host | Shared: per fix group and item, plus edited descriptions | `scripts/approve/build_fix_review.py` (same template, mode `artifact`) |
 | **Reviewer guide** (`<Short>-Fix-Approvals-reviewer-guide.pdf`) | How to use the approval page | Reviewers | n/a | `scripts/approve/manual_shots.py` + `manual_template.html` |
 
-## Capabilities and fallbacks
+## State in each page
 
-| Page | Declares | Without the capability |
-|---|---|---|
-| Meeting page | `db` (collection `decisions`, one doc per topic key), `user` (`id()` for `by`, `can('data.write')`, `profiles()` for "last updated by") | No `window.claude` or no `db`: "offline copy" mode. Decisions live in `localStorage` (key `<p>-review-decisions:<scope>:<dataVersion>`), a "Your name" field stamps `byName`, **Export decisions** downloads `{"format": "pireview-meeting-decisions", …}`, **Load decisions file** merges newest-wins per topic and warns on another `dataVersion`. No write permission: view only. |
-| Dictionary | nothing | Works anywhere; `localStorage` only remembers the names/UIDs toggle. |
-| Fix approvals | `db` (collections `approvals`, `descriptions`), `user` (`id()` as `by`, `can('data.write')`), `downloads` (`save()` for the export files) | No `window.claude`/`db`: "Not connected: approvals won't be saved" (no browser fallback in this mode: use the standalone file). Write refused: view only. No `downloads`: the file text is shown with a Copy button. Description edits are written 600 ms after typing stops. |
-| Standalone approvals | nothing | Decisions in `localStorage` (key `pireview-fix-<version>`, reviewer name in `pireview-reviewer`); if storage is blocked the header says to save a decisions file before closing. Exports are plain downloads. |
+| Page | Where decisions live (default, standalone file) |
+|---|---|
+| Meeting page | `localStorage` (key `<p>-review-decisions:<scope>:<dataVersion>`); a "Your name" field stamps `byName`; **Export decisions** downloads `{"format": "pireview-meeting-decisions", …}`; **Load decisions file** merges newest-wins per topic and warns on another `dataVersion`. Export a file at the end of the meeting: it is the input to `$R decisions`. |
+| Dictionary | Nothing (read-only); `localStorage` only remembers the names/UIDs toggle. |
+| Standalone approvals | `localStorage` (key `pireview-fix-<version>`, reviewer name in `pireview-reviewer`); if storage is blocked the header says to save a decisions file before closing. **Save decisions file** / **Load decisions files**; exports are plain downloads. |
 
-Per-viewer conveniences (names/UIDs toggle, current view) also use `localStorage`, wrapped in try/catch so the pages render without it.
+Per-viewer conveniences (names/UIDs toggle, current view) also use `localStorage`, wrapped in try/catch so the pages render without it. The `pireview-…` keys and format names are kept for compatibility with files already in circulation.
 
 ## Design decisions worth keeping
 
@@ -32,7 +33,7 @@ Per-viewer conveniences (names/UIDs toggle, current view) also use `localStorage
 - Five verdicts: **Agree, fix it** / **Check each item** / **Needs domain input** / **Park** / **Not a problem**. "Check each item" is its own verdict, not a group approval: the room marks each item **Fix / OK as is / Rename / Ask domain** (stored in `items`), and the page counts "N of M items decided". Topics flagged `checkEach` in the catalogue suggest it.
 - Under the other verdicts an item can be marked "not affected" (an exception, stored in `excluded`).
 - Who and when is recorded on every change; the note autosaves. `write_decisions.py` turns the stored decisions into `<P>-REVIEW-DECISIONS.md`, with per-item checklists for check-each topics.
-- Comment threads on the artifact work well for questions during the meeting; answer them in place and fold the answers in with `write_decisions.py --clarifications`.
+- Questions raised during the meeting go in the topic note; collect the answers afterwards in a Markdown file and fold them in with `write_decisions.py --clarifications` (in hosted mode, the host's comment threads work for this too).
 
 **Dictionary**
 - Plain-language definition per item (program indicators: one sub-agent description per PI, not a template), with the raw definition one click away and the field names/UIDs toggle.
@@ -55,9 +56,24 @@ Per-viewer conveniences (names/UIDs toggle, current view) also use `localStorage
 
 `manual_shots.py` drives the standalone page in headless Chromium with fictional reviewers ("Reviewer A", "Reviewer B", "Coordinator"), each in a fresh context, picks groups and items from the data, fills `manual_template.html` and prints A4 PDF. Covers the two ways to open the page, the page at a glance, reviewing a group, approving and rejecting, working together with decisions files, producing the import files, and FAQs. Figures whose situation is not in the data are dropped. Keep the template free of program content.
 
-## Publishing
+## Sharing (default)
 
-- Meeting page and approval page: publish as Claude artifacts with the capabilities above (load the `artifact-capabilities` skill first), e.g. approval page `{"db": …, "user": …, "downloads": …}` with collections `approvals` and `descriptions`. The dictionary needs none. Republish to the same URL after a rebuild; a new `dataVersion`/`version` starts a fresh browser-storage key, while shared db documents persist by topic key or group key.
-- Collect decisions from the shared store with `ArtifactData` (list the collection into a directory): meeting decisions feed `write_decisions.py --decisions` and `build_fixes.py --decisions`; approvals feed `export_approved.py --dump DIR` (`DIR/approvals/<group>.json`, `DIR/descriptions/<piId>.json`); add `--decisions dec-*.json` in the same call when some reviewers used the standalone file, so both are merged (newest wins per item, disagreements printed).
-- Viewers without write access (or without an account, via a shared link) can look but not decide. Send them `<p>-fix-review-standalone.html` and the reviewer guide PDF; they return decisions files, which a coordinator loads into the standalone page or passes to `export_approved.py --decisions`.
-- Size: the approval page embeds screenshots as data URIs; keep the page under the 16 MB artifact limit (fewer or smaller shots if needed).
+- Run `$R topics`, `$R dictionary` and `$R approval` (which also builds the standalone approval page); send the HTML files from `work_dir`. Nothing else is needed: no server, account or network (fonts fall back to system fonts offline).
+- Meeting: open `<p>-review.html` on the meeting screen, decide, then **Export decisions**. If several people record decisions on their own copies, load all their files into one copy (newest wins per topic) or pass them all to `write_decisions.py --decisions` / `build_fixes.py --decisions`.
+- Approvals: send `<p>-fix-review-standalone.html` and the reviewer guide PDF. Reviewers return decisions files, which a coordinator loads into the page or passes to `export_approved.py --decisions` (newest wins per item, disagreements listed).
+- After a rebuild, send the new file: a new `dataVersion`/`version` starts a fresh browser-storage key, and decisions files from the old version load with a warning.
+- Size: the approval page embeds screenshots as data URIs; keep it small enough to email (fewer or smaller shots if needed).
+
+## Hosted mode (optional)
+
+Only where your environment can host a page with a **shared database and the viewer's identity**, for example a Claude artifact granted the `db` and `user` capabilities (in Claude environments, see the artifact skills it provides). Everyone signed in then sees the same decisions live, with no files to pass around. The pages detect the host's `window.claude.use(...)` API; without it they fall back to the standalone behaviour above (the meeting page) or show "Not connected" (`<p>-fix-review.html`: send the standalone file instead).
+
+| Page | Declares | Without the capability |
+|---|---|---|
+| Meeting page (`<p>-review.html`, the same file) | `db` (collection `decisions`, one doc per topic key), `user` (`id()` for `by`, `can('data.write')`, `profiles()` for "last updated by") | No `db`: the offline behaviour above. No write permission: view only. |
+| Fix approvals (`<p>-fix-review.html`) | `db` (collections `approvals`, `descriptions`), `user` (`id()` as `by`, `can('data.write')`), `downloads` (`save()` for the export files) | No `db`: "Not connected: approvals won't be saved" (no browser fallback in this mode). Write refused: view only. No `downloads`: the file text is shown with a Copy button. Description edits are written 600 ms after typing stops. |
+
+- Republish to the same URL after a rebuild; shared db documents persist by topic key or group key.
+- Collect decisions by listing the shared collections into a directory with the host's data tools: meeting decisions (`decisions`) feed `write_decisions.py --decisions` and `build_fixes.py --decisions`; approvals feed `export_approved.py --dump DIR` (`DIR/approvals/<group>.json`, `DIR/descriptions/<itemId>.json`). When some reviewers used the standalone file, add `--decisions dec-*.json` in the same call so both are merged (newest wins per item, disagreements printed).
+- Viewers without write access can look but not decide; send them the standalone file.
+- Respect the host's page size limit (16 MB for Claude artifacts).

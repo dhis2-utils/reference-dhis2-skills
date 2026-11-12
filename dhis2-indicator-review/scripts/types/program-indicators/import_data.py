@@ -1,6 +1,6 @@
 """Load generated test data into the TEST instance and build analytics.
 
-    python3 scripts/types/program-indicators/import_data.py [--config pireview.json] [--file tracker.json ...] [--batch 200]
+    python3 scripts/types/program-indicators/import_data.py [--config review.json] [--file tracker.json ...] [--batch 200]
                                             [--org-units UID ...] [--no-user-ou] [--no-analytics] [--analytics-only]
                                             [--last-years N]
 
@@ -20,7 +20,7 @@ Gotcha: tracker DELETE is a soft delete; re-importing deleted UIDs fails with a 
 new --seed instead.
 
 Output: <work_dir>/import.json (summary per step). Config keys: metadata, program, work_dir, test_period,
-org_units.root / facilities, test_instance. Connection: DHIS2_URL + DHIS2_TOKEN or DHIS2_USER/DHIS2_PASSWORD.
+org_units.root / facilities, test_instance. Connection: DHIS2_BASE_URL + DHIS2_API_TOKEN or DHIS2_USERNAME/DHIS2_PASSWORD.
 """
 import datetime as dt, json, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'lib'))

@@ -1,7 +1,7 @@
 """Engine check: recompute every PI total and disaggregation cell from the generated records with the independent
 evaluator (piexpr.py) and diff against analytics. Offline.
 
-    python3 scripts/types/program-indicators/compare.py [--config pireview.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
+    python3 scripts/types/program-indicators/compare.py [--config review.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
                                         [--truth FILE ...] [--analytics FILE] [--out FILE] [--ou UID ...] [--rule C4=0 ...]
 
   --metadata   overlays (see common.py): evaluate the definitions as they are on the instance at query time, e.g.

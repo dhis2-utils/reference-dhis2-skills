@@ -8,8 +8,8 @@ description: >
   DHIS2 app or tool — phrases like "review this app", "test this tool on 2.42",
   "does this still work on the new version", "check this before release", or
   "should this be migrated to the App Platform" all apply, even if the word
-  "review" is never used. Do NOT use for building new apps (create-dhis2-app /
-  dhis2-apps) or for reviewing non-DHIS2 projects.
+  "review" is never used. Do NOT use for building new apps (create-dhis2-app or
+  the App Platform) or for reviewing non-DHIS2 projects.
 ---
 
 # Reviewing and testing a DHIS2 tool/app
@@ -20,21 +20,12 @@ A standardised workflow for reviewing DHIS2 web apps and tools: static code revi
 
 Establish what the environment provides before planning anything:
 
-```bash
-echo "broker:     ${DHIS2_BROKER_URL:+available at }${DHIS2_BROKER_URL:-unavailable}"
-echo "host port:  ${SANDBOX_HOST_PORT:-unavailable}"
-which playwright || python3 -c "import playwright" 2>/dev/null || echo "playwright: missing"
-ls ~/.claude/skills/ 2>/dev/null | grep ^dhis2- || echo "dhis2 skills: none found"
-```
+- **DHIS2 instances.** Follow `dhis2-test-instances`: use the provisioning method the environment documents (instructions, env vars, MCP tools), a URL the user gave, or a local Docker instance. If none of these exists, ask the user for instance URLs, credentials and which of them are disposable, and do the static review meanwhile. Treat every user-supplied instance as production-like unless they say otherwise: the [mutation safety rule](#mutation-safety) applies in full.
+- **A port the user's browser can reach**, if the user will look at a dev server you start. Your environment may document forwarded ports; otherwise `localhost:<port>` works only when you run on the user's machine.
+- **Playwright**: `python3 -c "import playwright"`. If it is missing and functional testing is in scope, install it (`pip install playwright && playwright install chromium`); if that fails, report the gap and fall back to API-level testing.
+- **Sibling skills** (table below). If one is missing, use the generic guidance here and note the gap in the report.
 
-Branch on the results:
-
-- **Broker vars set** (`DHIS2_BROKER_URL` + `DHIS2_BROKER_TOKEN`) → self-provision disposable test instances via the `dhis2-instances` skill (see [Provisioning](#provisioning-test-instances)).
-- **Broker vars unset** → ask the user for one or more DHIS2 instance URLs with credentials and which of them (if any) are expendable. Skip provisioning. Treat every user-supplied instance as production-like: the [mutation safety rule](#mutation-safety) applies in full.
-- **Playwright missing** and functional testing is in scope → install it (`pip install playwright && playwright install chromium`); if that fails, report the gap and fall back to API-level testing.
-- **Sibling `dhis2-*` skills missing** → proceed with the generic guidance in this skill, and note in the report which skills were unavailable.
-
-If a required capability is absent, say so and adapt — never probe for undeclared infrastructure or hunt for workarounds (e.g. around egress firewalls or read-only git tokens).
+If a required capability is absent, say so and adapt: never probe for undeclared infrastructure. If the environment blocks a host or an action (a download, a push), report it rather than working around it.
 
 ## Inputs
 
@@ -46,19 +37,19 @@ If a required capability is absent, say so and adapt — never probe for undecla
 
 Invoke the skill rather than improvising:
 
-| Capability | Skill | Use for |
+| Capability | Skill or resource | Use for |
 |---|---|---|
-| Disposable DHIS2 instances | `dhis2-instances` | Creating/resetting/deleting `agent-*` test instances, per version |
+| Disposable DHIS2 instances | `dhis2-test-instances` | Getting, resetting and deleting test instances, one per version |
 | DHIS2 docs lookup + ad-hoc API calls | `dhis2-docs` | Endpoint parameters, version-specific behavior, deprecations, verifying endpoint shapes |
 | Bulk metadata work | `dhis2-metadata` | Seeding test metadata, diffing configs, import-error analysis |
-| App Platform conventions | `dhis2-apps` | Reference standard for React/`@dhis2/app-runtime` apps |
+| App Platform conventions | [App Platform docs](https://developers.dhis2.org/docs/app-platform/getting-started) | Reference standard for React/`@dhis2/app-runtime` apps |
 | Vanilla tool-template conventions | `create-dhis2-app` | Reference standard for vanilla-JS tools (dhis2/tool-template) |
-| Browser automation | `playwright-cli` / `webapp-testing` | UI testing, screenshots, console/network capture |
-| Android testing | `dhis2-android-testing` | Only if scope includes the Android Capture app |
+| Browser automation | Playwright (Python), or the browser tool your harness provides | UI testing, screenshots, console/network capture |
+| Android SDK apps | `dhis2-android-sdk-app` | Native apps on the DHIS2 Android SDK (this skill covers web apps only) |
 
 ### Delegating to subagents
 
-Use cheaper/faster subagents (a smaller model and/or lower reasoning effort, whatever the agent harness offers) for the mechanical, well-specified parts — they're also a way to parallelise: file/endpoint cataloguing, re-running the same Playwright suite per version, response-shape diffs across instances, broker job polling, cleanup verification. Keep judgment-heavy work in the main agent: deciding what is actually a finding and its severity, architecture assessment, anything that mutates data, and writing the final reports. Give subagents a precise task and output format, and verify — don't forward — their conclusions.
+Use cheaper/faster subagents (a smaller model and/or lower reasoning effort, whatever the agent harness offers) for the mechanical, well-specified parts — they're also a way to parallelise: file/endpoint cataloguing, re-running the same Playwright suite per version, response-shape diffs across instances, instance-readiness polling, cleanup verification. Keep judgment-heavy work in the main agent: deciding what is actually a finding and its severity, architecture assessment, anything that mutates data, and writing the final reports. Give subagents a precise task and output format, and verify — don't forward — their conclusions.
 
 **Verify HIGH claims live before filing.** A static-review claim that predicts a feature *cannot work at all* while functional tests show it working is a contradiction to resolve in the framework/library source before it reaches the report — not a finding to forward. Reproduce the failure live, or trace the *complete* code path (framework layers included) end-to-end. Log the outcome of every such claim in the "Claims investigated and rejected" section of `REVIEW-FINDINGS.md` so the same false alarm doesn't resurface next review.
 
@@ -66,8 +57,8 @@ Use cheaper/faster subagents (a smaller model and/or lower reasoning effort, wha
 
 DHIS2 web apps come in two shapes. Each has its own skill defining what "good" looks like — **judge an app against the conventions of its own shape**, not the other's. A vanilla tool is not wrong for lacking React; an App Platform app is not wrong for not being "simpler".
 
-- **App-Platform apps** (React + `@dhis2/app-runtime`) — marker: `d2.config.js`. Served via `d2 app:scripts start`, which proxies and authenticates. Reference: `dhis2-apps`.
-- **Vanilla / tool-template apps** — marker: `webpack.config.js` + `manifest.webapp`, no `d2.config.js`. Hand-rolled fetch wrapper, `webpack-dev-server` proxying to a configured instance. Current-template apps configure via `.env` and proxy all API calls same-origin (no CORS setup); older scaffolds use `d2auth.json` and need the instance's `corsWhitelist` extended. Reference: `create-dhis2-app`.
+- **App-Platform apps** (React + `@dhis2/app-runtime`) — marker: `d2.config.js`. Served via `d2-app-scripts start`, which proxies and authenticates. Reference: the App Platform docs.
+- **Vanilla / tool-template apps** — marker: `webpack.config.js` plus a `manifest.webapp` (current template: generated by `d2-manifest` from the `"manifest.webapp"` block in `package.json`, and gitignored; older scaffolds commit the file), no `d2.config.js`. Hand-rolled fetch wrapper, `webpack-dev-server` proxying to a configured instance. Current-template apps configure via `.env` and proxy all API calls same-origin (no CORS setup); older scaffolds use `d2auth.json` and need the instance's `corsWhitelist` extended. Reference: `create-dhis2-app`.
 
 ```bash
 ls "$PROJECT_DIR/d2.config.js" 2>/dev/null && echo "App Platform" || echo "Vanilla/tool-template"
@@ -86,23 +77,22 @@ Older apps may predate both conventions — note divergence as findings, referen
    - **Tests that assert request shape instead of server effect** — mocked unit tests that only check what was sent (URL, method, payload) pass even when the server ignores or rejects the write, and even when the tool misreads a legitimate success code (e.g. treats a `204` as failure). Flag suites where mutation tests never assert the resulting state; the fix is to re-GET and assert the effect (see `references/server-quirks.md`).
 4. **Provision instances** — one per target version (or use the user-supplied URLs).
 5. **Set up dev mode** — see [Setup checklist](#setup-checklist). Verify the dev server actually returns data before writing any test.
-6. **Functional/UI tests** — read `references/playwright-patterns.md` first; run `scripts/probe.py` before writing real tests. Test documented happy paths first, then edge cases the code review suggested. If you need to seed test data or assert on the app's mutations, read `references/server-quirks.md` first — several DHIS2 write behaviours make a naive test wrong.
+6. **Functional/UI tests** — read `references/playwright-patterns.md` first; run `scripts/probe.py` before writing real tests. Every suite registers `console`, `pageerror`, `requestfailed` and `response` (status ≥ 400) listeners and **fails** when they caught anything not explicitly allowlisted; a warning followed by PASS hides real failures. Test documented happy paths first, then edge cases the code review suggested. If you need to seed test data or assert on the app's mutations, read `references/server-quirks.md` first — several DHIS2 write behaviours make a naive test wrong.
 7. **Multi-version pass** — read `references/version-testing.md`; run the same suite against each instance and diff.
-8. **Cleanup** — see [Cleanup discipline](#cleanup-discipline). Includes broker instances.
+8. **Cleanup** — see [Cleanup discipline](#cleanup-discipline). Includes instances you created.
 9. **Report** — see [Report structure](#report-structure); start from the skeletons in `assets/templates/`.
 
 Check the project root for an optional `REVIEW-NOTES.md` — project-specific quirks, must-test flows, and version constraints the maintainer has recorded. It supplements (never overrides) the safety rules here.
 
 ## Provisioning test instances
 
-With broker access, create instances via the `dhis2-instances` skill:
+Get instances as described in `dhis2-test-instances`. Review-specific rules:
 
-- Name them `agent-<purpose>` (e.g. `agent-review-whitespace-240`). One instance per DHIS2 version under test.
-- Check `GET /seeds` first. **Prefer a seeded instance** (demo database) — most tools need existing metadata/data to exercise. If no suitable seed exists, create an empty instance and import test metadata with `dhis2-metadata`; note in the report that testing ran against synthetic rather than demo data.
-- Instances are reachable on dev-net at `http://dhis2-<name>:8080` (usually `admin`/`district`).
-- **At most 2 concurrent `agent-*` instances, and ideally only 1** — resource limits on the host make more than that unreliable. For multi-version testing, run one version at a time: finish (or at least stop) the current instance before starting the next. If you must have two running, don't *boot* them concurrently — two DHIS2 instances starting up at the same time starve each other and can take 20+ minutes with nothing on `/api`. Wait until the first answers on `/api/system/info` before creating the second. Delete instances when done, and list anything left running in the report.
-- **Verify credentials before building on an instance.** Some seeds ship with `admin` disabled or a non-default password — a `GET /api/me` (Basic auth) up front catches this in seconds. DHIS2 caches user details, so a failed login *sticks* until the instance restarts: don't discover this in the middle of a test run. The reliable path is the **always-present `local_admin` / `district` superuser** the broker injects into every instance — prefer it over repairing a seed's `admin`. Fix mechanics (DB reset of the account) belong to the `dhis2-instances` skill.
-- **Use `local_admin` for anything that grants roles or authorities.** A seed's `admin` can authenticate yet not be a true superuser: on the Sierra Leone demo, `admin` has ~248 authorities *without* `ALL`, so creating a user with a new role fails with `409 User 'admin' is not allowed to grant users access to user role '…'`. A successful login proves nothing about authority — check `GET /api/me?fields=authorities` for `ALL`, or just use `local_admin` for user/role fixtures from the start.
+- One instance per DHIS2 version under test, labelled by purpose and version (e.g. `review-<app>-242`) if your provisioner takes names.
+- **Prefer the Sierra Leone demo seed.** Most tools need existing metadata and data to exercise. If no seed is available, start empty and import test metadata with `dhis2-metadata`, and say in the report that testing ran on synthetic data.
+- **Run versions one after another.** Keep at most two instances alive, ideally one. Never *boot* two at once: two DHIS2 instances starting together on one machine starve each other and can take 20+ minutes with nothing answering on `/api`. Wait until the first answers `GET /api/system/info` before starting the next. Delete instances when done, and list anything left running in the report.
+- **Verify credentials before building on an instance.** Some seeds ship with `admin` disabled or a non-default password; a Basic-auth `GET /api/me` up front catches this in seconds. Failed logins count towards the account lockout, so don't discover a bad password in the middle of a test run, and don't retry it in a loop.
+- **Check for `ALL` before granting roles or authorities.** A seed's `admin` can authenticate yet not be a superuser: on the Sierra Leone demo (verified 2.42.7), `admin` has 248 authorities *without* `ALL`, so creating a user with a new role fails with `409 User 'admin' is not allowed to grant users access to user role '…'`. Check `GET /api/me?fields=authorities` for `ALL`. If it is missing, use a superuser your provisioner supplies, or create fixtures only with roles `admin` already holds.
 
 ## Mutation safety
 
@@ -111,6 +101,8 @@ If the tool under review mutates data or metadata (most admin tools do — check
 ## Setup checklist
 
 Two shapes to choose from; pick by app type and testing goal.
+
+The snippets below take the target instance from `DHIS2_BASE_URL`, `DHIS2_USERNAME` and `DHIS2_PASSWORD` (or `DHIS2_API_TOKEN`, sent as `Authorization: ApiToken <token>`, where a call accepts a header); `scripts/probe.py` reads the same variables. If your shell still exports the older `DHIS2_URL`/`DHIS2_USER`/`DHIS2_PASS`, the probe accepts them; for the snippets, re-export them under the new names.
 
 ### Vanilla / tool-template — dev-server proxy
 
@@ -124,9 +116,9 @@ cp "$PROJECT_DIR/.env" /tmp/env.orig 2>/dev/null || true
 
 # 1. Point at the target instance (DHIS2_DEV_PORT optional; default 8081)
 cat > "$PROJECT_DIR/.env" <<EOF
-DHIS2_BASE_URL=$DHIS2_URL
-DHIS2_USERNAME=$DHIS2_USER
-DHIS2_PASSWORD=$DHIS2_PASS
+DHIS2_BASE_URL=$DHIS2_BASE_URL
+DHIS2_USERNAME=$DHIS2_USERNAME
+DHIS2_PASSWORD=$DHIS2_PASSWORD
 EOF
 
 # 2. Start dev server in the background; wait for "compiled successfully" in the log
@@ -135,22 +127,13 @@ yarn start &> /tmp/dev.log &
 # 3. Smoke check — does the app actually load data?  (scripts/probe.py)
 ```
 
-**Legacy scaffolds (`d2auth.json`):** same flow, but write the instance URL + credentials to `d2auth.json` (save the original first), and the browser calls the API cross-origin — add the dev-server origin to the instance's CORS allowlist:
-
-```bash
-# POST replaces the whole list — read-modify-write, never POST just your origin
-curl -sg -u "$DHIS2_USER:$DHIS2_PASS" "$DHIS2_URL/api/configuration/corsWhitelist" \
-  | jq '. + ["http://localhost:<devServerPort>"] | unique' \
-  | curl -sg -u "$DHIS2_USER:$DHIS2_PASS" -X POST -H "Content-Type: application/json" \
-      -d @- "$DHIS2_URL/api/configuration/corsWhitelist"
-# (the endpoint accepts POST; PUT returns 405)
-```
+**Legacy scaffolds (`d2auth.json`):** same flow, but write the instance URL + credentials to `d2auth.json` (save the original first), and the browser calls the API cross-origin, so add the dev-server origin to the instance's CORS allowlist first (recipe and version-specific endpoint name: dhis2-docs skill; the POST replaces the whole list).
 
 If the dev server proxy is misconfigured, the app loads HTML but no API data. Always assert that *some* known data appears (program count, org-unit count, etc.) in your first probe before committing to a full test suite.
 
 ### App Platform — dev server (default), install the zip to verify
 
-Run the app the way the user does: `d2 app:scripts start` (dev server with hot reload) is the default serving mechanism, for both development and manual testing — it proxies and authenticates, so no CORS setup. Installing the built zip is a **verification step**, not the serving mechanism: do it for reviews/releases to confirm the production bundle builds, installs, and loads — including the generated manifest and global-shell integration on 2.42+, which the dev server bypasses.
+Run the app the way the user does: `yarn start` / `d2-app-scripts start` (dev server with hot reload) is the default serving mechanism, for both development and manual testing — it proxies and authenticates, so no CORS setup. Installing the built zip is a **verification step**, not the serving mechanism: do it for reviews/releases to confirm the production bundle builds, installs, and loads — including the generated manifest and global-shell integration on 2.42+, which the dev server bypasses.
 
 **Exception — multi-version test matrices**: when running the same suite against several instances, prefer installing the zip on each instance and driving the installed app. Zero per-version proxy/CORS setup, identical URLs across versions, and it exercises what users actually get. Keep the dev server for the iterative review-and-fix loop on one instance.
 
@@ -160,28 +143,28 @@ yarn start   # or: d2-app-scripts start
 # The internal port is fine for your own Playwright tests.
 
 # For a server the *user* opens in their browser, bind BOTH the app and the
-# API proxy to host-published ports (the shell's login form then needs the
-# proxy URL as the server):
-d2-app-scripts start --host 0.0.0.0 --port $SANDBOX_HOST_PORT \
-    --proxy http://dhis2-agent-x:8080 --proxyPort $SANDBOX_HOST_PORT_2
-# → tell the user: open http://localhost:$SANDBOX_HOST_PORT and enter
-#   http://localhost:$SANDBOX_HOST_PORT_2 as the server URL.
+# API proxy to ports their browser can reach (APP_PORT, PROXY_PORT); the
+# shell's login form then needs the proxy URL as the server:
+d2-app-scripts start --host 0.0.0.0 --port $APP_PORT \
+    --proxy $DHIS2_BASE_URL --proxyPort $PROXY_PORT
+# → tell the user: open http://localhost:$APP_PORT and enter
+#   http://localhost:$PROXY_PORT as the server URL.
 
 # --- Verification pass (reviews/releases): does the production bundle work? ---
 # 1. Build the production bundle
 yarn build      # or: d2-app-scripts build       — produces build/bundle/<app>.zip
 
 # 2. Install on the target instance — accept any 2xx (201 on 2.42+, 204 on ≤2.41)
-curl -sg -u "$DHIS2_USER:$DHIS2_PASS" -F "file=@build/bundle/<app>.zip" \
-  "$DHIS2_URL/api/apps"
+curl -sg -u "$DHIS2_USERNAME:$DHIS2_PASSWORD" -F "file=@build/bundle/<app>.zip" \
+  "$DHIS2_BASE_URL/api/apps"
 
 # 3. Drive the installed app directly
-#    URL: $DHIS2_URL/api/apps/<app-key>/index.html?redirect=false
+#    URL: $DHIS2_BASE_URL/api/apps/<app-key>/index.html?redirect=false
 #    Without ?redirect=false, 2.42+ redirects into the global-shell iframe
 #    and every locator needs a frame hop. See references/playwright-patterns.md.
 
 # 4. Uninstall during cleanup (expect 204)
-curl -sg -u "$DHIS2_USER:$DHIS2_PASS" -X DELETE "$DHIS2_URL/api/apps/<app-key>"
+curl -sg -u "$DHIS2_USERNAME:$DHIS2_PASSWORD" -X DELETE "$DHIS2_BASE_URL/api/apps/<app-key>"
 ```
 
 **Scripted checks: drive the installed bundle.** The dev server stays the default for *serving* the app to the user and for the iterative fix loop. For Playwright runs, including ad-hoc checks during a fix, the installed bundle loaded with `?redirect=false` is the reliable path: it is same-origin, needs no frame handling and behaves identically across versions. The recipe, and the `M_<key>` authority that test users need, are the first pattern in `references/playwright-patterns.md`. If you must script against the dev server, use the shell's own "Please sign in" form with `--proxy`, and first check that `localhost:<proxyPort>/api/me` returns JSON (the same reference covers this and the SameSite trap).
@@ -193,9 +176,9 @@ When the scope includes `architecture assessment`, additionally answer: **is thi
 - **Vanilla tool-template fits** when the app is a lightweight admin/maintenance utility: mostly ad-hoc metadata operations, a handful of screens, maintained by one or two people, no need for `@dhis2/ui` consistency, translations, or App Hub distribution.
 - **App Platform fits** when the app needs the DHIS2 look-and-feel (`@dhis2/ui`), i18n, offline support, App Hub publication, long-term multi-developer maintenance, or non-trivial state — and when its API usage would benefit from `useDataQuery`/`useDataMutation` handling of auth, versioning, and errors.
 
-Output: a short recommendation in `REVIEW-FINDINGS.md` — stay or migrate — with concrete costs (what must be rewritten, roughly how much code) and benefits, grounded in what the review actually found (e.g. recurring bugs in a hand-rolled fetch layer are an argument for `app-runtime`).
+Output: a short recommendation in `REVIEW-FINDINGS.md` — stay or migrate — with concrete costs (what must be rewritten, roughly how much code) and benefits, grounded in what the review actually found. Weigh each defect class the review found against the target architecture: status-code checks that reject a valid 2xx, wrong content types, success inferred from a field that error responses also carry. `app-runtime`'s data engine handles auth, any 2xx and structured errors, so recurring bugs of that kind are an argument for migrating, even when the conclusion is to stay and fix them in place. Say which way each one cuts.
 
-**Migration is a separate task, not part of the review.** If asked to migrate, treat it as a fresh implementation: scaffold with the target shape's skill, port features incrementally, and use the review's UI test suite as acceptance tests — same flows must pass on the same instances before and after.
+**Migration is a separate task, not part of the review.** Don't scaffold or rewrite during an assessment, and say so in the recommendation whichever way it goes ("migration, if chosen, is a separate task"). If asked to migrate, treat it as a fresh implementation: scaffold with the target shape's skill, port features incrementally, and use the review's UI test suite as acceptance tests — same flows must pass on the same instances before and after.
 
 ## Cleanup discipline
 
@@ -210,10 +193,10 @@ for uid in created_uids:
 
 Also:
 
-- Revert system-setting changes (CORS allowlist edits, feature flags). If you can't safely revert, surface it in the report. (Skippable on broker instances you're about to delete.)
+- Revert system-setting changes (CORS allowlist edits, feature flags). If you can't safely revert, surface it in the report. (Skippable on instances you are about to delete.)
 - If you installed an app via `POST /api/apps`, confirm uninstall returned 204.
 - Restore config files you switched for testing (`d2auth.json`, `.env`) from the copy saved in setup step 0, or call out the change clearly in the report.
-- **Broker instances**: delete the `agent-*` instances you created, or state explicitly which you left (name, version, why). Never leave an instance running silently.
+- **Test instances**: delete the instances you created, or state explicitly which you left (URL, version, why). Never leave an instance running silently.
 
 ## Repository layout for review artefacts
 
@@ -230,14 +213,14 @@ PROJECT_DIR/
 - **Tests**: everything browser/API-driving lives in `e2e/` — **not** `tests/` or `test/e2e/`, which collide with the unit-test dir (`test/`, vitest/jest) that platform scaffolds already have when the new suite is JS/TS. A Python suite does not collide, but `e2e/` is still the default. **This rule is for suites you create.** If the repo already has a working e2e suite elsewhere (e.g. `tests/e2e/` from an earlier review), extend it where it is — don't relocate it silently. If relocation is worth it, propose it as a LOW housekeeping finding, and include updating every README/docs reference to the old path.
 - **The first time you run Python anywhere in the repo, extend `.gitignore`**: `__pycache__/`, the results/screenshot output dir, and any auth/state files. A `py_compile` run leaves `.pyc` files that a later broad `git add` sweeps into a commit unnoticed. The trigger is running Python, not creating `e2e/`: a repo that already has `tests/e2e/` never hits the latter.
 - **Report output must pass the project's formatter.** If the repo's `lint` runs `prettier -c .`, the Markdown and JSON you write under `docs/review-*/` break it. Run `prettier --write` on your own report folder only, never on the whole `docs/` tree, since that reformats earlier reviews. Alternatively, add the folder to `.prettierignore` (the project's call).
-- **Keep worthwhile e2e suites in-repo**: when a suite is worth re-running (e.g. the acceptance suite for a migration — "same flows must pass before and after"), parameterize the instance URL (env var like `DHIS2_URL`, no hard-coded hosts) and offer to commit the suite. Ask the user before committing.
-- **Publishable vs session-internal — decide per document, at creation time.** Findings with root-cause analysis, version-compatibility results, and user documentation are repo history: commit them. State-change/ops logs (`STATE-CHANGES.md` — broker instances, SQL run, package installs, host ports), skill-improvement notes, and most screenshots are session-internal: they document internal test infrastructure that doesn't belong in a public product repo, even when nothing in them is secret. Write session-internal docs *outside* the repo or under a gitignored path **from the start**, so a later broad `git add` can't publish them by accident — deliver them to the user separately.
+- **Keep worthwhile e2e suites in-repo**: when a suite is worth re-running (e.g. the acceptance suite for a migration — "same flows must pass before and after"), parameterize the instance URL (env var like `DHIS2_BASE_URL`, no hard-coded hosts) and offer to commit the suite. Ask the user before committing.
+- **Publishable vs session-internal — decide per document, at creation time.** Findings with root-cause analysis, version-compatibility results, and user documentation are repo history: commit them. State-change/ops logs (`STATE-CHANGES.md` — test instances, SQL run, package installs, ports), skill-improvement notes, and most screenshots are session-internal: they document internal test infrastructure that doesn't belong in a public product repo, even when nothing in them is secret. Write session-internal docs *outside* the repo or under a gitignored path **from the start**, so a later broad `git add` can't publish them by accident — deliver them to the user separately.
 - **Existing sprawl**: if the repo already has ad-hoc test scripts at the root, old `REVIEW-*.md` files, or screenshots strewn about, propose consolidating them into this layout as a small housekeeping finding (LOW severity) — don't silently rearrange the repo as part of the review itself.
-- **Session-internal docs an earlier review already committed** (a `STATE-CHANGES.md` with broker instance names, test data, job ids, and similar ops logs): these shouldn't be in the repo, but removing committed history is the user's call, not yours. Flag the file as a LOW finding recommending removal; delete it only with the user's consent.
+- **Session-internal docs an earlier review already committed** (a `STATE-CHANGES.md` with test-instance names, test data, job ids, and similar ops logs): these shouldn't be in the repo, but removing committed history is the user's call, not yours. Flag the file as a LOW finding recommending removal; delete it only with the user's consent.
 
 ## Write for the scanner (SonarCloud)
 
-dhis2-org repos run SonarCloud automatic analysis on every PR — **including any test tooling the review itself adds**, and the AI-code security rules are strict. Write generated code to pass from the first draft:
+Many dhis2-org repos run SonarCloud automatic analysis on every PR — **including any test tooling the review itself adds**, and the AI-code security rules are strict. Write generated code to pass from the first draft:
 
 - **Don't write a script for a one-command task.** `pythonsecurity:S8703`/`S8707` flag *any* script that passes `sys.argv` values into `urllib`/`open()` as a MAJOR vulnerability. Installing an app zip is one documented curl — put the command in a README instead of writing `install_app.py`.
 - **Hoist repeated literals to module constants** (`python:S1192` fires on any literal repeated ≥3 times — with Playwright that's always the `[data-test=…]` selectors).
@@ -258,7 +241,7 @@ Up to four documents per review, written to `docs/review-<YYYY-MM-DD>[-<slug>]/`
 1. **`REVIEW-FINDINGS.md`** — severity-ranked code/UX/architecture issues, each with `file_path:line_number` references and a concrete fix suggestion.
 2. **`UI-TEST-RESULTS.md`** — one row per flow tested, status per DHIS2 version if multi-instance. Embed screenshots. State which seed/data the tests ran against.
 3. **`FIXES.md`** — when the user asks to fix findings: one entry per finding — the fix, where, and how it was verified.
-4. **`STATE-CHANGES.md`** — every persistent change made (auth files, system settings, test data, broker instances created/deleted). Mark which were reverted and which remain. **Session-internal — keep it out of the repo** (see Repository layout).
+4. **`STATE-CHANGES.md`** — every persistent change made (auth files, system settings, test data, test instances created/deleted). Mark which were reverted and which remain. **Session-internal — keep it out of the repo** (see Repository layout).
 
 Severity tiers:
 
@@ -273,24 +256,21 @@ Don't pad the list. A 5-finding report with concrete fixes is more useful than a
 - A bug fix is *not* an excuse to refactor the surrounding code. If asked to "review", do not also implement.
 - If the user asks for testing only, write tests and report. Do not edit the app.
 - If the user asks for a fix to a specific finding, fix only that one and ask before bundling other findings into the same change.
-- Git tokens may be read-only: commit and branch locally, but expect `git push` to be rejected — the user pushes. Never work around this.
 
 ## What to do when blocked
 
 - Empty dropdown / no data after dev-server start → check the browser console for CORS errors first, then `d2auth.json`, then whether the dev-server proxy is actually reachable.
 - Instance provisioned but tool has nothing to operate on → the instance is empty (no seed). Import representative test metadata via `dhis2-metadata`, or report that a demo seed is needed.
-- Login form fill not authenticating → skip the form: use Basic-auth `GET /api/me` and inject the returned session cookie (see `references/playwright-patterns.md`). Do **not** use `POST /api/auth/login` — it 302s to the legacy login page on 2.40 and silently yields an anonymous cookie.
-- Cookie injected but app still shows the login screen → the app origin and the API origin aren't **same-site**. Common when testing an App Platform *dev server* (`localhost:<port>`) against a dev-net instance (`dhis2-agent-…:8080`) — the browser silently drops the cookie. For platform dev servers, skip cookies entirely and script the dev shell's own sign-in form; for vanilla apps, forward the API to `localhost` so both sides match. See `references/playwright-patterns.md`.
+- Login form fill not authenticating → skip the form: use Basic-auth `GET /api/me` and inject the returned session cookie (see `references/playwright-patterns.md`). Do **not** use `POST /api/auth/login`: it doesn't exist before 2.41 (302 to the legacy login page, anonymous cookie, HTTP 200 after the redirect), and on 2.41+ it returns 200 without a session for locked/expired/2FA accounts.
+- Cookie injected but app still shows the login screen → the app origin and the API origin aren't **same-site**. Common when testing an App Platform *dev server* (`localhost:<port>`) against an instance on another hostname (`dhis2-test:8080`) — the browser silently drops the cookie. For platform dev servers, skip cookies entirely and script the dev shell's own sign-in form; for vanilla apps, forward the API to `localhost` so both sides match. See `references/playwright-patterns.md`.
 - A `fields=` query with brackets (`fields=categoryCombo[id,name]`) returns an empty body via curl → curl's URL globbing ate the brackets; the failure mode is empty output, not an error. Always use **`curl -g`** against DHIS2 APIs (urllib/requests are unaffected).
 - A bundled app looks missing on 2.42+ → `/apps/<key>/index.html` 404s even when the app exists; `/apps/<key>` (no suffix) returns 200. Probe app existence via `GET /api/apps` (authoritative) or the suffix-less URL.
 - App count doesn't match API count → the table may be client-side paginated (only the current page is in the DOM). Read the total from the `Pagination` footer, not from row count.
 - Playwright launch fails with "Host system is missing dependencies" → `sudo $(which playwright) install-deps chromium`. Plain `apt-get install` won't work on Ubuntu 24.04 (`t64` package renames).
 - Selector returns 0 results but element is visibly present → check `page.frames` first. **DHIS2 2.42+ serves installed apps inside a global-shell iframe**, while 2.41 and earlier serve them at top level — a suite that passes on 2.41 will time out on 2.42 if it queries the top document. Also possible: a wrapper widget (Choices.js, Materialize) hiding the real element — use `state="attached"` and locate the wrapper.
-- A test that passed starts failing mid-session with `Connection refused` or a Playwright timeout → the instance may be restarting (Tomcat restarts take ~90 s and the broker still reports the instance as `running`). Re-probe `GET /api/system/info` and re-run before blaming the app.
+- A test that passed starts failing mid-session with `Connection refused` or a Playwright timeout → the instance may be restarting (Tomcat restarts take ~90 s, and the container or provisioner still reports the instance as running). Re-probe `GET /api/system/info` and re-run before blaming the app.
 - Validation appears to hang → check for a sequential per-item loop (common in legacy code) on a large instance. Wait on a deterministic DOM signal, not a fixed timeout.
-- Dev server (`d2-app-scripts start`, `webpack-dev-server`) exits with `ENOENT … <file>.tmp.<pid>…` while you're editing source → the i18n / hot-reload watcher raced the editor's atomic temp-file rename. Harmless: finish the edits and restart the dev server.
-- Verifying pinned GitHub Action SHAs in a workflow review, but the GitHub REST API rejects the sandbox token → no token needed: `git ls-remote --tags https://github.com/<org>/<repo> refs/tags/<tag> refs/tags/<tag>^{}` works unauthenticated and resolves annotated tags (the `^{}` row is the commit the SHA pin should match).
-- A host you need is blocked by an egress firewall → report it; the user must allow it. Don't hunt for proxies.
+- Verifying pinned GitHub Action SHAs in a workflow review, but the GitHub REST API rejects your token or rate-limits you → no token needed: `git ls-remote --tags https://github.com/<org>/<repo> refs/tags/<tag> refs/tags/<tag>^{}` works unauthenticated and resolves annotated tags (the `^{}` row is the commit the SHA pin should match).
 
 ## Bundled resources
 

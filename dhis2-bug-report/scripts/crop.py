@@ -12,8 +12,6 @@ Examples:
 """
 import argparse
 
-from PIL import Image
-
 
 def main():
     p = argparse.ArgumentParser()
@@ -29,6 +27,11 @@ def main():
     p.add_argument("--scale", type=int, default=2)
     p.add_argument("--pad", type=int, default=10)
     a = p.parse_args()
+
+    try:
+        from PIL import Image
+    except ImportError:
+        raise SystemExit("needs Pillow: pip install Pillow")
 
     im = Image.open(a.src).convert("RGB")
     right = a.right or im.width

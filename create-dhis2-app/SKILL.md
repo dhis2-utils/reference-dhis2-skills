@@ -1,126 +1,125 @@
 ---
 name: create-dhis2-app
-description: "Scaffold a simple, vanilla JavaScript DHIS2 tool from the dhis2/tool-template — no React, no TypeScript, no DHIS2 App Platform. Use this skill when the user explicitly wants a lightweight admin tool, system utility, cleanup script, or quick-and-dirty DHIS2 helper using plain JS and direct DOM manipulation. Triggers on: 'simple DHIS2 app', 'vanilla DHIS2 tool', 'lightweight admin tool', 'tool-template', 'no React', 'quick DHIS2 utility', or when the user says they don't need the full App Platform. Do NOT use for React-based apps, TypeScript apps, or anything using @dhis2/ui — those belong to the dhis2-apps skill. NEVER use for: existing app changes, DHIS2 API calls, debugging, refactoring, docs lookup, or non-DHIS2 projects."
+description: "Scaffold a new, simple vanilla-JavaScript DHIS2 tool from the dhis2/tool-template: no React, no TypeScript, no App Platform. Use when the user wants a lightweight admin tool, system utility, cleanup tool or quick DHIS2 helper in plain JS with direct DOM manipulation. Triggers on 'simple DHIS2 app', 'vanilla DHIS2 tool', 'lightweight admin tool', 'tool-template', 'no React', 'quick DHIS2 utility', or when the user says they don't need the full App Platform. Also the reference for tool-template conventions (d2api.js helpers, .env proxy, d2-manifest). Not for React/@dhis2/ui/App Platform apps (use d2-app-scripts and the App Platform docs), reviewing an existing app (dhis2-app-review), or general DHIS2 API questions (dhis2-docs)."
 ---
 
-# Create DHIS2 App (Simple Template)
+# Create a DHIS2 tool from the tool-template
 
-Scaffold a new DHIS2 web application from the [dhis2/tool-template](https://github.com/dhis2/tool-template) — the simple vanilla-JS tool template.
+Scaffold a new DHIS2 web app from [dhis2/tool-template](https://github.com/dhis2/tool-template):
+plain JavaScript with ES modules, Webpack 5 and direct DOM manipulation. No React, TypeScript,
+App Platform or `@dhis2/ui`. It is meant for system-administration tools, not end-user apps.
+The template's README states it is verified against DHIS2 2.40–2.43: on 2.41 and older the
+bundled legacy header bar is shown, and on 2.42+ the app renders inside the global shell.
 
-This template is intentionally simple: plain JavaScript with ES modules, Webpack 5, and direct DOM manipulation. No React, no TypeScript, no DHIS2 App Platform, no `@dhis2/ui` component library. It's designed for lightweight system administration tools, not full-featured end-user applications.
-
-There is also an "official" way to build DHIS2 apps using the DHIS2 App Platform (`@dhis2/cli-app-scripts`), which gives you React, TypeScript, the DHIS2 UI component library, and the full app runtime. If the user needs that, this is not the right template — let them know and don't proceed with this skill.
+The recommended route for most DHIS2 apps is the
+[App Platform](https://developers.dhis2.org/docs/app-platform/getting-started)
+(`npx @dhis2/cli-app-scripts init <name>`), which brings React, `@dhis2/ui`, translations
+(`d2-app-scripts i18n`), offline/PWA support (`pwa.enabled` in `d2.config.js`) and the app
+runtime. The tool-template has none of these: it is an online admin tool with English-only
+markup. **If the requirements need offline use, translations, or non-technical end users entering
+data, this is the wrong template even when the user asks for it by name.** Say so, be honest that
+the App Platform means React, and ask before scaffolding anything.
 
 ## Workflow
 
-### 0. Check the environment
+### 0. Check the directory
 
-Before doing anything, figure out whether you're in an existing project or starting fresh.
+| Finding | Means |
+|---|---|
+| `d2.config.js` exists, or `package.json` depends on `@dhis2/app-runtime` | App Platform project. Wrong template; stop. |
+| `package.json` has a `"manifest.webapp"` block, or `src/js/d2api.js` exists | Existing tool-template project. Don't scaffold; help with the actual request using the conventions below. |
+| `src/js/d2api.js` where `d2PostThenGet` takes only an endpoint, or `webpack.config.js` passes the whole `dhisConfig` to `DefinePlugin` | A copy of an **older template** (v0.3.x or earlier); see "Older copies" below. |
+| Empty or near-empty | Scaffold into the **current directory** (don't create a subdirectory). |
 
-| Check | How | Means |
-|-------|-----|-------|
-| `d2.config.js` exists in project root | Glob for `d2.config.js` | This is a DHIS2 App Platform project — wrong skill, suggest **dhis2-apps** instead |
-| `package.json` has `@dhis2/app-runtime` | Read `package.json` | Same — wrong skill, suggest **dhis2-apps** |
-| Directory has `manifest.webapp` or `src/js/d2api.js` | Glob | Existing tool-template project — skip scaffolding, help with what the user needs |
-| Empty or near-empty directory | — | Proceed with scaffolding |
+### 1. Confirm the template and gather details
 
-### 1. Confirm template choice and gather information
+If the user asked for a simple/vanilla tool, go ahead. If they mention React, TypeScript,
+`@dhis2/ui` or the App Platform, confirm before scaffolding.
 
-Before scaffolding, check that the user actually wants the simple template. If they've explicitly asked for the simple/vanilla/dummies template, or if the context makes it clear (e.g. "quick admin tool", "simple script"), go ahead. But if there's any ambiguity — especially if they mention React, TypeScript, `@dhis2/ui`, or the App Platform — ask:
+Ask only for what the user hasn't given:
 
-> "Just to check — this template creates a simple vanilla JavaScript app (no React, no TypeScript, no DHIS2 UI components). It's great for lightweight admin tools. If you need the full DHIS2 App Platform with React and @dhis2/ui, I should use the **dhis2-apps** skill instead. Which do you want?"
+- **Package name**, kebab-case (`data-integrity-checker`). Becomes `package.json` `name` and
+  the zip filename `compiled/<name>.zip`.
+- **Display name**, human-readable (`Data Integrity Checker`). Becomes `manifest.webapp.name`,
+  which DHIS2 uses for the app key and menu entry (see step 3).
+- **One-line description.**
+- **Developer / organisation** for `manifest.webapp.developer`. If not given, keep the
+  template's values and tell the user to change them.
 
-Once confirmed, use `AskUserQuestion` to prompt for the app details. If the user has already provided some of these in their message, skip those and just gather anything still missing.
+Default version: `0.1.0`.
 
-Prompt for at minimum:
-- **App name** (kebab-case, e.g. `data-integrity-checker`) — this becomes the package name and ZIP filename
-- **Description** (one-line summary of what the app does)
-
-Use sensible defaults for the rest unless the user has specified them:
-
-| Field | Default |
-|-------|---------|
-| **Developer name** | `"HISP Centre"` |
-| **Developer email** | `"dev@dhis2.org"` |
-| **Initial version** | `"0.1.0"` |
-
-**The current working directory is the app directory.** The typical flow is: the user creates an empty directory, `cd`s into it, launches Claude, and asks to scaffold. So the skill should populate the current directory — not create a subdirectory.
-
-### 2. Clone and reinitialize
-
-Clone the template into the current directory, then strip the template's git history so the user starts fresh:
+### 2. Clone and reinitialise
 
 ```bash
-git clone https://github.com/dhis2/tool-template .
-rm -rf .git
+git clone --depth 1 https://github.com/dhis2/tool-template .
+rm -rf .git CHANGELOG.md
 git init
 ```
 
-The `.` at the end of `git clone` tells git to clone into the current directory (which should be empty or near-empty). If the directory isn't empty, clone to a temp location and copy the files over instead:
+If the directory isn't empty, clone into `tmp=$(mktemp -d)`, copy `"$tmp"/.` over (skipping
+`.git`), then `git init`.
+
+Keep `.github/workflows/`: `ci.yml` lints and builds the zip on every PR and push to `main`;
+`release.yml` builds and attaches the zip to a GitHub release when a `v*.*.*` tag is pushed,
+and only warns if the tag and `package.json` version differ.
+
+### 3. Customise
+
+**`package.json`**
+- `name`, `description`, `version` (top level).
+- **`"manifest.webapp".name` → the display name.** `d2-manifest` builds `manifest.webapp`
+  from the top-level `name`/`version`/`description` and then overlays the `"manifest.webapp"`
+  block, so the template's `"name": "Tool Template"` there wins over the top-level `name`.
+  DHIS2 derives the app key from the manifest name (non-alphanumerics stripped, spaces → `-`,
+  so `Tool-Template`) and the menu authority from it (`M_Tool_Template`). Leave it unchanged
+  and every tool built from the template installs under the same key and replaces the
+  previous one on the instance.
+- `"manifest.webapp".developer` if the user gave developer details.
+- Leave `appType`, `icons` and the build scripts alone. To change the icon, replace
+  `src/img/icons/app_logo_48x48.png` and `app_logo_96x96.png` at the same paths.
+
+**`src/index.html`**: set `<title>` to the display name. Keep `<div id="dhis-header-bar">`.
+Replace the `#mainView` content (including the Hello button) with a heading and a one-line
+"edit `src/app.js` to get started" placeholder.
+
+**`src/app.js`**: keep the imports (`d2Get` from `./js/d2api.js`, `loadLegacyHeaderBarIfNeeded`
+and its call, `./css/style.css`). Remove the `testApi`/`window.helloWorld` demo code, since
+the button that called it is gone, and leave the file as a clean entry point. ESLint flags an
+unused `d2Get` import, so either use it (e.g. log `/api/system/info` version) or remove it.
+
+**`README.md`**: replace with the app name, description, requirements (Node >= 20.19, yarn,
+`zip`), getting started (`cp .env.template .env`, `yarn install`, `yarn start`,
+`yarn run zip`), and a note on configuring `.env`.
+
+**`AGENTS.md`**: update the Context section to name the new app and its purpose. Keep the
+rules and architecture sections; they still apply.
+
+### 4. Set up
 
 ```bash
-git clone https://github.com/dhis2/tool-template /tmp/dhis2-template-clone
-cp -r /tmp/dhis2-template-clone/. .
-rm -rf /tmp/dhis2-template-clone .git
-git init
-```
-
-Remove template-specific files that don't belong in a new app:
-- `CHANGELOG.md` — the new app's changelog starts now
-- `docs/` — template development docs, not relevant to the new app
-
-Keep `.github/workflows/` — `ci.yml` lints and builds on every PR and push to main, and `release.yml` builds and attaches the app zip to a GitHub release when a version tag (`v*.*.*`) is pushed. The user can customize or remove them later.
-
-### 3. Customize template files
-
-Update these files with the user's app details:
-
-**`package.json`**:
-- Set `name` to the app name
-- Set `description` to the app description
-- Set `version` to the initial version
-- Update `manifest.webapp.developer` if custom developer info was provided
-- The `manifest.webapp` section also drives the app name shown in DHIS2 — the `d2-manifest` tool reads `name` and `description` from the top-level package.json fields to generate `manifest.webapp`, so setting those is sufficient
-
-**`src/index.html`**:
-- Set `<title>` to a human-readable form of the app name (e.g., "Data Integrity Checker")
-- Replace the `#mainView` div content with a minimal placeholder like:
-  ```html
-  <h1>App Name</h1>
-  <p>Ready for development. Edit <code>src/index.html</code> and <code>src/app.js</code> to get started.</p>
-  ```
-
-**`README.md`** — replace entirely with a new README containing:
-- The app name as a heading
-- The description
-- A "Getting started" section with: `yarn install`, `yarn start`, `yarn run zip`
-- A note about configuring `.env` for the DHIS2 instance (reference `.env.template`)
-
-**`AGENTS.md`** — update the Context section at the top so it references the new app's name and purpose instead of "tool-template." Keep all the rules and architecture documentation intact — they still apply.
-
-**`src/app.js`** — keep the existing imports (`d2api.js`, `check-header-bar.js`, `style.css`) but clear any template-specific comments or placeholder logic. The file should be a clean starting point.
-
-### 4. Set up development environment
-
-```bash
-node --version   # must be >= 18 (package.json engines; webpack config uses global fetch)
+node --version      # must satisfy package.json engines: >= 20.19.0 (CI uses 22)
 cp .env.template .env
 yarn install
 ```
 
-If Node is older than 18, say so and stop — the failure mode later (a crash on `yarn start`) is cryptic. Use **yarn, not npm**: the repo tracks only `yarn.lock` (`package-lock.json` is gitignored, CI installs with `--frozen-lockfile`).
+If Node is too old, say so and stop; the later failure is cryptic. Use **yarn, not npm**: the
+repo tracks only `yarn.lock` (`package-lock.json` is gitignored) and CI installs with
+`--frozen-lockfile`.
 
-Tell the user to update `.env` with their DHIS2 instance URL and credentials before running the dev server. If they have no instance handy and the `dhis2-instances` skill is available in the environment, it can provision a disposable one to develop against.
+`.env` holds `DHIS2_BASE_URL` and either `DHIS2_API_TOKEN` (a personal access token, sent as
+`Authorization: ApiToken …`) or `DHIS2_USERNAME`/`DHIS2_PASSWORD`, plus optional
+`DHIS2_DEV_PORT`. Tell the user to fill it in before `yarn start`. If there is no instance to
+develop against, see `dhis2-test-instances`.
 
-### 5. Verify the scaffold builds
-
-Run the full packaging chain to make sure the scaffold works before committing — `zip` exercises lint → build → manifest generation → zip packaging (and catches a missing `zip` binary early), which is exactly what CI and releases rely on:
+### 5. Verify the scaffold
 
 ```bash
 yarn run zip
 ```
 
-If it fails, fix the issue before proceeding. The user should start from a known-good state.
+This runs lint → webpack build → `d2-manifest` → zip, the same chain CI and releases use, and
+fails early if the `zip` binary is missing. Then check `build/manifest.webapp`: `name` must be
+the display name, not `Tool Template`. Fix any failure before continuing.
 
 ### 6. Initial commit
 
@@ -131,32 +130,50 @@ git commit -m "Initial scaffold from dhis2/tool-template"
 
 ### 7. Orient the user
 
-Give the user a concise overview of their new project. Cover:
+- **App logic**: `src/app.js` is the entry point; add modules in `src/js/`.
+- **UI**: `src/index.html`, styles in `src/css/style.css`.
+- **DHIS2 API**: always use the helpers in `src/js/d2api.js`, never raw `fetch`:
+  `d2Get(endpoint)`, `d2PostJson(endpoint, body)`, `d2PutJson(endpoint, body)`,
+  `d2Delete(endpoint)`, and `d2PostThenGet(endpoint, body?, getEndpoint?, maxTries=10, intervalMs=1000)`,
+  which POSTs, then polls `getEndpoint` (default: the POST endpoint) until the response is
+  non-empty and **rejects on timeout**. The helpers handle the base URL (`../../..` when
+  installed, same-origin in dev) and error parsing.
+- **Dev server**: `yarn start` on port 8081, or `DHIS2_DEV_PORT`. If the user's browser can
+  only reach certain forwarded ports, set `DHIS2_DEV_PORT` to one of them. Every request goes
+  same-origin through the webpack-dev-server proxy, which adds the credentials from `.env`.
+  The instance needs no CORS allowlist entry, and credentials never reach the browser bundle.
+- **Deploy**: `yarn run zip` → `compiled/<name>.zip`; upload it in App Management or
+  `POST /api/apps`. Users without `ALL` need the app's `M_…` authority to open it.
+- **Lint**: `yarn run lint` (4-space indent, double quotes, semicolons).
 
-- **Where to write app logic**: `src/app.js` is the entry point. Add new modules in `src/js/`.
-- **Where to edit the UI**: `src/index.html` for HTML, `src/css/style.css` for styling.
-- **How to call the DHIS2 API**: Use the helpers in `src/js/d2api.js`:
-  - `d2Get("/api/endpoint")` — GET
-  - `d2PostJson("/api/endpoint", body)` — POST with JSON body
-  - `d2PutJson("/api/endpoint", body)` — PUT with JSON body
-  - `d2Delete("/api/endpoint")` — DELETE
-  - `d2PostThenGet(endpoint, body?, getEndpoint?)` — POST (optional JSON body), then poll `getEndpoint` (defaults to the POST endpoint) with GET until the response is non-empty; **rejects with an error on timeout** (default 10 tries × 1 s, configurable as 4th/5th arguments)
-  - Never use raw `fetch` for DHIS2 endpoints.
-- **Dev server**: `yarn start` runs on port 8081 by default (override with `DHIS2_DEV_PORT` in `.env` — in an agent sandbox, set it to `$SANDBOX_HOST_PORT`). **All** API calls go same-origin through the dev-server proxy, so the DHIS2 instance needs no CORS whitelisting for development, and the credentials in `.env` stay in the webpack process — they are never served to the browser.
-- **Build for DHIS2**: `yarn run zip` creates a ZIP in `compiled/` that can be uploaded via DHIS2's App Management.
-- **Linting**: `yarn run lint` checks code style (4-space indent, double quotes, semicolons).
+## Older copies of the template
 
-### 8. Hand off to using-superpowers (only if available)
+Tools copied before v0.4.0 (July 2026; tags in `dhis2/tool-template`) differ in ways that cause
+real problems. Compare with the current template (`git clone --depth 1` it to a temp dir) and
+bring over:
 
-If a `using-superpowers` skill is available in this environment, invoke it after orientation so brainstorming, debugging, and testing workflows trigger automatically as the user builds out the app. If it is not in the available-skills list, skip this step silently — do not try to invoke it or mention it.
+- **Dev credentials in the bundle and CORS.** v0.3.x `webpack.config.js` passes `dhisConfig`
+  (instance URL + `Authorization` header from `.env`) to `DefinePlugin` for dev builds, so the
+  browser calls the instance cross-origin with the credentials in the served JS; that is why such
+  projects needed a CORS allowlist entry. Current: `DHIS_CONFIG` is `{ baseUrl: "" }` in dev,
+  every call goes same-origin through the dev-server proxy, which adds the header. Tell the user
+  to rotate credentials that were exposed. (v0.2.x used `d2auth.json` instead of `.env`.)
+- **`d2PostThenGet` timeouts.** v0.3.x resolves with the last, empty poll result after 10 tries,
+  so callers report "nothing found" on a slow server. Current: it rejects on timeout and takes
+  `(endpoint, body?, getEndpoint?, maxTries, intervalMs)`; callers must catch the rejection and
+  can raise the polling budget for slow checks (data integrity on large instances).
+- **Smaller items:** an explicit `"manifest.webapp".name` (v0.3.x has none, so the menu name and
+  app key follow the npm package name), `engines.node >=20.19.0`, yarn only (`package-lock.json`
+  gitignored, CI uses `--frozen-lockfile`), `.github/workflows/ci.yml` and `release.yml`,
+  `DHIS2_DEV_PORT`.
 
 ## Rules
 
-These constraints exist for good reasons and should be preserved in the new app:
+These keep the app consistent with the template; preserve them:
 
-- **Vanilla JS only** — no React, Vue, or other frameworks. These are lightweight admin tools.
-- **Webpack stays** — don't replace it with Vite or other bundlers. The build chain is tuned for DHIS2 app packaging.
-- **No hardcoded credentials** — URLs and auth go in `.env`, which is gitignored.
-- **Use the API helpers** — `d2api.js` handles auth, endpoint normalization, and error parsing. Raw `fetch` bypasses all of that.
-- **ESLint rules**: 4-space indent, double quotes, semicolons required.
-- **Verify after changes.** Run `yarn run lint` after modifying JS files, and `yarn run build` after significant changes. Fix issues before moving on — the user should never inherit broken state.
+- **Vanilla JS only**: no React, Vue or other frameworks.
+- **Keep Webpack**: don't swap in Vite or another bundler; the dev proxy and packaging depend on it.
+- **No hard-coded URLs or credentials**: they belong in `.env`, which is gitignored.
+- **Use the `d2api.js` helpers** for every DHIS2 call, and surface API errors to the user.
+- **Keep the `d2-manifest` step** that generates `manifest.webapp` on build.
+- **Verify after changes**: `yarn run lint` after JS edits, `yarn run zip` after significant ones.

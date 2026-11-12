@@ -13,8 +13,8 @@ package path with `tasks.test { systemProperty("packageDir", …) }`. Also unit-
 
 ## 2. Instrumented tests against a disposable server
 
-Run on an emulator against a DHIS2 instance created for the purpose (broker instance in the
-sandbox; `dhis2-instances` skill), seeded with the program's metadata and a test user.
+Run on an emulator against a DHIS2 instance created for the purpose (see `dhis2-test-instances`),
+seeded with the program's metadata and a test user.
 
 - Pass server, user and password as runner arguments; read them with
   `InstrumentationRegistry.getArguments()`. The emulator reaches the host as `10.0.2.2`, so the
@@ -40,21 +40,22 @@ sandbox; `dhis2-instances` skill), seeded with the program's metadata and a test
   catches up.
 - **Offline**: `adb shell cmd connectivity airplane-mode enable|disable` toggles the emulator's
   network cleanly — use it for "entered offline, synced later" tests.
-- **Capture the exact payloads**: point the app at a small logging reverse proxy (e.g. on
-  `$SANDBOX_HOST_PORT` in the sandbox, app URL `http://10.0.2.2:$SANDBOX_HOST_PORT`) that forwards
+- **Capture the exact payloads**: point the app at a small logging reverse proxy (on a host port
+  the emulator can reach, app URL `http://10.0.2.2:<proxy port>`) that forwards
   to the instance and records every `/api/tracker` request body and job report. It turns a device
   test into API evidence and shows what the SDK really sends.
 - **Metadata changes need a fresh download**: after changing the program on the server (stage
   settings, text patterns, rules), re-download metadata (or clear app data and log in again) before
   testing — otherwise the app runs against its stale copy.
 
-Running in the agent sandbox: `./gradlew connectedDebugAndroidTest` hangs (AGP uses its own
-x86_64 `adb`). Instead:
+On Linux aarch64, or when the emulator is attached to an adb server on another machine,
+`./gradlew connectedDebugAndroidTest` can hang (AGP downloads and uses its own x86_64 `adb`).
+Install and run the test APK with the system `adb` instead:
 
 ```bash
 ./gradlew :data:assembleDebugAndroidTest
 adb install -r -t data/build/outputs/apk/androidTest/debug/data-debug-androidTest.apk   # a library's test APK contains the library
-adb shell am instrument -w -r -e serverUrl http://10.0.2.2:9013 -e username u -e password 'p' \
+adb shell am instrument -w -r -e serverUrl http://10.0.2.2:<port> -e username u -e password 'p' \
     [-e class 'pkg.MyTest#t1_x'] <applicationId>.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
@@ -74,8 +75,7 @@ the reference loader — relationships silently never written — not in the app
 General emulator driving — adb taps and `uiautomator dump`, Maestro flows, `screenrecord` for
 demo videos, the emulator's time zone, mock GPS, and keeping UI drivers out of foreground commands
 that can time out — is owned by `dhis2-prototyping` (`references/android-flows.md`,
-`references/recording-and-media.md`, `references/setup.md`). Installing APKs and reading the
-screen over the host's adb is in `dhis2-android-testing`.
+`references/recording-and-media.md`, `references/setup.md`).
 
 Facts specific to a Compose app built with the design system:
 - floating action buttons are not in the `uiautomator` tree — tap by point;

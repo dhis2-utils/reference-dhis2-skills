@@ -8,11 +8,14 @@
   `report_text.py` of strings and small functions. It is too project-specific to bundle; build it
   per PoC. Check every number in the prose against the effort file before publishing (two were
   slightly off).
-- Artifact limits: 16 MB per file, **64 MB per version**. Publish a subset (one-minute videos, web
+- Hosting limits shape the media plan: check the limits of wherever the report will be hosted
+  before recording. Example: this PoC's report was published as a Claude artifact, which at the
+  time allowed 16 MB per file and 64 MB per version (limits of that one host, not general facts,
+  and they may change). Publish a subset (one-minute videos, web
   videos, clips, GIFs, screenshots ≈ 45 MB) and keep full-length videos local; build a publish
   variant that drops links to unpublished files.
 - Keep videos and GIFs out of git (`.gitignore` from the start — one early commit had to be squashed
-  away). Squash history into a few commits before handing off (the user re-signs them on the host).
+  away). Squash history into a few commits before handing off.
 - Keep a running `report/findings.md` while working; the report's findings section was written from it.
 
 ## What readers asked for after the first version
@@ -32,7 +35,7 @@
 - **A "tools and devices" section** when a custom app is on the table: the options, offline
   support, build and maintenance estimates, and the point that the data model stays the same.
 
-## Artifact mechanics
+## Artifact mechanics (example host: Claude artifacts; host-specific except the first point, which applies to any framed page)
 
 - Links to media files (`<a href="clip.mp4">`) replace the whole page inside the artifact frame and
   leave no way back. Open clips in an overlay `<dialog>` player with a Close button (Esc and a
@@ -42,7 +45,7 @@
 - The artifact is private until the owner shares it; whether people outside the organisation can
   open it depends on org settings. Say so when handing over the link.
 
-## Single-file export for readers without artifact access
+## Single-file export for readers without access to the hosted page
 
 `scripts/make_standalone.py` (bundled) turns the published page into one HTML file: videos
 re-encoded to H.264 CRF 32 at 15 fps (phone recordings 360 px wide, web 960 px), screenshots to
@@ -57,12 +60,12 @@ treat the artifact as the main product and the file as an export.
   the loader and verification scripts, with a README.
 - **A database dump** of the shared instance for restoring on a hosted server:
   `pg_dump --no-owner --no-privileges -T 'analytics*'` (analytics tables are regenerated; 255 MB
-  → 3.2 MB gz), append `UPDATE userinfo SET disabled = true WHERE username = 'local_admin';` when
-  the instance came from the broker, and **test-restore** into a scratch database on the same server
+  → 3.2 MB gz), append `UPDATE userinfo SET disabled = true WHERE username = '<user>';` for any
+  service or tooling account your provisioning added that recipients should not have, and **test-restore** into a scratch database on the same server
   (`CREATE DATABASE …; psql -v ON_ERROR_STOP=1`) comparing counts of tracked entities, events and
   programs. Tell the user to change the `admin` password on anything internet-facing, to run
   analytics after restore, and to set the server time zone.
-- **A testers' deck** on the organisation's template (`org-templates` + `pptx`): one slide with the
+- **A testers' deck** on the organisation's slide template: one slide with the
   server URL and one login that can do everything (plus optional role accounts for scoped views),
   then one slide per option with the programs to pick, how to enter a case, and what to test. Check
   the exact names testers will see (relationship types carry the code prefix, e.g.

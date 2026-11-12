@@ -40,12 +40,13 @@ This calls `GET /api/metadata.json?...` for all metadata types. Notes:
 
 ## Spinning up the sandbox and importing
 
-1. Create an **empty** instance with the **dhis2-instances** skill (d2-broker — create empty, matching
-   the source DHIS2 **version**; mismatched versions cause import failures).
+1. Get an **empty** disposable instance of the source's DHIS2 **version** (see the
+   **dhis2-test-instances** skill); mismatched versions cause import failures. A seeded instance (e.g.
+   the Sierra Leone demo) is wrong here: its objects mix with the dump's.
 2. Import:
    ```bash
    python scripts/metadata_dump.py import --in original.metadata.json \
-       --base http://dhis2-<sandbox>:8080 --user admin --pass district
+       --base http://localhost:8080 --user admin --pass district
    ```
    The script posts to `/api/metadata` with `importMode=COMMIT`, `atomicMode=NONE` (so a few rejects
    don't abort the whole import), `identifier=UID`, and `async=true` for large payloads (then polls the
@@ -72,9 +73,9 @@ This calls `GET /api/metadata.json?...` for all metadata types. Notes:
   depends on age ("not updated since", abandonment, stale favourites) must read `lastUpdated` from the
   **source export**. On the sandbox itself, such a pass finds nothing: the first favourites pass in one
   engagement planned 0 deletions.
-- **Check free disk space before restoring a large dump.** In the agent sandbox, `df -h /` shows the
-  host's Docker filesystem, which every sibling instance shares. A 14 GB restore used ~50 GB there, and
-  Postgres sort spills briefly took several more.
+- **Check free disk space before restoring a large dump** on the Docker host, which all local
+  instances share. A 14 GB `pg_dump` restore used ~50 GB, and Postgres sort spills briefly took several
+  more.
 - **`generateMetadataDependencies`/`download=true`** on the export side keeps a self-contained set; the
   bundled script already requests a complete export.
 
@@ -84,8 +85,8 @@ often *cleaner* than the source — which **hides real integrity problems** (the
 would fail checks the rebuild never can). After import, reconcile per type:
 `GET /api/<type>?fields=id&pageSize=1&totalPages=true` → `pager.total`, vs the dump's array length.
 Explain every delta and record the negatives as findings:
-- **Legit positive deltas:** broker-added `local_admin` user + Superuser role; DHIS2 ships built-in
-  **system jobConfigurations** on every instance.
+- **Legit positive deltas:** the target's own admin user(s) and roles (plus any account the
+  provisioning tool adds); the built-in **system jobConfigurations** DHIS2 creates on every instance.
 - **Negative deltas = pre-existing corruption that couldn't round-trip** — real cases seen: **orphan
   program stages** (no `program` parent — DHIS2 can't create a stage without one; one had 308 DEs),
   **event visualizations missing `program`** (E4000), **job configs with params on a non-configurable job
@@ -109,15 +110,19 @@ hundreds of thousands of org units and users and over a million org-unit-group m
 4. **`cacheClear` after any SQL write** so the API/checks see it, and re-link anything whose refs failed
    during the excluded-import (e.g. re-PUT the org-unit **group sets** once their groups exist).
 5. **Serialize instances.** Two DHIS2 instances booting or one heavy import while another serves will
-   starve each other on a shared host — finish and STOP one before starting the next; give the live one
-   more heap (`POST /instances/<n>/memory {"memory":"8g"}`).
+   starve each other on a shared host — finish and STOP one before starting the next, and give the live
+   one more heap (`JAVA_TOOL_OPTIONS=-Xmx8g` on the `dhis2/core` container, or your provisioner's memory
+   setting).
 
 ## The recommended dump-mode workflow
 
 1. `export` the source → `original.metadata.json` (the **control**; never edit it).
 2. Create empty sandbox (same version) → `import` the dump (twice; check the summary is clean).
 3. Run the normal cleanup workflow on the sandbox (inventory → triage → decisions → fix → verify).
-4. `export` the sandbox → `fixed.metadata.json` — the reviewable deliverable.
+4. `export` the sandbox → `fixed.metadata.json` — the reviewable deliverable. Export it whole; don't
+   patch the original dump with pieces of the export. Some fields are not in every export (a
+   category combo's `categoryOptionCombos`), so a patched dump can keep stale values. Then search the
+   file for every merged-away or deleted UID: none may remain.
 5. **Round-trip check:** import `fixed.metadata.json` into one more empty instance; a clean import
    summary proves the fixed metadata is internally consistent and portable.
 6. Hand back `fixed.metadata.json` + the change docs. To apply to production, the owner imports the

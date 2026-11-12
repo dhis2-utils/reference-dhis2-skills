@@ -12,8 +12,8 @@ events across all stages filling program-stage data elements.
 Deterministic (seeded) so re-runs reproduce the same fixture. Aggregate values go
 via /api/dataValueSets (chunked); tracker via /api/tracker (async, polled).
 
-Env: DHIS2_BASE_URL + DHIS2_AUTH (user:pass or token:XXX), or --url/--auth. The d2_client.py
-convention (DHIS2_API_TOKEN, or DHIS2_USER + DHIS2_PASS) is accepted too, so one .env serves both.
+Env: DHIS2_BASE_URL + DHIS2_API_TOKEN, or DHIS2_BASE_URL + DHIS2_USERNAME/DHIS2_PASSWORD, or
+--url/--auth (user:pass or token:XXX). The older DHIS2_AUTH and DHIS2_USER/DHIS2_PASS are still read.
 """
 import argparse, os, sys, json, time, random, hashlib
 import requests
@@ -292,9 +292,11 @@ def gen_tracker(d2, n_tei, dry):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default=os.environ.get("DHIS2_BASE_URL"))
-    env_auth = (os.environ.get("DHIS2_AUTH")
-                or (f"token:{os.environ['DHIS2_API_TOKEN']}" if os.environ.get("DHIS2_API_TOKEN") else None)
-                or (f"{os.environ['DHIS2_USER']}:{os.environ.get('DHIS2_PASS','')}" if os.environ.get("DHIS2_USER") else None))
+    env = os.environ.get
+    env_user = env("DHIS2_USERNAME") or env("DHIS2_USER")
+    env_auth = ((f"token:{env('DHIS2_API_TOKEN')}" if env("DHIS2_API_TOKEN") else None)
+                or (f"{env_user}:{env('DHIS2_PASSWORD') or env('DHIS2_PASS') or ''}" if env_user else None)
+                or env("DHIS2_AUTH"))
     ap.add_argument("--auth", default=env_auth)
     ap.add_argument("--ous", type=int, default=3, help="aggregate: org units per dataset")
     ap.add_argument("--periods", type=int, default=2, help="aggregate: periods per dataset")
@@ -305,7 +307,7 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     if not a.url or not a.auth:
-        ap.error("need --url/--auth or DHIS2_BASE_URL + DHIS2_AUTH")
+        ap.error("need --url/--auth or DHIS2_BASE_URL + DHIS2_API_TOKEN (or DHIS2_USERNAME/DHIS2_PASSWORD)")
     d2 = D2(a.url, a.auth)
     info = d2.get("system/info.json")
     print(f"Connected {d2.base} (DHIS2 {info.get('version')})", flush=True)

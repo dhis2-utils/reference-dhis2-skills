@@ -1,6 +1,6 @@
 ---
 name: dhis2-android-sdk-app
-description: Build a native Android app on the DHIS2 Android SDK (org.hisp.dhis:android-core) — a custom data-collection or tracker app that logs in, downloads metadata, writes tracked entities, enrollments, events and relationships offline, evaluates program rules with the DHIS2 rule engine, and syncs. Use this skill whenever the user wants to create, scaffold, extend, debug or test an Android app that uses the DHIS2 SDK, pins SDK / rule-engine / expression-parser versions, writes tracker data from Kotlin, maps SDK program rules into the rule engine, handles import conflicts or partial uploads, or uses the DHIS2 mobile UI library (designsystem-android) — even if they only say "a custom Android app for DHIS2", "an app instead of Capture" or "offline tracker app". Not for choosing the tracker data model or Capture vs a custom app (dhis2-tracker-design), driving or testing the existing Capture app (dhis2-android-testing), or web apps (dhis2-apps).
+description: Build a native Android app on the DHIS2 Android SDK (org.hisp.dhis:android-core) — a custom data-collection or tracker app that logs in, downloads metadata, writes tracked entities, enrollments, events and relationships offline, evaluates program rules with the DHIS2 rule engine, and syncs. Use this skill whenever the user wants to create, scaffold, extend, debug or test an Android app that uses the DHIS2 SDK, pins SDK / rule-engine / expression-parser versions, writes tracker data from Kotlin, maps SDK program rules into the rule engine, handles import conflicts or partial uploads, or uses the DHIS2 mobile UI library (designsystem-android) — even if they only say "a custom Android app for DHIS2", "an app instead of Capture" or "offline tracker app". Not for choosing the tracker data model or Capture vs a custom app (dhis2-tracker-design), scripting or recording flows in the existing Capture app (dhis2-prototyping), or DHIS2 web apps.
 ---
 
 # Building an app on the DHIS2 Android SDK
@@ -18,10 +18,11 @@ layout, not SDK types.
 
 ## Workflow
 
-Working in the agent sandbox (Linux aarch64)? Read `references/build-env.md` first — the build
-needs workarounds there.
+Building on Linux aarch64, in a container, or without root? Read `references/build-env.md`
+first — the build needs workarounds there.
 
-1. **Clone the references before designing anything.** `dhis2-android-capture-app` (`main`) and
+1. **Clone the references before designing anything.** `dhis2-android-capture-app` at its latest
+   release tag (`main` carries `-SNAPSHOT` SDK and design-system versions between releases) and
    `dhis2-android-sdk` at the tag you will pin. Grep them for every API question — it beats
    guessing and beats the docs, which lag the code. Useful places:
    - Capture `gradle/libs.versions.toml` — the version set known to work together.
@@ -44,28 +45,41 @@ needs workarounds there.
 
 ## Versions
 
-Take the set from Capture `main` and change it only as a set. As of September 2026:
+Take the set from the latest Capture release's `gradle/libs.versions.toml` and change it only
+as a set. Two sets, both read from the Capture tags (the `gradle` key in that catalog is the AGP
+version; the Gradle version is in `gradle/wrapper/gradle-wrapper.properties`):
 
-| Artifact | Version |
-|---|---|
-| `org.hisp.dhis:android-core` | 1.14.2 |
-| `org.hisp.dhis.rules:rule-engine-jvm` | 3.8.1 |
-| `org.hisp.dhis.lib.expression:expression-parser-jvm` | 1.4.3 (**forced**) |
-| `org.hisp.dhis.mobile:designsystem-android` | 0.7.1 |
-| `org.jetbrains.kotlinx:kotlinx-datetime` | `0.7.1-0.6.x-compat` (forced) |
-| AGP / Gradle / Kotlin / KSP | 9.0.1 / 9.3.1 / 2.3.20 / 2.3.6 |
-| compileSdk / minSdk | 36 / 23 |
-| Room (this skill's choice for an app DB; not in Capture's catalog) | 2.8.4 |
+| Artifact | Capture 3.5.0 (latest, Oct 2026) | Capture 3.4.2 (this skill was built and run on it) |
+|---|---|---|
+| `org.hisp.dhis:android-core` | 1.15.0 | 1.14.2 |
+| `org.hisp.dhis.rules:rule-engine-jvm` | 3.8.5 | 3.8.1 |
+| `org.hisp.dhis.lib.expression:expression-parser-jvm` | 1.5.0 | 1.4.3 |
+| `org.hisp.dhis.mobile:designsystem-android` | 0.8.0 | 0.7.1 |
+| `org.jetbrains.kotlinx:kotlinx-datetime` | `0.7.1-0.6.x-compat` | same |
+| AGP / Gradle / Kotlin / KSP | 9.3.1 / 9.5.1 / 2.4.10 / 2.3.11 | 9.0.1 / 9.3.1 / 2.3.20 / 2.3.6 |
+| compileSdk / minSdk | 37 / 23 (targetSdk 36) | 36 / 23 |
+| `desugar_jdk_libs` | 2.1.5 | 2.1.5 |
+| Room (this skill's choice for an app DB; not in Capture's catalog) | 2.8.4 (also the SDK's own) | 2.8.4 |
 
-Why forcing matters: the SDK and the rule engine each depend on the expression parser (SDK 1.14.2
-on 1.3.1, the engine on 1.4.x). Two versions on the classpath give parse differences between the
-app and the server. Force both the `-jvm` artifact and the multiplatform root module
-`expression-parser` (a redirect with no jar of its own, but a drift check will flag it):
+Maven Central already has newer single artifacts (rule engine 3.9.0, expression parser 1.6.1 in
+November 2026); don't mix them in until a Capture release ships them. The code in this skill was
+compiled and run against SDK 1.14.2. The API names it uses still exist
+in the 1.15.0 sources (checked, not run); read the 1.15.0 release notes before moving. SDK 1.14
+and 1.15 both support DHIS2 2.30–2.43 (SDK `docs/content/developer/compatibility.md`).
+
+Why forcing matters: the SDK and the rule engine each depend on the expression parser, and the
+versions do not always match (SDK 1.14.2 on 1.3.1, rule engine 3.8.1 on 1.4.2, Capture 3.4.2 on
+1.4.3; in the 3.5.0 set all three are on 1.5.0). Two versions on the classpath give parse
+differences between the app and the server. Force both the `-jvm` artifact and the multiplatform
+root module `expression-parser` (a redirect with no jar of its own, but a drift check will flag
+it) to the catalog's version, and force `kotlinx-datetime` to the catalog's `-compat` build
+(Capture's catalog notes it must stay compatible with the rule engine). These forces are this
+skill's recommendation; Capture 3.5.0's app build script does not declare them:
 
 ```kotlin
 configurations.all { resolutionStrategy {
-    force("org.hisp.dhis.lib.expression:expression-parser-jvm:1.4.3")
-    force("org.hisp.dhis.lib.expression:expression-parser:1.4.3")
+    force("org.hisp.dhis.lib.expression:expression-parser-jvm:1.5.0")   // Capture 3.5.0 set
+    force("org.hisp.dhis.lib.expression:expression-parser:1.5.0")
     force("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-0.6.x-compat")
 } }
 ```
@@ -74,7 +88,7 @@ Add a Gradle task that resolves the app's runtime classpath and fails if the thr
 artifacts drift from the catalog; a transitive bump otherwise slips in silently.
 
 Repositories: the SDK's SMS module needs `com.github.dhis2:sms-compression:0.2.0`, published on
-JitPack only. Add JitPack restricted to that group. Enable core library desugaring
+JitPack only (still so in SDK 1.15.0). Add JitPack restricted to that group. Enable core library desugaring
 (`desugar_jdk_libs` 2.1.5) in every Android module; the SDK needs it.
 
 ## Architecture
@@ -113,7 +127,8 @@ Details and the call cheat sheet are in `references/sdk-api.md`. The rules that 
 - **Store rule-assigned values and clear hidden fields**, exactly as the engine says. The server
   runs the same rules on import and rejects data that breaks them. A field that is both hidden
   and assigned is a trap — see `references/rule-engine.md`.
-- **Mandatory program attributes are checked on upload** (E1018/E1019), not when you set values:
+- **Mandatory program attributes are checked on upload** (E1018; E1306 when a program rule made
+  the attribute mandatory), not when you set values:
   validate before marking complete.
 - **Keep what the user typed that the data model can't hold** (separate name parts, "age in years")
   in your own store; reconstructing it later is a guess.
@@ -126,15 +141,18 @@ Details and the call cheat sheet are in `references/sdk-api.md`. The rules that 
 Evaluate them with `rule-engine-jvm`, mapping the SDK exactly as Capture does. Details, a
 skeleton and the effect semantics are in `references/rule-engine.md`. In short: message = content
 + " " + data; ASSIGN values formatted by the target's value type; date value types map to TEXT;
-nothing assigned to a hidden field; feed assigned values back and re-evaluate until stable, so a
-rule reading an assigned field (an age calculated by another rule) sees it.
+nothing assigned to a hidden field, but a mandatory field is never hidden; feed assigned values back
+and re-evaluate until stable — the engine does not show a field ASSIGN to later rules in the same
+pass, so a rule reading an assigned field (an age calculated by another rule) needs the second pass.
 
 ## Sync, conflicts, purge, editing
 
 See `references/sync-and-editing.md`. Key facts: uploads use `atomicMode=OBJECT` (partial
 imports are routine, keep a status per unit of work); a relationship's other end travels in the
 same upload; the first conflict is often a follow-on message, so surface the root-cause code;
-`wipeData()` is all-or-nothing and removes reserved values; whether and how long sent data stays
+`wipeData()` is all-or-nothing and removes reserved values (re-download them straight after);
+reserved values expire (server default 60 days), so top them up on every sync; an org-unit change
+mid-registration needs a new ID *and* the records moved (`references/sdk-api.md`); whether and how long sent data stays
 editable in the app is a project decision with consequences for the purge; deleting synced tracked
 entities needs `F_TEI_CASCADE_DELETE` / `F_ENROLLMENT_CASCADE_DELETE` on the server.
 
@@ -155,15 +173,14 @@ your own config.
 ## Testing
 
 See `references/testing.md`: JVM rule tests from metadata JSON, instrumented tests against a
-disposable instance (run with `adb shell am instrument` in the sandbox), server read-back, a
-model-equivalence check against Capture-shaped data, and Compose-specific UI facts. General
-emulator driving (adb, Maestro, screen recording, time zone, GPS) lives in `dhis2-prototyping`
-(`references/android-flows.md`, `references/recording-and-media.md`); installing and inspecting
-APKs over the host adb in `dhis2-android-testing`.
+disposable instance (`dhis2-test-instances`), server read-back, a model-equivalence check against
+Capture-shaped data, and Compose-specific UI facts. General emulator driving (adb, Maestro, screen
+recording, time zone, GPS) lives in `dhis2-prototyping` (`references/setup.md`,
+`references/android-flows.md`, `references/recording-and-media.md`).
 
 ## Things not yet verified
 
 Behaviour when the server flips `encryptDB`; R8 keep rules for a release build (the broad
 `-keep class org.hisp.dhis.** { *; }` used so far is untested); concurrency limits of SDK writes on
-the IO pool under load; changes in SDK 1.15 (Capture `develop` is on a 1.15 snapshot with newer
-AGP/Kotlin). Check these rather than assuming.
+the IO pool under load; behaviour changes in SDK 1.15 (released 14 October 2026; only API names
+were checked against it). Check these rather than assuming.

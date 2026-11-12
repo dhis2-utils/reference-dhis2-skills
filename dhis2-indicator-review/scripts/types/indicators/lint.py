@@ -1,6 +1,6 @@
 """Static lint of every aggregate indicator, and of the data elements they read, against the metadata export.
 
-    python3 scripts/types/indicators/lint.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
+    python3 scripts/types/indicators/lint.py [--config review.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
 
 Input:  the export (cfg.metadata: indicators, indicatorTypes, data elements, category model incl. COCs, data sets,
         constants, org unit groups), plus optional overlays (e.g. proposed-indicators.json).

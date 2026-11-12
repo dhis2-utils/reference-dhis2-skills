@@ -10,7 +10,7 @@ Export (from the source in your env vars):
 
 Import (into a target — pass its connection, or set env vars to point at it):
   python metadata_dump.py import --in fixed.metadata.json \
-        --base http://dhis2-sandbox:8080 --user admin --pass district
+        --base http://localhost:8080 --user admin --pass district
         [--no-async]        # synchronous import for small dumps
 
 Diff two dumps (reviewable record of what changed):

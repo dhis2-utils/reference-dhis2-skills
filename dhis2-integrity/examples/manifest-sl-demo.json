@@ -2,7 +2,7 @@
  "manifest_version": 1,
  "engagement": {
   "name": "sl-demo",
-  "source_instance": "http://dhis2-agent-sl-43:8080",
+  "source_instance": "http://localhost:8080",
   "dhis2_version": "2.43.0.1",
   "control_snapshot": "data/control.pgdump",
   "decisions_doc": "docs/decisions.md",

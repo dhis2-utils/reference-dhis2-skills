@@ -58,6 +58,8 @@ Expected Result: give the numbers. "The subtotal should sum correctly" is not us
 
 Whole ticket: for a single-behaviour bug, roughly one screen of text plus the table. If it is running longer, either the bug has several distinct parts that belong in separate tickets, or the writing is padded.
 
+Credentials and hosts: the steps run on a public demo, so name it and its published demo login (`admin` / `district`); those are public, not secrets. Never copy a host, user name or password from the user's own instance into a ticket. If the steps can only run on a private instance, write `<base>` and `<user>` / `<password>` and say which kind of account is needed.
+
 ## Things to include that are easy to forget
 
 The distinction between backend and app. State which one the evidence points to.

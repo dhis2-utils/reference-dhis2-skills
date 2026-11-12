@@ -37,7 +37,7 @@ import json, argparse
 # --- code injected as the notebook's setup cell (self-contained helpers) --------------------------
 SETUP_CODE = r'''# === Setup — run this first ===
 # Target instance is taken from env vars, so this notebook is portable across staging/prod:
-#   DHIS2_BASE_URL + (DHIS2_API_TOKEN | DHIS2_USER/DHIS2_PASS)
+#   DHIS2_BASE_URL + (DHIS2_API_TOKEN | DHIS2_USERNAME/DHIS2_PASSWORD; older DHIS2_USER/DHIS2_PASS also read)
 #   For SQL cells only: PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD
 import os, time, httpx
 
@@ -52,7 +52,8 @@ CONFIRM_TARGET = ""   # <<< OPERATOR ACK: this cell prints the target's system n
 BASE = os.environ["DHIS2_BASE_URL"].rstrip("/") + "/api"
 _h = {"Accept": "application/json"}; _auth = None
 if os.environ.get("DHIS2_API_TOKEN"): _h["Authorization"] = f"ApiToken {os.environ['DHIS2_API_TOKEN']}"
-else: _auth = (os.environ.get("DHIS2_USER","admin"), os.environ.get("DHIS2_PASS","district"))
+else: _auth = (os.environ.get("DHIS2_USERNAME") or os.environ.get("DHIS2_USER") or "admin",
+               os.environ.get("DHIS2_PASSWORD") or os.environ.get("DHIS2_PASS") or "district")
 _client = httpx.Client(base_url=BASE, headers=_h, auth=_auth, timeout=300)
 
 _info = {}
@@ -212,16 +213,16 @@ INTRO_MD = """# {title}
 ```bash
 pip install jupyterlab httpx python-dotenv psycopg2-binary      # one-time
 export DHIS2_BASE_URL="https://your-instance.org"                # NO /api suffix
-export DHIS2_USER="admin"; export DHIS2_PASS="•••"               # or DHIS2_API_TOKEN
+export DHIS2_USERNAME="admin"; export DHIS2_PASSWORD="•••"       # or DHIS2_API_TOKEN
 # SQL cells only: export PGHOST=… PGPORT=… PGDATABASE=… PGUSER=… PGPASSWORD=…
 jupyter lab playbook.ipynb                                       # opens in your browser
 ```
-(In a headless sandbox: add `--no-browser --ip 0.0.0.0 --port "$SANDBOX_HOST_PORT"` and open
-`http://localhost:$SANDBOX_HOST_PORT` on the host. No Jupyter? `jupyter nbconvert --execute` runs it
+(On a headless machine: add `--no-browser --ip 0.0.0.0 --port <PORT>`, choosing a port your browser
+can reach, and open `http://<host>:<PORT>`. No Jupyter? `jupyter nbconvert --execute` runs it
 headlessly — honours `DRY_RUN` — or copy the Setup cell + a fix cell into a plain `.py`.)
 
 How to use:
-1. Set the target via environment variables (`DHIS2_BASE_URL` + token or `DHIS2_USER`/`DHIS2_PASS`;
+1. Set the target via environment variables (`DHIS2_BASE_URL` + `DHIS2_API_TOKEN` or `DHIS2_USERNAME`/`DHIS2_PASSWORD`;
    for SQL cells also `PGHOST/PGPORT/PGDATABASE/PGUSER/PGPASSWORD`), then run the **Setup** cell.
 2. With `DRY_RUN = True` (default), run cells to **preview** every action — nothing is written.
 3. **Operator ack:** the Setup cell prints the target's system name. Verify it is the instance you mean

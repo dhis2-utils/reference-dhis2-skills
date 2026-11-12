@@ -4,24 +4,15 @@ Behaviour established by probing live instances. Each item names the versions it
 
 ## Contents
 
-- Demo instances
 - Reading: filters and field selections
 - Writing metadata
 - Privacy and access
 - Errors that mislead
 
-## Demo instances
-
-- **play.im.dhis2.org stable URLs rotate.** They are named `stable-<major>-<minor>-<patch>` and disappear, without a redirect, when the next patch ships. A saved config pointing at one goes stale within months. In September 2026, `stable-2-43-0` and every `stable-2-42-*` path returned nginx 404, while `stable-2-43-1` and `dev` answered. Probe before trusting a saved URL:
-  ```bash
-  curl -s -o /dev/null -w '%{http_code}\n' -u admin:district https://play.im.dhis2.org/<name>/api/system/info
-  ```
-  Or scrape the landing page for `stable-…` links. `dev` is always present. The demo's analytics window is roughly the current and prior year.
-
 ## Reading: filters and field selections
 
-- **`:!empty` is not an operator on 2.40** (2.40.12: `400 E1003 "!empty is not a valid operator"`). It works on 2.43.1. Version-gate it, or filter client-side.
-- **Filtering on `periodType` fails** (2.42.6: `/api/dataSets.json?filter=periodType:eq:Monthly` gives `400 E1003 "Unable to parse Monthly to PeriodType"`). Fetch `fields=id,periodType` and filter client-side.
+- **`:!empty` is not an operator before 2.42** (2.40.12: `400 E1003 "!empty is not a valid operator"`). It exists from 2.42 (dhis2-core 2.42 `DefaultQueryParser`; 2.41's `DefaultJpaQueryParser` has no `!empty`; live-checked on 2.42.7 and 2.43.1). Version-gate it, or filter client-side. `ieq` exists from 2.41.
+- **Filtering on `periodType` fails** (2.42.6, 2.42.7: `/api/dataSets.json?filter=periodType:eq:Monthly` gives `400 E1003 "Unable to parse Monthly to PeriodType"`; `MONTHLY` and `MonthlyPeriodType` fail the same way). Fetch `fields=id,periodType` and filter client-side.
 - **`fields=:owner` on a program stage omits `program`** (2.43.1). A GET-then-PUT round trip of that payload fails with `409 E4053 "Program stage must reference a program"`. Re-add `program: {id}` before writing it back.
 - **Nested field selections on user references are ignored** (2.40–2.43). `createdBy[id]` still returns the full `{id, code, name, displayName, username}` stub. Only `!createdBy` removes it. See *Privacy* below.
 

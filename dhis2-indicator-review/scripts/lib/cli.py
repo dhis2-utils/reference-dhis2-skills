@@ -83,3 +83,15 @@ def read_json(path, default=None):
 def write_json(path, obj, indent=1):
     with open(path, 'w') as f:
         json.dump(obj, f, indent=indent, ensure_ascii=False, default=str)
+
+
+def html_document(fragment):
+    """A page template filled in (a comment and/or <title>, <style>, then the body markup) as a complete HTML document,
+    so the file opens on its own in any browser, in standards mode, and can be sent as a single file. A page that
+    already starts with <!doctype is returned unchanged. Hosts that wrap fragments (e.g. a hosted artifact) accept
+    the complete document as well."""
+    if fragment.lstrip()[:9].lower() == '<!doctype':
+        return fragment
+    head = ('<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">\n')
+    return head + fragment + ('' if fragment.endswith('\n') else '\n') + '</html>\n'

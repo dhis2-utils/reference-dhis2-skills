@@ -53,6 +53,29 @@ already contradicted and re-derived recipes the references already contained.
 When authoring, keep references self-contained enough to serve this
 read-as-background use.
 
+## Keep skills tool-agnostic
+
+Skills must work for anyone in the DHIS2 community, whatever agent harness and
+infrastructure they use. Don't reference a particular person's sandbox, instance broker,
+host ports, device bridges or private skills. When a skill needs a live instance, point to
+`dhis2-test-instances` and describe the need ("a disposable 2.42 instance seeded with the
+Sierra Leone demo"), not a specific tool. Lessons learned on such infrastructure are welcome
+once rephrased generically ("two instances booting at once starve each other").
+
+**Never use the public play servers (play.dhis2.org / play.im.dhis2.org) for testing or
+verification** in skills or evals. They are shared and public, and others change them
+constantly. The exception is `dhis2-bug-report`, which reproduces bugs there because a
+public, reproducible instance is what a ticket needs.
+
+## Facts and evals
+
+- State DHIS2 behaviour with the version it was verified on, and prefer dhis2-core source
+  or a live check over memory.
+- Every skill has `evals/evals.json` (format in `evals/README.md`). When you change a skill,
+  run its evals with and without the skill. Add a case when you fix a trap the skill
+  missed.
+- Description frontmatter must stay under 1024 characters.
+
 ## When unsure
 
 If you can't tell whether something identifies a real deployment, treat it as if

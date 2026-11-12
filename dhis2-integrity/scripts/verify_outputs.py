@@ -49,10 +49,22 @@ def _datavalues(cl, de, ou):
     return out
 
 
+def _cell_sums(vals):
+    """Sum across COCs per (DE, period, orgUnit, AOC): the per-cell conservation key."""
+    sums = {}
+    for (de, pe, ou, _coc, aoc), v in vals.items():
+        try:
+            x = float(v)
+        except (TypeError, ValueError):
+            continue
+        sums[(de, pe, ou, aoc)] = sums.get((de, pe, ou, aoc), 0.0) + x
+    return sums
+
+
 def cmd_datavalues(a):
     c = client(a.control, a.user, a._pass, a.control_token or a.token)
     f = client(a.fixed, a.user, a._pass, a.fixed_token or a.token)
-    total_only_c = total_only_f = total_changed = 0
+    total_only_c = total_only_f = total_changed = total_cells = 0
     for de in a.de.split(","):
         cc = _datavalues(c, de, a.ou)
         ff = _datavalues(f, de, a.ou)
@@ -66,7 +78,14 @@ def cmd_datavalues(a):
             print(f"    only in control (lost?): {k} = {cc[k]}")
         for k in list(only_f)[:5]:
             print(f"    only in fixed   (new?):  {k} = {ff[k]}")
-    print(f"\nSUMMARY only-control={total_only_c} only-fixed={total_only_f} changed={total_changed}")
+        sc, sf = _cell_sums(cc), _cell_sums(ff)
+        cells = [k for k in set(sc) | set(sf) if abs(sc.get(k, 0.0) - sf.get(k, 0.0)) > 1e-9]
+        total_cells += len(cells)
+        print(f"    per-cell conservation (sum across COCs per DE/pe/ou/AOC): {len(cells)} cells differ")
+        for k in cells[:5]:
+            print(f"    cell sum changed: {k}: control={sc.get(k)} fixed={sf.get(k)}")
+    print(f"\nSUMMARY only-control={total_only_c} only-fixed={total_only_f} changed={total_changed} "
+          f"cell-sums-changed={total_cells}")
     print("Each non-zero number must be explained by a logged change (e.g. an intended COC remap).")
 
 
@@ -95,8 +114,9 @@ def cmd_analytics(a):
 def cmd_forms(a):
     import re
     f = client(a.fixed, a.user, a._pass, a.fixed_token or a.token)
-    dss = f.get("/dataSets", params={"fields": "id,name,formType,dataSetElements[dataElement[id,"
-                "categoryCombo[categoryOptionCombos[id]]]],dataEntryForm[htmlCode],"
+    dss = f.get("/dataSets", params={"fields": "id,name,formType,dataSetElements[categoryCombo["
+                "categoryOptionCombos[id]],dataElement[id,categoryCombo[categoryOptionCombos[id]]]],"
+                "dataEntryForm[htmlCode],"
                 "sections[dataElements[id],categoryCombos[categoryOptionCombos[id]]]",
                 "paging": "false"}).json()["dataSets"]
     bad = 0
@@ -104,7 +124,8 @@ def cmd_forms(a):
     for ds in dss:
         valid = set()
         for dse in ds.get("dataSetElements", []):
-            for coc in dse["dataElement"].get("categoryCombo", {}).get("categoryOptionCombos", []):
+            combo = dse.get("categoryCombo") or dse["dataElement"].get("categoryCombo", {})  # override first
+            for coc in combo.get("categoryOptionCombos", []):
                 valid.add((dse["dataElement"]["id"], coc["id"]))
         html = (ds.get("dataEntryForm") or {}).get("htmlCode", "") or ""
         refs = set(pat.findall(html))

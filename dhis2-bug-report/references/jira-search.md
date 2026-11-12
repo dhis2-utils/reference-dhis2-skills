@@ -1,8 +1,13 @@
 # Searching Jira for existing issues
 
-The DHIS2 tracker is at `dhis2.atlassian.net`. Get the cloud id from `getAccessibleAtlassianResources` rather than hardcoding it, and check the scopes it returns in the same call.
+The DHIS2 issue tracker is public, at `https://dhis2.atlassian.net` (project `DHIS2`). Anyone can read it without an account; filing needs one.
 
-Access is normally read-only (`read:jira-work`), so expect to search and read but not create. Produce the ticket content as a file for the user to paste, and say plainly that you cannot file it yourself if they ask.
+How to search, in order of preference:
+
+- **A Jira integration in your environment** (an Atlassian MCP server or similar). Take the site or cloud id from the integration instead of hardcoding it, and check the access it grants: usually read-only, so you can search and read but not create.
+- **No integration:** the issue navigator takes JQL in the URL, `https://dhis2.atlassian.net/issues/?jql=<url-encoded JQL>`. The REST search (`GET /rest/api/3/search/jql?jql=...&fields=summary,status,resolution,fixVersions,components`) may also answer without login; if it returns nothing or 401, give the user the navigator links instead of claiming the search was done.
+
+Either way, produce the ticket as a file for the user to paste, and say plainly that you have not filed it.
 
 Core issues live in project `DHIS2` ("DHIS 2 Software"). Apps are distinguished by component, named like `[App] Data visualizer`. To find the right component name, search for any issue you know is in that app and read its `components` field.
 

@@ -4,7 +4,7 @@
 - the store-layer guards **never fire** — `E1120` ("would make data values inaccessible") and `E4030`
   ("associated with DataValueChangelog/COC/TrackerEvent") only trigger when data exists, so you never
   exercise the merge-vs-SQL decision that is the whole point of a structural fix;
-- **output verification has nothing to diff** (§verification) — no analytics, no form values, no
+- **output verification has nothing to diff** (`verification.md`) — no analytics, no form values, no
   program-indicator numbers;
 - data-dependent checks (`*_no_data`, disjoint-with-data) can't reproduce.
 
@@ -25,8 +25,8 @@ before the "original" snapshot** — the snapshot then becomes the true A/B cont
 
 ## Prerequisites & gotchas (these bite)
 1. **`E7617` "Organisation unit not in hierarchy of current user"** rejects ALL data import — even for a
-   superuser with `ALL`, because data-entry OU scope is separate from authority, and the broker's
-   `local_admin` starts with **0 capture OUs**. Fix before generating:
+   superuser with `ALL`, because data-entry OU scope is separate from authority. An admin account on a
+   freshly imported or empty instance (or one added by a provisioning tool) often has **0 capture OUs**. Fix before generating:
    ```
    roots = GET /api/organisationUnits?filter=level:eq:1
    PATCH /api/users/{me} (json-patch): add roots to /organisationUnits, /dataViewOrganisationUnits,
@@ -61,8 +61,8 @@ before the "original" snapshot** — the snapshot then becomes the true A/B cont
 
 ## Usage
 ```bash
-# after import, with local_admin OU scope fixed:
-DHIS2_BASE_URL=... DHIS2_AUTH=user:pass python scripts/gen_synthetic_data.py \
+# after import, with the posting user's OU scope fixed:
+DHIS2_BASE_URL=... DHIS2_USERNAME=... DHIS2_PASSWORD=... python scripts/gen_synthetic_data.py \
     --ous 3 --periods 2 --teis 5 --chunk 8000
 # tracker only (e.g. after fixing rule-target skips): --skip-aggregate ; aggregate only: --skip-tracker
 # RULE_TARGETS=<path to {"de":[...],"tea":[...]}> lets it skip rule-ASSIGN fields (else derives none)

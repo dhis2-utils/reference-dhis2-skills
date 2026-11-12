@@ -10,12 +10,14 @@ Use this to check, per candidate model, that every required indicator and breakd
 | Tracked entity attributes | Yes, if the attribute is assigned to P (a program attribute). An attribute set in another program becomes readable in P only when it is also a program attribute of P (it can be hidden in P's form) (2.42.6) |
 | Data of another program Q, including Q's enrollments or events | No. Not even "is enrolled in Q". Workaround: Q sets an attribute (rule ASSIGN) that P also carries |
 | The parent's attributes across a relationship | No. Copy what is needed onto the member at creation |
-| The number of relationships of a type | Yes: `d2:relationshipCount('<relationshipTypeUid>')` (the count only, no values from the other end), e.g. contacts per index case |
+| The number of relationships of a type | Yes: `d2:relationshipCount('<relationshipTypeUid>')` (the count only, no values from the other end), e.g. contacts per index case. Without an argument it counts all relationships |
+| Another enrollment of the same tracked entity (an earlier episode in the same program) | No. An ENROLLMENT indicator sees one enrollment; facts that must survive re-enrollment go in attributes |
 | Enrollment and event dates, org units, status | Yes (`V{enrollment_date}`, `V{event_date}`, `V{program_stage_id}`, `V{current_date}` evaluated at query time) |
 
 Consequences to state in a design comparison:
 - A **member as an event** in the parent's enrollment can be broken down by parent attributes (pattern 2 and the roster half of pattern 4).
 - A **member as its own tracked entity** cannot, unless those attributes are copied onto it (pattern 3, 5, 6 and the follow-up half of 4).
+- **Line lists reach further than indicators, but only as lists.** Since 2.41, tracked entity line lists (`/api/analytics/trackedEntities/query/<trackedEntityType>`, the Line Listing app's tracked entity input) show one row per tracked entity with attributes and data from several programs of that type. Event and enrollment queries accept a dimension `<relationshipTypeUid>.<programIndicatorUid>`, which evaluates the program indicator over the records linked by that relationship type (source: `QueryItemLocator`/`RelationshipTypeJoinGenerator`, 2.40–2.43; not exercised live). Use them for case lists and data checks. Neither gives an aggregate indicator that dashboards can break down by the other program's or the parent's values.
 - **Totals spread over two programs** (in-school children in one, out-of-school in another) are possible as an aggregate indicator adding two program indicators, but lose a single disaggregated total (2.42.6).
 
 ## Org unit of an indicator
@@ -27,9 +29,10 @@ Consequences to state in a design comparison:
 
 ## Breakdowns
 
-- **Sex and age bands**: on 2.42+, one program indicator with a disaggregation category combo and `categoryMappings` on the program replaces one indicator per cell (verified on 2.42.6 and 2.43; saved ~60 indicators per design). Before 2.42, plan one program indicator per cell. A PI queried with a category it does not have returns an SQL error (E7145) instead of a message.
-- **Multi-select fields** (MULTI_TEXT, e.g. "reasons, up to three"): countable per item with `containsItems(#{stage.de}, 'CODE')` in PIs since 2.41 (no `d2:` prefix; program rules use `d2:contains`). Keep one multi-select for entry; no per-option yes/no fields are needed.
+- **Sex and age bands**: on 2.42+, one program indicator with a disaggregation category combo and `categoryMappings` on the program replaces one indicator per cell (`ProgramCategoryMapping` exists from 2.42; verified on 2.42.6 and 2.43; saved ~60 indicators per design). Before 2.42, plan one program indicator per cell. A PI queried with a category it does not have returned E7145 ("Query failed because of a syntax error") instead of a clear message.
+- **Multi-select fields** (MULTI_TEXT, e.g. "reasons, up to three"): countable per item with `containsItems(#{stage.de}, 'CODE')` (or `contains(...)`) in PIs since 2.41 (no `d2:` prefix; the functions are not in 2.40's expression parser; program rules use `d2:contains`). Keep one multi-select for entry; no per-option yes/no fields are needed.
 - **"Latest state" measures** (current outcome of a follow-up): ENROLLMENT indicator reading the latest event value. **History measures** ("retained a term later", "visited at least once") need repeatable events, not edits of one event: edits overwrite.
+- **Completion and outcome rates are cohort measures.** "TPT completion" or "enrolled a term later" needs a denominator fixed by an entry period (started TPT in Q1) and a numerator read after the follow-up time has passed (6 months later), as ENROLLMENT indicators with the enrollment date (or the start event's date) as the period boundary. "Completed / all enrollments" mixes people still on treatment with those who finished. State the reporting lag.
 - **Overdue work**: `V{current_date}` against due dates works in a PI, but working lists are usually the better tool for action (see `access-and-workflow.md`).
 
 ## Checklist per indicator

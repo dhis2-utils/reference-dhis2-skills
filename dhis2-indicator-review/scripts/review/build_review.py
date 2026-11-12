@@ -9,7 +9,8 @@ is lost silently. Topics are ordered FAILS -> ALWAYS_ZERO -> WRONG_VALUE -> REVI
 Inputs (work_dir):  findings.json (lint), <p>-findings.csv, <p>-status.csv (<p> = adapter.PREFIX), compare.json
                     (optional), truth.json (optional, only counted); metadata from the config;
                     --descriptions DIR (optional): per-item descriptions {uid: {description, nameMismatch|concern}}
-Outputs (work_dir): review.json, <p>-review.html (from review_template.html, unless --no-html)
+Outputs (work_dir): review.json, <p>-review.html (from review_template.html, unless --no-html): one self-contained file
+                    that works offline (decisions kept in the browser, exported/imported as JSON files) or hosted
 Item cards show the adapter's describe() / aux_describe() output; labels come from adapter.LABELS.
 Config keys:        metadata, work_dir, title, dhis2_version, exported (+ type keys)
 
@@ -27,7 +28,7 @@ Extension file (--topics-extra, repeatable), same shape as topics.json ({"topics
 Topic "kind" is adapter.ITEM_KIND (default) or adapter.AUX_KIND.
 """
 import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib'))
-import adapters, config  # noqa: E402
+import adapters, cli, config  # noqa: E402
 import collections as C, csv, glob, hashlib, json, re, datetime as dt
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -381,7 +382,7 @@ if not args.no_html:
     with open(os.path.join(HERE, 'review_template.html')) as f:
         tpl = f.read()
     title = re.sub(r'[<&>]', '', cfg.title)
-    html = tpl.replace('__TITLE__', title).replace('__DATA__', json.dumps(review, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/'))
+    html = cli.html_document(tpl.replace('__TITLE__', title).replace('__DATA__', json.dumps(review, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')))
     with open(cfg.out(adapters.out_name(A, 'review.html')), 'w') as f:
         f.write(html)
 

@@ -1,7 +1,7 @@
 """Playwright driver for scripted DHIS2 Capture (web) entry flows, with effort counting.
 
     from runner import Web
-    w = Web(user="demo_enumerator", password="...", video_dir="/tmp/vid")   # or D2_USER/D2_PASS
+    w = Web(user="demo_enumerator", password="...", video_dir="/tmp/vid")   # or DHIS2_USERNAME/DHIS2_PASSWORD
     w.goto_capture("/search?programId=<uid>&orgUnitId=<uid>")
     w.cap("Register a new household")        # caption, timed from the start of the video
     w.text("Phone number", "0761234567")
@@ -16,7 +16,8 @@ Environment:
     D2_WEB   base URL of the instance through a *localhost* origin (default http://localhost:8089).
              Capture refuses to load over plain http on any other origin; forward one first:
              socat TCP-LISTEN:8089,bind=127.0.0.1,fork,reuseaddr TCP:<dhis2-host>:8080
-    D2_USER / D2_PASS   default credentials (else admin/district).
+    DHIS2_USERNAME / DHIS2_PASSWORD   default credentials (older D2_USER / D2_PASS also read;
+             else admin/district).
 
 Record failed API writes as flow failures: `w.api_errors` holds every POST/PUT >= 400. A save
 that fails in Capture only shows a transient toast, so a flow that "passed" may have saved nothing.
@@ -39,10 +40,11 @@ class Web:
                  viewport=(1280, 800), headless=True, base=None):
         from playwright.sync_api import sync_playwright  # imported late so --help works without it
         self.base = (base or BASE).rstrip("/")
-        user = user or os.environ.get("D2_USER", "admin")
-        password = password or os.environ.get("D2_PASS", "district")
+        env = os.environ.get
+        user = user or env("DHIS2_USERNAME") or env("D2_USER") or "admin"
+        password = password or env("DHIS2_PASSWORD") or env("D2_PASS") or "district"
         self.pw = sync_playwright().start()
-        # the sandbox's 64 MB /dev/shm crashes long Chromium runs without this flag
+        # a container's default 64 MB /dev/shm crashes long Chromium runs without this flag
         self.br = self.pw.chromium.launch(headless=headless, args=["--disable-dev-shm-usage"])
         kw = {"viewport": {"width": viewport[0], "height": viewport[1]}}
         if video_dir:

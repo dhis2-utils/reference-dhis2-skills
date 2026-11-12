@@ -6,7 +6,7 @@ Tested: <date> · Dev server: <URL/port> · Test data: <seed name / "synthetic m
 
 | Label | URL | DHIS2 version | Source |
 |---|---|---|---|
-| 2.42 | http://dhis2-agent-review-242:8080 | 2.42.x | broker, seed `<seed>` |
+| 2.42 | <base URL> | 2.42.x | <how provisioned>, seed `<seed>` |
 
 ## Results
 

@@ -1,6 +1,6 @@
 ---
 name: dhis2-indicator-review
-description: "Validate, review with the programme team, fix, test end to end and get approval for many DHIS2 indicators at once: program indicators (with their program disaggregation / category mappings) or aggregate indicators (with the data elements they read). Use when someone wants to audit or clean up a whole set of indicators: 'validate all the PIs in this program', 'which of our indicators are broken', 'do these indicators compute what their names say', 'check all the HMIS indicators before the reporting cycle', 'prepare an indicator review meeting', 'make a page where the team can decide/approve the fixes', 'fix the indicators we agreed on and give me an import file', or when a metadata export with dozens to thousands of indicators needs a quality pass before a migration or upgrade. Bundles the scripts (lint, synthetic data, independent evaluator, fix generator, end-to-end test, meeting and approval pages). For writing or debugging a single indicator use dhis2-indicators; for data-integrity check remediation use dhis2-integrity."
+description: "Validate, review with the programme team, fix, test end to end and get approval for many DHIS2 indicators at once: program indicators (with their program disaggregation / category mappings) or aggregate indicators (with the data elements they read). Use when someone wants to audit or clean up a whole set of indicators: 'validate all the PIs in this program', 'which of our indicators are broken', 'do these indicators compute what their names say', 'check all the HMIS indicators before the reporting cycle', 'prepare an indicator review meeting', 'fix the indicators we agreed on and give me an import file', or when a metadata export with dozens to thousands of indicators needs a quality pass before a migration or upgrade. Bundles the scripts (lint, synthetic data, independent evaluator, fix generator, end-to-end test, meeting and approval pages). For writing or debugging a single indicator use dhis2-indicators; for data-integrity check remediation use dhis2-integrity."
 ---
 
 # DHIS2 indicator review
@@ -23,7 +23,7 @@ Validation rules and predictors use the same expression engine and would fit as 
 | 5 | Approve | which changes are accepted | `<p>-fix-review.html`, standalone page, import files |
 | 6 | Import | (done by a DHIS2 administrator) | |
 
-The semantics behind every finding are in the `dhis2-indicators` skill (`references/program-indicators.md`, `references/aggregate-indicators.md`); this skill's `references/<type>/behaviours.md` lists the engine behaviours the scripts encode, with IDs (C1, E7, A5…) used across the references.
+The semantics behind every finding are owned by the `dhis2-indicators` skill (`references/program-indicators.md`, `references/aggregate-indicators.md`); read them when a finding needs explaining. This skill's `references/<type>/behaviours.md` lists the engine behaviours the scripts encode, with IDs (C1, E7, A5…) and probe evidence, enough to run the pipeline on its own.
 
 ## Principles
 
@@ -39,23 +39,36 @@ Each one prevents a failure seen in practice.
 
 ## Before you start: ask
 
-Use one `AskUserQuestion` round for what you can't find out yourself:
+Ask in one round (one question tool call if your environment has one) for what you can't find out yourself:
 
 - **What is in scope and which export.**
   - Program indicators: a dependency export of the program (`GET /api/programs/<uid>/metadata.json`), plus the data sets the PIs report into if the dictionary should show that link.
   - Aggregate indicators: the indicators, indicator types, constants and org-unit groups, plus a dependency export of every data set holding the data elements they read (`examples/sl-aggregate/export_sl.py` shows one way). Limit the scope with `"indicators"` in the config when the set is large.
   - Exports from production are read-only; anonymise them before sharing (`dhis2-metadata`).
 - **The production DHIS2 version.** The test instance must match it.
-- **Who decides, and how they will see the pages.** The programme team decides in a meeting (meeting page as an artifact with shared decisions). Reviewers approve on the approval page: the artifact for people with accounts, the standalone file otherwise.
+- **Who decides, and how they will see the pages.** The programme team decides in a meeting (the meeting page on a shared screen). Reviewers approve on the approval page. By default every page is a self-contained HTML file you send them; decisions come back as JSON files. Only if your environment can host pages with a shared database (hosted mode, `references/review-pages.md`) do reviewers get a link instead.
 - **Other consumers of these definitions** (report pipelines, apps that compute the same numbers). They are evidence of intent for ambiguous definitions and need impact notes on the approval page (`notes` in the config).
+
+## A quick review without an instance
+
+For "which of these are broken?" on an extract, with no test instance yet (the static half of phase 1):
+
+1. **Run the lint, then read by hand.** A minimal config is enough: `{"type": "indicators", "metadata": "<extract>.json", "work_dir": "out"}` (PIs: `"type": "program-indicators"`, plus `"program"` if the export has several). `python3 <skill>/scripts/run.py --config review.json lint` runs offline and catches what reading misses (option combos outside the data element's combo, data element aggregation types, band gaps, unquoted UIDs). Read every item yourself too; the lint doesn't know intent.
+2. **State each effect as the engine produces it**, from `references/<type>/behaviours.md`, not a generic "wrong":
+   - count-style expression with AVERAGE: `V{event_count}` returns 1 (E4b); `V{enrollment_count}` in an EVENT PI fails with SQL 42883 (E4c).
+   - records that no disaggregation option matches (band gap, option name instead of code, blank optional attribute): **EVENT** PIs lose them from the total as well (C1); **ENROLLMENT** PIs keep them in the total but not in the cells (C2). Say which applies to each indicator.
+   - a division inside a numerator: the whole request fails (E7132) before 2.43, `NaN` on 2.43.2 (A4); parents get the ratio of aggregated operands, never a sum of facility ratios (A5).
+   - `d2:daysBetween(a, b)` is `b − a`: check the argument order against the indicator's name.
+3. **Separate clear fixes from decisions** (`references/<type>/fix-patterns.md`), with a confidence and reason per finding. A fix is clear only when exactly one change is correct. A term counted twice (which term was meant?), a cross-stage EVENT PI, a mapping that reads an optional attribute where a mandatory field could supply the value (age from date of birth): name the likely change, but mark it **for the programme to confirm**, not as the fix.
+4. **Recommend the proof**: run the fixes on a disposable instance of the **target** version with test data (the full run below) before anything is imported. Re-running analytics after editing production is not a test.
 
 ## Set up a run
 
-1. Get an empty disposable instance of the production version (`dhis2-instances` skill if available; otherwise ask the user). "Reset to empty" means delete and re-create.
-2. Write `pireview.json` next to the export (copy `scripts/pireview.example.json`; keys in `references/data-formats.md`). Set `"type"`. Credentials go only in the environment: `DHIS2_URL`, plus `DHIS2_TOKEN` or `DHIS2_USER` and `DHIS2_PASSWORD`.
+1. Get an empty disposable instance of the production version (see `dhis2-test-instances`). "Reset to empty" means delete and re-create.
+2. Write `review.json` next to the export (copy `scripts/review.example.json`; keys in `references/data-formats.md`; a run set up with the older name `pireview.json` still works). Set `"type"`. Credentials go only in the environment: `DHIS2_BASE_URL`, plus `DHIS2_API_TOKEN` (a personal access token) or `DHIS2_USERNAME` and `DHIS2_PASSWORD`. Older `DHIS2_URL`/`DHIS2_TOKEN`/`DHIS2_USER` variables are still read.
 3. Import the metadata into the test instance with the `dhis2-metadata` skill (`transform_metadata.py --unshare --delocalize`, then `import_metadata.py --passes 2`). Org-unit references fail with E5002; that's expected, and the scripts create their own test org units. For program disaggregation run `POST /api/maintenance?categoryOptionComboUpdate=true`.
 
-Every step runs through one command: `R="python3 <skill>/scripts/run.py --config pireview.json"`, then `$R <step>`. `$R steps` lists every step and the script it runs for the configured type. All scripts read from and write to `work_dir`; every script has a docstring with its inputs, outputs and options. A step that a type doesn't support exits with status 2.
+Every step runs through one command: `R="python3 <skill>/scripts/run.py --config review.json"`, then `$R <step>`. `$R steps` lists every step and the script it runs for the configured type. All scripts read from and write to `work_dir` (a subfolder, default `out`; its `review.json` is the meeting topics, not the config); every script has a docstring with its inputs, outputs and options. A step that a type doesn't support exits with status 2.
 
 ## Phase 1: validate
 
@@ -82,8 +95,8 @@ $R dictionary    # plain-language rendering per item -> <p>-dictionary.html
 
 - `topics` puts every finding in exactly one topic and prints anything that landed in a catch-all. Read the topics as the meeting will: one cause each, plain words, honest confidence. Program-specific topics, splits and wording go in a `topics_extra` file (format in the `build_review.py` docstring).
 - Optional: per-item plain-language definitions by sub-agents make the dictionary much more useful in the meeting (program indicators: `--desc-batches N`; brief in the type's `description_brief.md`).
-- **Publish the meeting page and dictionary as artifacts.** Load `artifact-design` and `artifact-capabilities` first. The meeting page declares `db` with collection `decisions`, and `user`. Offline, the same file keeps decisions in the browser and exports them.
-- After the meeting, read the stored decisions into `work_dir/decisions.json`: an `ArtifactData` list of collection `decisions`, or the page's export file. Then run `$R decisions`. Check the result with the user: a topic agreed "in principle, but check each" must be "Check each item", not "Agreed".
+- **Share the meeting page and dictionary as files.** Each is one self-contained HTML file that opens offline in any browser. The meeting page keeps decisions in the browser; at the end of the meeting, **Export decisions** saves them as a JSON file (`references/review-pages.md`). Hosting the page with shared decisions is optional (hosted mode, same reference).
+- After the meeting, save the exported decisions file as `work_dir/decisions.json` (several files: pass each with `--decisions`; newest wins per topic). In hosted mode, dump the shared `decisions` collection instead. Then run `$R decisions`. Check the result with the user: a topic agreed "in principle, but check each" must be "Check each item", not "Agreed".
 
 ## Phase 3: propose fixes
 
@@ -117,20 +130,15 @@ $R viz && $R shots                              # optional (program indicators):
 
 `apply` imports exactly the payload reviewers will approve (`atomicMode=ALL`), applies the aux file and reads every changed field back.
 
-**Expect the test to change the fixes.** In the first program-indicator run it found four things no review would have:
-
-- the latest-event lookup reading past the period end
-- offsets ignored without a type
-- a `null` mapping entry
-- blank numbers compared as 0
+**Expect the test to change the fixes.** The first program-indicator run found four things no review would have: the latest-event lookup reading past the period end, offsets ignored without a type, a `null` mapping entry, and blank numbers compared as 0.
 
 Loop back to phase 3, re-run, and complete the TODOs in `E2E-TEST.md`.
 
 ## Phase 5: approve and export
 
 ```bash
-$R approval      # -> fix-review.json, <p>-fix-review.html (artifact: db approvals/descriptions, user, downloads)
-$R standalone    # -> <p>-fix-review-standalone.html (offline; decisions files merged by a coordinator)
+$R approval      # -> fix-review.json, <p>-fix-review-standalone.html (the file to send), <p>-fix-review.html (hosted mode)
+$R standalone    # rebuild only the standalone page
 $R guide         # optional: reviewer guide PDF
 $R export [--dump DIR] [--decisions dec-*.json]   # import files without the page (both sources merge)
 ```
@@ -142,7 +150,9 @@ An item is exported only when **every** fix on it is approved; the page shows "p
 - the aux file
 - a summary CSV
 
-Publish the approval page as an artifact for reviewers with accounts, and send the standalone file to the others. When both are used, build the import files from both in one call: dump the artifact's store and run `$R export --dump DIR --decisions dec-*.json`, so the newest decision per item wins and disagreements are listed. Settle each disagreement before handing over: a later click overrides an earlier rejection.
+Send `<p>-fix-review-standalone.html` (and the reviewer guide) to the reviewers. Each saves a decisions file and sends it back; a coordinator loads them into the page, or you build the import files directly with `$R export --decisions dec-*.json`. The newest decision per item wins and disagreements are listed. Settle each disagreement before handing over: a later click overrides an earlier rejection.
+
+**Mixed reviewers** (some approved on a hosted page, others on the standalone file, e.g. because they have no account): merge both sources in one call, `$R export --dump DIR --decisions dec-*.json`, where `DIR` is a dump of the hosted page's store, or load every decisions file into the hosted page. Exporting only the decisions files silently drops the approvals made on the shared page.
 
 ## Phase 6: import (hand over)
 
@@ -176,7 +186,7 @@ The import is the DHIS2 administrator's call; give them the files and these step
 ## References
 
 - `references/data-formats.md`: every file passed between phases, the config, the fixes file and the adapter interface
-- `references/review-pages.md`: the four pages, with purpose, design decisions, capabilities and how to publish
+- `references/review-pages.md`: the four pages, with purpose, design decisions, how to share them as files, and the optional hosted mode
 - `references/descriptions-and-scenarios.md`: description brief summary and scenario rules
 - `references/<type>/behaviours.md`: verified engine behaviours and the probe recipe
 - `references/<type>/fix-patterns.md`: finding → fix, what is clear and what needs a decision
@@ -186,6 +196,5 @@ Related skills:
 
 - `dhis2-indicators`: single indicator authoring, and the semantics behind every finding
 - `dhis2-metadata`: export, anonymise, import
-- `dhis2-instances`: test instances
+- `dhis2-test-instances`: the disposable test instance
 - `dhis2-integrity`: data-integrity remediation, with the same "deterministic vs ask" decision model
-- `artifact-design` / `artifact-capabilities`: the pages

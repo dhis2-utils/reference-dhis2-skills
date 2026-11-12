@@ -37,7 +37,8 @@ Models: `Rule(condition, actions, uid, name, programStage, priority)`,
   defaults to `""`.
 - **Variables**: drop variables whose data element / attribute is not on the phone, except
   `CALCULATED_VALUE`. Value type: integer/number types → `NUMERIC`, `BOOLEAN`/`TRUE_ONLY` →
-  `BOOLEAN`, **everything else (including AGE and DATE) → `TEXT`**. Options from the field's
+  `BOOLEAN`, **everything else (including AGE and DATE) → `TEXT`**, although the engine has a `RuleValueType.DATE`
+  (Capture 3.5.0 `RuleEngineExtensions.toRuleValueType`); `CALCULATED_VALUE` variables are always `TEXT`. Options from the field's
   option set as `Option(name, code)`.
 - **Values**: data values passed as stored; numeric attribute values normalised
   (integers via `toInt()`, decimals via `toFloat()`).
@@ -65,7 +66,16 @@ Models: `Rule(condition, actions, uid, name, programStage, priority)`,
 **Re-evaluate after assignments.** Capture saves an assigned value and re-runs the rules; do the
 same in memory: apply assignments and clears to the value map, evaluate again, stop when nothing
 changes (3–4 passes is plenty). Otherwise a rule that reads a field another rule assigns (e.g.
-"status vs age" reading a calculated age) sees the old value.
+"age group" reading an age calculated from the date of birth) sees the old value. Rule priority
+does not fix this: in rule engine 3.8.5 an ASSIGN to a field updates the engine's value map under
+the field's UID, while later rules read the program rule variable's name (`#{age}`), so within one
+evaluation they still see the old value (`RuleConditionEvaluator`). Only an ASSIGN whose content is
+a variable (`#{name}`, no field) is visible to later rules in the same pass.
+
+**Mandatory beats hidden in Capture.** Capture 3.5.0 (`RulesUtilsProviderImpl.hideField`) ignores a
+HIDEFIELD on a field that is mandatory at that point (metadata-mandatory, or made mandatory by an
+earlier SETMANDATORYFIELD effect) and keeps its value. Do the same, or the app hides a field the
+server then requires.
 
 **Final check before "complete"**: evaluate once more on the stored values; block if any visible
 field has an error, any required visible field is empty, or any hidden field still has a value.

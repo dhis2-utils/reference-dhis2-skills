@@ -14,7 +14,7 @@ Sheets:
   indicator_formula_candidates.csv flag-only handoff to the dhis2-indicators skill
 
 Usage:  python review_pack.py --out review-pack [--cap 200]
-Env:    DHIS2_BASE_URL + DHIS2_API_TOKEN | DHIS2_USER/DHIS2_PASS
+Env:    DHIS2_BASE_URL + DHIS2_API_TOKEN | DHIS2_USERNAME/DHIS2_PASSWORD (older DHIS2_USER/DHIS2_PASS also read)
 """
 import argparse, csv, os, re, itertools, collections
 import httpx
@@ -32,7 +32,9 @@ def client():
     if os.environ.get("DHIS2_API_TOKEN"):
         headers["Authorization"] = f"ApiToken {os.environ['DHIS2_API_TOKEN']}"
     else:
-        auth = (os.environ.get("DHIS2_USER", "admin"), os.environ.get("DHIS2_PASS", "district"))
+        env = os.environ.get
+        auth = (env("DHIS2_USERNAME") or env("DHIS2_USER") or "admin",
+                env("DHIS2_PASSWORD") or env("DHIS2_PASS") or "district")
     return httpx.Client(base_url=base, headers=headers, auth=auth, timeout=300)
 
 
@@ -153,7 +155,8 @@ def sheet_category_totals(c, cap):
         if pairs:
             flags.append("overlapping ranges (double-counts on totals): " +
                          "; ".join(f"{a!r}∩{b!r}" for a, b in pairs[:3]))
-        totalish = [n for n in names if re.search(r"\b(total|all|both|overall)\b", n, re.I)]
+        totalish = [n for n in names if re.search(r"\b(total|all|both|overall)\b", n, re.I)
+                    and not re.search(r"\bnot at all\b", n, re.I)]  # Likert "Not at all ..." is not a total
         if totalish:
             flags.append(f"total-like option(s): {', '.join(totalish[:3])} (sums option + total twice)")
         shared = [o["name"] for o in opts if len(opt_owner[o["id"]]) > 1]

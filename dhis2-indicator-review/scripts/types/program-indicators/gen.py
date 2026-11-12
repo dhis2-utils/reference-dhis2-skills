@@ -1,6 +1,6 @@
 """Generate synthetic tracker data for the engine check: one witness person per PI, noise people, out-of-period controls.
 
-    python3 scripts/types/program-indicators/gen.py [--config pireview.json] [--metadata OVERLAY ...] [--pis IDS] [--seed N]
+    python3 scripts/types/program-indicators/gen.py [--config review.json] [--metadata OVERLAY ...] [--pis IDS] [--seed N]
                                     [--noise 400] [--controls 60] [--prefix PREFIX] [--edge-share 0.3]
 
 What is generated (all dates inside cfg.test_period unless a filter asks otherwise):

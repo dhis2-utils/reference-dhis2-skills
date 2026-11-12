@@ -1,6 +1,6 @@
 # DHIS2 Android SDK: calls and behaviours
 
-Verified against SDK 1.14.2 on DHIS2 2.42.6 (compiled and run on an emulator). Blocking variants
+Verified against SDK 1.14.2 on DHIS2 2.42.6 (compiled and run on an emulator); every class and method named here also exists in the SDK 1.15.0 sources. Blocking variants
 shown; call them off the main thread (`withContext(Dispatchers.IO)`).
 
 ## Contents
@@ -58,14 +58,32 @@ Reserved (generated) values:
 
 ```kotlin
 val rv = d2.trackedEntityModule().reservedValueManager()
-rv.blockingDownloadReservedValues(attributeUid, 60)   // fills up to 60 for EVERY coded org unit of the
-                                                      // attribute's programs in the capture scope
+rv.blockingDownloadReservedValues(attributeUid, 60)   // ORG_UNIT_CODE pattern: fills up to 60 for EVERY
+                                                      // coded org unit linked to the attribute's programs;
+                                                      // otherwise up to 60 for the attribute
 rv.blockingCount(attributeUid, orgUnitUid)
 rv.blockingGetValue(attributeUid, orgUnitUid)          // tops up if online; throws NO_RESERVED_VALUES when empty offline
 ```
 
-There is no public per-org-unit download; org units without a code are skipped when the pattern
-uses `ORG_UNIT_CODE`. The user's capture scope is the only lever on how much is reserved.
+There is no public per-org-unit download; org units without a code get no values when the pattern
+uses `ORG_UNIT_CODE`. Which org units are filled is decided by what is stored on the phone: in the
+1.15.0 source (`getOrgUnitsWithCodeLinkedToAttributes`) the capture-scope filter is applied to a
+copy of the list and has no effect, so every coded org unit on the phone that is assigned to a
+program using the attribute gets values. A wide assignment reserves many values per sync.
+
+- **Reserved values expire.** The SDK calls `generateAndReserve` without an expiry, so the server's
+  default applies (60 days, dhis2-core 2.42 `TrackedEntityAttributeController`); patterns with
+  `CURRENT_DATE(...)` also expire at the end of their period. The SDK deletes expired values before
+  counting. A phone that stays offline longer than that runs dry: top up on every sync.
+- The count passed to `blockingDownloadReservedValues` is saved as the attribute's fill-up target and
+  reused by the automatic top-up in `blockingGetValue`.
+- `wipeData()` deletes the reserved values with the tracker data (`TrackedEntityModuleWiper`):
+  re-download them straight after a purge, while online.
+- A value popped for one org unit carries that org unit's code: if the user changes org unit, pop a
+  new value for the new one (the old one is simply wasted). If the tracked entity, enrollment or events
+  were already created under the old org unit, move them too: `setOrganisationUnitUid` on the
+  tracked-entity, enrollment and event object repositories (all three in 1.15.0). An ID and an owner
+  that disagree are hard to untangle after sync.
 
 ## 3. Creating and editing tracker data
 
@@ -141,7 +159,9 @@ teis.uid(t).blockingGet()?.aggregatedSyncState()   // worst state over the TE an
   then **disappears locally** — bookkeeping that re-reads the uploaded list must treat missing rows
   as done. Deletions of members not linked from anything are easy to forget in the upload list;
   keep a way to find them (e.g. a back-link attribute).
-- Conflict codes seen: E1018/E1019 mandatory missing; E1020/E1021 future dates; E1007/E1302
+- Conflict codes seen (names from dhis2-core 2.42 `ValidationCode.java`): E1018 mandatory
+  attribute missing, E1306 attribute made mandatory by a program rule missing, E1019 only program
+  attributes allowed for enrollment; E1020/E1021 future dates; E1007/E1302
   invalid value; E1063/E1064 duplicate unique value; E1000/E1003 no access to org unit; E1300 rule
   on server; E1100/E1103/E1083 no authority to delete (`F_TEI_CASCADE_DELETE`,
   `F_ENROLLMENT_CASCADE_DELETE`). The first conflict is often a follow-on ("event … cannot be

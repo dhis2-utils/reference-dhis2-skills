@@ -2,7 +2,8 @@
 
 ## Anywhere
 
-- JDK 17, Android SDK platform 36 + build-tools, Gradle wrapper 9.3.1 (copy Capture's wrapper).
+- JDK 17, Android SDK platform + build-tools for the compileSdk you pin (36 or 37), and Capture's
+  Gradle wrapper from the release whose version set you use (9.3.1 for 3.4.2, 9.5.1 for 3.5.0).
 - Repositories: `google()`, `mavenCentral()`, and JitPack **restricted to `com.github.dhis2`** for
   `sms-compression`. Put `mavenLocal()` (same group filter) **before** JitPack if JitPack may be
   unreachable: Gradle treats a connection failure as fatal instead of trying the next repository.
@@ -14,16 +15,16 @@
 - A version-catalog alias `x-root` next to `x` turns `libs.x` into an accessor group and breaks
   `libs.x.get()`; name it `xRoot`.
 
-## In the agent sandbox (Linux aarch64)
+## In a Linux container (Ubuntu 24.04; extra steps on aarch64)
 
-Needs sudo for the apt steps (ask the user to grant it temporarily) and these hosts on the egress
-allowlist:
-`repo1.maven.org`, `dl.google.com`, `maven.google.com`, `services.gradle.org`,
-`plugins.gradle.org` (and ideally `jitpack.io`). `scripts/setup-android-build.sh` in this skill
-does the steps below; run it once per container.
+Typical when an agent runs in Docker on an Apple-silicon host. Needs root or passwordless sudo for
+the apt steps, and network access to `repo1.maven.org`, `dl.google.com`, `maven.google.com`,
+`services.gradle.org`, `plugins.gradle.org` (and ideally `jitpack.io`); if outbound traffic is
+filtered, ask for these hosts to be allowed. `scripts/setup-android-build.sh` in this skill does
+the steps below; run it once per container.
 
 1. `apt install openjdk-17-jdk-headless unzip`; Android cmdline-tools into `~/android-sdk`,
-   `sdkmanager "platforms;android-36" "build-tools;36.0.0"`; `local.properties` →
+   `sdkmanager "platforms;android-36" "build-tools;36.0.0"` (android-37 for compileSdk 37); `local.properties` →
    `sdk.dir=$HOME/android-sdk` expanded (not committed).
 2. **aapt2 is x86_64 only** and `binfmt_misc` isn't mounted, so run it under qemu:
    `apt install qemu-user-static`; `dpkg --add-architecture amd64` with an
@@ -41,9 +42,9 @@ does the steps below; run it once per container.
 
 Without sudo, only the JDK can be worked around: unpack a Temurin 17 tarball from
 `github.com/adoptium/temurin17-binaries` releases into `~/` and set `JAVA_HOME`. qemu and the
-amd64 libraries (step 2) still need sudo, so on aarch64 a no-sudo sandbox cannot run aapt2.
+amd64 libraries (step 2) still need root, so on aarch64 a container without root cannot run aapt2.
 
-All of this lives in the container and `~/`; a recreated sandbox needs it again.
+All of this lives in the container and `~/`; a recreated container needs it again.
 
-The emulator reaches the host at `10.0.2.2`; a broker instance is `http://10.0.2.2:<http_port>`
-from the app, and `http://dhis2-<name>:8080` from the sandbox.
+The emulator reaches its host machine at `10.0.2.2`: an instance published on the host's port
+`<port>` is `http://10.0.2.2:<port>` from the app, whatever URL your scripts use for it.

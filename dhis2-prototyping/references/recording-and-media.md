@@ -40,5 +40,5 @@
 - ffmpeg: every script takes `$FFMPEG`, else the binary inside `imageio-ffmpeg`, else `ffmpeg` on
   the PATH. That build has no `drawtext`; captions and labels are ASS subtitles.
 - Dashboard screenshots **after the last analytics run** (and again after any instance restart:
-  analytics tables do not survive one): tall viewport (the dashboard scrolls internally, `full_page` doesn't help),
+  unlogged analytics tables can come back empty): tall viewport (the dashboard scrolls internally, `full_page` doesn't help),
   scroll to trigger lazy items, then shoot.

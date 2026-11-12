@@ -1,6 +1,6 @@
 """Server syntax check of every PI expression, PI filter and category-mapping option filter.
 
-    python3 scripts/types/program-indicators/syntax.py [--config pireview.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
+    python3 scripts/types/program-indicators/syntax.py [--config review.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
                                        [--no-mappings] [--threads 6]
 
 Sends each text to POST /api/programIndicators/{expression,filter}/description (text/plain, behaviour I2). Read-only
@@ -10,7 +10,7 @@ the runtime query (query.py) is still needed.
 Input:  the export (+ overlays, e.g. a proposed payload to check before import).
 Output: <work_dir>/syntax.json (syntax-<tag>.json): list of
         {"id", "name", "where": "expression|filter|option <name>", "text", "status": "OK|ERROR", "message", "description", "ok"}
-Config keys: metadata, program, work_dir. Connection: DHIS2_URL + DHIS2_TOKEN or DHIS2_USER/DHIS2_PASSWORD.
+Config keys: metadata, program, work_dir. Connection: DHIS2_BASE_URL + DHIS2_API_TOKEN or DHIS2_USERNAME/DHIS2_PASSWORD.
 """
 import concurrent.futures as F, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'lib'))

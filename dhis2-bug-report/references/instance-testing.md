@@ -2,13 +2,22 @@
 
 ## Play instances
 
-Public demos at `https://play.im.dhis2.org/<release>`, login `admin` / `district`. Release slugs follow the pattern `stable-2-43-1`, `stable-2-42-5-2`, `stable-2-41-9-1`. Check what is currently up rather than assuming a slug exists; they change with every patch release.
+Public Sierra Leone demos, login `admin` / `district`. This skill is the one place where using them is appropriate: a bug report needs a recipe anyone can follow on a public instance. Never use them for anything but reproduction, and keep writes to small, named test objects.
+
+Find the current URL by following the redirect rather than guessing a slug:
+
+```bash
+curl -s -o /dev/null -w '%{redirect_url}\n' https://play.dhis2.org/2.42
+# -> https://play.im.dhis2.org/stable-2-42-7-1
+```
+
+Slugs are `stable-<major>-<minor>-<patch>[-<hotfix>]` (in November 2026: `stable-2-43-2-1`, `stable-2-42-7-1`, `stable-2-41-11`) and change with every patch release; an old slug returns 404. `https://play.im.dhis2.org/dev` runs the next version (`2.44-SNAPSHOT`). Releases that have left play (2.40 by late 2026) redirect to the instance list at `https://im.dhis2.org/public/instances`. To test such a version, or anything that needs more than small test objects, use a disposable instance (see `dhis2-test-instances`) and say in the ticket that it is not a public demo.
 
 `curl -g` for anything with brackets in `fields=`, otherwise curl's globbing silently eats the query and returns an empty body.
 
 Analytics tables on play are rebuilt nightly. `lastAnalyticsTableSuccess` in `/api/system/info` tells you how stale the figures are, which matters if you are reporting exact numbers.
 
-Prefer fixed periods (`202601`) over relative ones (`LAST_3_MONTHS`) in anything you write into a ticket. Relative periods make the numbers unreproducible next month.
+Use fixed periods (`202601`) rather than relative ones (`LAST_3_MONTHS`) in test objects and in the ticket. Relative periods make the numbers unreproducible next month.
 
 ## Versions
 
@@ -27,7 +36,7 @@ GET /<app-path>/manifest.webapp     e.g. /dhis-web-data-visualizer/manifest.weba
                                     -> name, version, core_app
 ```
 
-If the manifest 302s to the login page, the request is unauthenticated. Log in first via `POST /api/auth/login` with `{"username":..,"password":..}` and reuse the cookie jar.
+If the manifest 302s to the login page, the request is unauthenticated. Log in first and reuse the cookie jar: `POST /api/auth/login` with `{"username":..,"password":..}` on 2.41+; on 2.40 that endpoint doesn't exist (302 to the legacy login page, anonymous cookie), so use Basic auth on each request, or a Basic-auth `GET /api/me` to get a session cookie.
 
 To confirm the manifest is not stale, grep the compiled bundle for its version string. Read `index.html`, take the asset filenames from the `src`/`href` attributes, fetch the main bundle and look for `appVersion`.
 
@@ -104,7 +113,7 @@ Then open it in the app at `/<app-path>/index.html#/<uid>`.
 
 ### Traps
 
-On the single-object `POST`/`PUT /api/visualizations`, sending the export-shape fields (`dataDimensionItems`, `periods`, `organisationUnits`, a `relativePeriods` object, `columnDimensions`/`rowDimensions`/`filterDimensions`) returns 201 and silently drops them; the object comes back with `dataDimensionItems: []`. Relative periods go in as `pe` items (`{"id":"LAST_12_MONTHS"}`). `POST /api/metadata` is the reverse: it keeps the export shape (a `relativePeriods` object becomes `rawPeriods`) and ignores `columns`/`rows`/`filters` (verified 2.42.6 and 2.43.1). Always read the object back before trusting it — request `:owner` fields, not the default field set, because the default view hides the difference.
+On the single-object `POST`/`PUT /api/visualizations`, sending the export-shape fields (`dataDimensionItems`, `periods`, `organisationUnits`, a `relativePeriods` object, `columnDimensions`/`rowDimensions`/`filterDimensions`) returns 201 and silently drops them; the object comes back with `dataDimensionItems: []`. Relative periods would go in as `pe` items (`{"id":"LAST_12_MONTHS"}`), but use fixed ones in test objects (see above). `POST /api/metadata` is the reverse: it keeps the export shape (a `relativePeriods` object becomes `rawPeriods`) and ignores `columns`/`rows`/`filters` (verified 2.42.6 and 2.43.1). Always read the object back before trusting it — request `:owner` fields, not the default field set, because the default view hides the difference.
 
 `"sharing": {"public": "rwrw----"}` fails with E3011, since visualizations are not data-shareable. Use `rw------`.
 

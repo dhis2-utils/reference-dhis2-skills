@@ -7,7 +7,7 @@ Output:  work_dir/pi-dictionary.html (dict_template.html with __TITLE__ and __DA
 Config:  work_dir, title
 """
 import os, sys; sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'lib'))
-import config
+import cli, config
 import glob, json, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,5 +46,5 @@ with open(os.path.join(HERE, 'dict_template.html')) as f:
     t = f.read()
 path = cfg.out('pi-dictionary.html')
 with open(path, 'w') as f:
-    f.write(t.replace('__TITLE__', re.sub(r'[<&>]', '', d.get('title') or cfg.title)).replace('__DATA__', out))
+    f.write(cli.html_document(t.replace('__TITLE__', re.sub(r'[<&>]', '', d.get('title') or cfg.title)).replace('__DATA__', out)))
 print(f"{len(d['rows'])} PIs, {sum(1 for r in d['rows'] if r['nameMismatch'])} name mismatches, {len(out) // 1024} KB -> {path}")

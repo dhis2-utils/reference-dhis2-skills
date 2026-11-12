@@ -88,8 +88,8 @@ instead, then clear the cache and read it back through the API to confirm the
 server now serves the bad state:
 
 ```
-# 1. jsonb UPDATE straight into the table (DB access via the dhis2-instances skill)
-# 2. curl -sg -u USER:PASS -X POST "$DHIS2_URL/api/maintenance?cacheClear=true"
+# 1. jsonb UPDATE straight into the table (needs DB access; see dhis2-test-instances)
+# 2. curl -sg -u USER:PASS -X POST "$DHIS2_BASE_URL/api/maintenance?cacheClear=true"
 # 3. GET the object through the API and confirm the forbidden state is present
 ```
 
@@ -115,10 +115,10 @@ Verified working for scalar fields, whole-collection `add` (`program.categoryMap
 Three caveats (verified 2.40–2.43):
 
 - **JSON Patch re-validates the whole object**, so it can **409 on pre-existing integrity issues unrelated to the change** (`E6012` "attribute not assigned to type", `E6000` "program has more than one program instance", …). Old production metadata — exactly what bulk admin tools target — trips this constantly, so a tool under review will legitimately fail on some objects. Dedicated endpoints skip it.
-- **Never patch `/sharing`.** `replace /sharing` returns 200 but **silently ignores** `public`/`external` (the patch value needs `publicAccess`/`externalAccess`, not the aliases a GET shows) — the object looks re-shared but stays publicly accessible. The correct tool is `PUT /api/sharing?type=<singular>&id=<uid>` (recipe in the `dhis2-docs` skill), which changes only sharing, preserves `owner`, and skips whole-object validation. Flag any app that patches sharing. The no-op applies only to JSON Patch: a full `PUT` of the object (e.g. `PUT /api/sqlViews/{id}`) with a `sharing` block *does* apply public access (verified on 2.40.12 and 2.43.1).
-- **Permission-denied paths need a limited user.** On some seeds the `admin` user holds `ALL` (unlike the Sierra Leone demo), and the broker's `local_admin` always does. `ALL` bypasses sharing, so a flow that restricts sharing to provoke an error never sees one. Create a throwaway user without `ALL` for these tests. A flow that tightens sharing must restore it in a `finally`: one run skipped its own restore after the expected error never appeared, and left the object unreadable for everyone else.
+- **Never patch `/sharing`.** JSON Patch on `/sharing` returns 200 but leaves public access unchanged; use `PUT /api/sharing?type=<singular>&id=<uid>` (facts and recipe: `dhis2-docs` skill). Flag any app that patches sharing. A full `PUT` of the object with a `sharing` block *does* apply public access (verified on 2.40.12 and 2.43.1).
+- **Permission-denied paths need a limited user.** On some seeds the `admin` user holds `ALL` (unlike the Sierra Leone demo), and so does a freshly created empty instance's `admin`. `ALL` bypasses sharing, so a flow that restricts sharing to provoke an error never sees one. Create a throwaway user without `ALL` for these tests. A flow that tightens sharing must restore it in a `finally`: one run skipped its own restore after the expected error never appeared, and left the object unreadable for everyone else.
 - **Provenance settles "was this ours or the seed's?"** `GET /api/<type>/<id>?fields=created,lastUpdated,createdBy[username],lastUpdatedBy[username]` shows when an object appeared and who created it. Check it before forming a theory about unexpected objects on a test instance.
-- **Plain-JSON partial PATCH is version-split**: `Content-Type: application/json` with body `{"name":"…"}` returns **204** on ≤2.41 but **415** on ≥2.42, where JSON Patch is required. A robust tool tries plain JSON first and falls back on 415; test both sides of the 2.42 boundary.
+- **Plain-JSON partial PATCH is version-split** (204 on 2.40, 415 on 2.41+; details in the `dhis2-docs` skill). If a tool uses plain JSON, test both sides of the 2.41 boundary.
 
 ## Validating program rule conditions cheaply
 
@@ -140,19 +140,7 @@ Don't assume a "minimal baseline tracker import succeeds cleanly" on demo progra
 
 - **`POST /api/apps`** returns `201` on 2.42+ but `204` on ≤2.41 — accept any
   2xx, don't hard-check one code. `DELETE /api/apps/<key>` returns `204`.
-- **`POST /api/configuration/corsWhitelist` replaces the whole list**, it does
-  not append — easy to wipe the demo defaults. Always read-modify-write
-  (`GET` → add your origin → `unique` → `POST` the full list back). The
-  endpoint accepts **POST only** — `PUT` returns `405 Method Not Allowed`.
-- **The CORS allowlist is a `configuration` resource, not a system setting —
-  even though users edit it in the System Settings app** (Access section), so
-  people call it a system setting. In the API it lives only under
-  `/api/configuration`. On 2.42 the same resource also answers at
-  `/api/configuration/corsAllowlist` (the name current docs use, 2.41+; on 2.40 only `/corsWhitelist` exists; bare JSON
-  array body, returns 204). There is no CORS key under `/api/systemSettings` —
-  `POST /api/systemSettings/keyCorsWhitelist` fails with 409 then 404. Every
-  fresh instance starts with an empty allowlist, so a cross-origin dev server
-  hits a CORS block once per instance.
+- **CORS allowlist**: the POST replaces the whole list and the endpoint name depends on the version (recipe: `dhis2-docs` skill); `PUT` returns 405, and there is no CORS key under `/api/systemSettings`. Every fresh instance starts with an empty allowlist, so a cross-origin dev server hits a CORS block once per instance.
 
 ## `/api/authorities` returns 500 on a freshly booted 2.41.x
 

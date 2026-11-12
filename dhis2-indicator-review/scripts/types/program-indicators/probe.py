@@ -2,7 +2,7 @@
 
     python3 scripts/types/program-indicators/probe.py --type EVENT|ENROLLMENT [--expr 'V{event_count}'] 'filter 1' ['filter 2' ...]
                                       [--agg COUNT] [--boundaries SPEC ...] [--pe 2026Q1] [--ou UID] [--keep]
-                                      [--config pireview.json]
+                                      [--config review.json]
 
 Use it to verify an engine behaviour before relying on it (references/program-indicators/behaviours.md), e.g. whether a blank
 number compares as 0:

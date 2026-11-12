@@ -1,8 +1,9 @@
 """Screenshots for the evidence: the Maintenance app showing changed items after the import (adapter.MAINTENANCE_ROUTE),
 and the saved pivot tables (the type's make_viz.py) in Data Visualizer. Playwright (Python) with Chromium; imported only when this script runs.
 
-Credentials come from the environment like every other script: DHIS2_URL, and DHIS2_USER + DHIS2_PASSWORD (form
-login through /api/auth/login) or DHIS2_TOKEN (sent as a header on every request). The browser is always closed.
+Credentials come from the environment like every other script (lib/d2.py): DHIS2_BASE_URL, and DHIS2_USERNAME +
+DHIS2_PASSWORD (form login through /api/auth/login) or DHIS2_API_TOKEN (sent as a header on every request). The browser
+is always closed.
 
 Inputs : fixes.json (default: the first item of each fix group, at most --max), viz-ids.json
 Outputs: <work_dir>/shots/NN-<name>.png, shots/captions.json {name: caption} (read by evidence.py and build_fix_review.py)
@@ -12,7 +13,7 @@ Config : work_dir, metadata (+ type keys).
 import os, sys, time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lib'))
-import adapters, config  # noqa: E402
+import adapters, config, d2  # noqa: E402
 import e2elib as E  # noqa: E402
 
 # App route as on 2.43 (bundled apps are served from these paths); the Maintenance route comes from the adapter
@@ -28,10 +29,10 @@ def main():
     ap.add_argument('--wait', type=float, default=8, help='seconds to let each app render after network idle')
     args = ap.parse_args()
     cfg = config.load(args)
-    base = (os.environ.get('DHIS2_URL') or sys.exit('set DHIS2_URL')).rstrip('/')
-    tok, user, pw = os.environ.get('DHIS2_TOKEN'), os.environ.get('DHIS2_USER'), os.environ.get('DHIS2_PASSWORD')
+    base, tok, user, pw = d2.connection()
+    base = (base or sys.exit('set DHIS2_BASE_URL')).rstrip('/')
     if not (tok or (user and pw)):
-        sys.exit('set DHIS2_TOKEN, or DHIS2_USER and DHIS2_PASSWORD')
+        sys.exit('set DHIS2_API_TOKEN, or DHIS2_USERNAME and DHIS2_PASSWORD')
     A = adapters.load(cfg)
     F = E.fixes(cfg)
     acfg = E.after_cfg(cfg)

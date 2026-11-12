@@ -14,7 +14,7 @@ Read this file fully before running anything; the safety notes matter.
 
 ## Scripts
 
-`scripts/` next to this file; plain `python`, only dependency `requests` (`pip install requests`). Network scripts take `--url`/`--auth` or fall back to `$DHIS2_BASE_URL` and `$DHIS2_AUTH` (or `token:$DHIS2_API_TOKEN`). `--help` has the full CLI.
+`scripts/` next to this file; plain `python`, only dependency `requests` (`pip install requests`). Network scripts take `--url`/`--auth` or fall back to `$DHIS2_BASE_URL` plus `$DHIS2_API_TOKEN` (a personal access token) or `$DHIS2_USERNAME`/`$DHIS2_PASSWORD`; an older `$DHIS2_AUTH` (`user:pass` or `token:<PAT>`) is still read. `--help` has the full CLI.
 
 | Script | Purpose |
 |---|---|
@@ -41,12 +41,20 @@ Nothing sensitive is removed silently, so ask which of these apply — most user
 
 All flags compose. In `fetch_metadata.py` each also becomes server-side `!field` exclusions, so removed data never leaves the server; the local pass still runs because field filtering does not reach embedded objects (legends inside legendSets, members inside userGroups).
 
-- **`--anonymize`** — strips PII/credential fields everywhere, reduces user references to `{id}`, gives top-level users placeholder `firstName`/`surname`/`username` so they stay importable, removes `href` (the server URL) and cuts the export's `system` block to its `version`. Cannot see PII stored in custom `attributeValues` or free text (descriptions, comments) — check those with the user.
+- **`--anonymize`** — strips PII/credential fields everywhere, reduces user references to `{id}`, gives top-level users placeholder `firstName`/`surname`/`username` so they stay importable, removes `href` (the server URL) and cuts the export's `system` block to its `version`. Cannot see PII in custom `attributeValues` or free text (descriptions, comments): see *Sharing a file* below.
 - **`--unshare`**, **`--delocalize`** — remove sharing/access fields, remove `translations`.
-- **`--minimize`** — keep only schema `owner && persisted` properties minus bookkeeping, reduce references to `{id}`. Needs the version-matching `schemas.json`. Analysis only: on a `:owner` export it saves ~10–15% (embedded objects carry the noise), and it can strip a rarely-used owned property that a round-trip needs.
+- **`--minimize`** — keep only schema `owner && persisted` properties minus bookkeeping, reduce references to `{id}`. Needs the version-matching `schemas.json`: the instance's own, or the bundled `schemas-vNN.json` for the file's `system.version` minor (2.41.3 → `schemas-v41.json`; a different patch is fine for analysis). Analysis only: on a `:owner` export it saves ~10–15% (embedded objects carry the noise), and it can strip a rarely-used owned property that a round-trip needs.
 - **`--redact-ou-names`**, **`--drop-coordinates`** — org unit placeholders / geometry removal.
 
 Defaults: AI consumption `--anonymize --minimize --unshare --delocalize`; instance transfer `--unshare --delocalize` (never `--minimize`).
+
+## Sharing a file (AI chat, consultant, partner)
+
+The transforms are a first pass, not the whole job. Before handing the file over:
+
+- **Drop `users` and `userGroups` entirely** (`--exclude users,userGroups` on fetch; on a file, delete the keys with `jq`/Python) rather than shipping placeholder users, and tell the user why: they are not needed to analyse configuration, and if anyone imports the file, each user object overwrites the target user with the same UID or username. Remove `createdBy`/`lastUpdatedBy` references to the dropped users as well.
+- **Read the free text and custom attribute values yourself.** Descriptions, comments, `attributeValues` (contact person, owner, phone attributes) and names embedded in any of them escape `--anonymize`. Remove the names (do not invent replacement text), and **tell the user this is a manual step on every future export**, listing what you found and how you handled it.
+- **Verify**: grep the output for every real name, username, email, phone and the server hostname you saw in the input; check that the formulas the user cares about are byte-identical to the input.
 
 ## Workflow snapshots
 
@@ -73,15 +81,24 @@ python scripts/import_metadata.py --src ./slice/split --schemas ./slice/schemas.
 
 Without `--schemas` on import, add `--passes 2` for forward references; judge by the final pass's errors. Import does not strip sharing unless `--skip-sharing` is passed — decide at export time with `--unshare`.
 
+**Reading an import result:**
+- **Absence from the error list is not success.** A type missing from the non-OK responses may have been skipped, never sent, or lost in a whole-batch crash (`409`, `status=ERROR`, empty `typeReports`: nothing of that type was imported, workflows §7). After every import, compare the target with the source split files **per type: object count and UID set**, and report that table, not "no errors".
+- **Fixing an `E5002` by adding the missing object to the slice**: bring that object's own required references too (an indicator needs its `indicatorType`; a data element its category combo chain), or the next run fails one level down. Scan the slice for dangling references before re-running (workflows §5).
+- **Server-side dry run before a real import into a system that matters**: metadata `POST /api/metadata?importMode=VALIDATE` (validates without committing; send one combined payload, since a single type validated alone fails on references to types not yet on the target); data values `POST /api/dataValueSets?dryRun=true`. `import_metadata.py --dry-run` only prints the order.
+
+## Writing data values (dummy data, generators)
+
+Any script that POSTs `/api/dataValueSets` should: send one payload per data set with top-level `"dataSet"` (on 2.43+ the server otherwise detects one per data element and rejects the whole payload when they map to none or to several, E8003/E8002), only for org units that data set is assigned to and periods of its `periodType` (complete past periods); send an explicit `categoryOptionCombo` from each data element's own category combo (an omitted one lands on the default COC); offer `dryRun=true` (e.g. a `--dry-run` flag) and tell the user to run it first on a new version; and parse the import summary (`status`, `importCount` imported/updated/ignored, `conflicts`) instead of printing raw response text. 2.43 traps and error codes: workflows §4.
+
 Recipes and verified traps in `references/workflows.md`: import-error traps (§2), dummy data (§4), pre-import validation (§5), huge imports (§7), program documentation (§8), translating metadata (§9), troubleshooting (§10).
 
 ## Bundled schemas
 
-`references/schemas-v40..v43.json` (~2 MB each — never `Read` them, pass via `--schemas`). Prefer the live instance's schemas (`fetch_metadata.py --schemas`); a mismatched version silently keeps or strips the wrong properties. If the version of a `metadata.json` is unknown, ask.
+`references/schemas-v40..v43.json` are `/api/schemas` exports (~2 MB each, `href`/`namespace`/`apiEndpoint`/`gistPreferences` stripped) from 2.40.11, 2.41.11, 2.42.7.1 and 2.43.2.1. Never `Read` them; pass them via `--schemas`, or query them with `jq`/Python (e.g. `required` properties per type, §5). They are for offline work on a file of known version: match the minor version (any 2.41.x file → `schemas-v41.json`). With a live instance prefer its own schemas (`fetch_metadata.py --schemas`): owned/persisted flags can change between patch releases (validation rule `shortName` became owned in a 2.41/2.42 patch), and a schema from a different minor version silently keeps or strips the wrong properties. That patch drift matters for transfer, which never uses `--minimize` anyway. If the version of a `metadata.json` is unknown (check its `system.version`), ask. When a new DHIS2 version ships, add `schemas-vNN.json` from its latest patch, stripped the same way.
 
 ## Critical safety notes
 
 1. **Never import users without explicit thought.** A user object in the payload overwrites any target user with the same UID (or username) — renaming, re-roling or disabling it — and the target's accounts are not yours to change. Make no assumptions about admin accounts or their UIDs: on production systems the built-in admin is usually disabled, and UIDs differ per system. Default to `--exclude users` on cross-instance imports and confirm before importing `users.json`. Excluding `userGroups` cascades into notification templates and dashboards; importing userGroups with membership stripped is safe.
-2. **Imports modify shared systems.** Confirm target URL and auth first, especially if not localhost or a sandbox. `--dry-run` only previews ordering; validate on a throwaway instance (`dhis2-instances` skill) when it matters.
+2. **Imports modify shared systems.** Confirm target URL and auth first, unless you know the target is disposable. Offer a server-side dry run (above), and when it matters, rehearse on a disposable instance first (see the `dhis2-test-instances` skill).
 3. **`--minimize` requires a matching schema**, or the server rejects the payload with E4000.
-4. **Anonymize is "safe to share", not deniability.** User objects stay (with placeholders), UIDs stay, custom attribute values are untouched.
+4. **Anonymize is "safe to share", not deniability.** User objects stay (with placeholders) unless excluded, UIDs stay, custom attribute values and free text are untouched.

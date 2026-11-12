@@ -1,6 +1,6 @@
 """Build deterministic fix proposals for the topics the review agreed on.
 
-    python3 scripts/fix/build_fixes.py [--config pireview.json] [--review review.json] [--decisions decisions.json]
+    python3 scripts/fix/build_fixes.py [--config review.json] [--review review.json] [--decisions decisions.json]
                                        [--fixes fixes-explicit.json] [--out fixes.json]
 
 Inputs (default: in cfg.work_dir)
@@ -61,7 +61,7 @@ def load_json(path, default=None):
 def load_decisions(path):
     raw = load_json(path, {}) or {}
     raw = raw.get('decisions', raw) if isinstance(raw, dict) else raw
-    if isinstance(raw, list):  # list of documents with an id/key (artifact db dump: [{"id", "data": doc}])
+    if isinstance(raw, list):  # list of documents with an id/key (hosted-mode db dump: [{"id", "data": doc}])
         raw = {x.get('key') or x.get('id'): x.get('data', x) for x in raw}
     out = {}
     for k, v in raw.items():

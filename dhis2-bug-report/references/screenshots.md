@@ -11,22 +11,24 @@ with sync_playwright() as p: print(p.chromium.executable_path)"
 
 If Chromium is already present this prints a path and there is nothing to install. `ls ~/.cache/ms-playwright` is not a reliable check, because the browsers may live elsewhere (for example `/opt/pw-browsers`).
 
-If it is missing, `python3 -m playwright install chromium`. Avoid `--with-deps` unless the launch actually fails for a missing library: it runs `apt-get update`, which fails hard when any configured repository is unreachable, and that failure aborts the browser install too. If you hit that, move the offending file out of `/etc/apt/sources.list.d/` and retry.
+If it is missing, `python3 -m playwright install chromium`. Avoid `--with-deps` unless the launch actually fails for a missing library: it needs root and runs `apt-get update`, which fails hard when any configured repository is unreachable.
 
-Two things that will otherwise waste a cycle. Play instances serve a certificate Chromium rejects, so the browser context needs `ignore_https_errors=True`. And app pages behind DHIS2 auth redirect to the login screen, so log in first.
+App pages behind DHIS2 auth redirect to the login screen, so log in first. Play's certificate is valid; if the browser still rejects it, the environment is intercepting TLS, and `ignore_https_errors=True` on the context (`shoot.py --ignore-https-errors`) gets past it.
 
 ## Authenticating
 
-`POST /api/auth/login` with a JSON body on the browser context's `request` object. That object shares its cookie jar with pages opened from the same context, so the session carries over without touching a login form:
+Use the browser context's `request` object: it shares its cookie jar with pages opened from the same context, so the session carries over without touching a login form. On 2.41+, `POST /api/auth/login` with a JSON body:
 
 ```python
-ctx = browser.new_context(ignore_https_errors=True)
+ctx = browser.new_context()
 ctx.request.post(base + "/api/auth/login",
                  data={"username": "admin", "password": "district"},
                  headers={"Content-Type": "application/json"})
 page = ctx.new_page()
 page.goto(base + "/dhis-web-data-visualizer/index.html#/" + uid)
 ```
+
+On 2.40, `/api/auth/login` does not exist: it 302s to the legacy login page, and since redirects are followed the call ends in 200 with an anonymous cookie, so the app later shows the login screen. Instead send a Basic-auth `GET /api/me` (`headers={"Authorization": "Basic <base64 user:pass>"}`) on the same `ctx.request`; it sets an authenticated session cookie (works on every version). `scripts/shoot.py` tries `/api/auth/login`, checks the session with a cookie-only `GET /api/me`, and falls back to Basic auth.
 
 Opening a saved visualization by uid in the URL fragment is why the workflow creates one through the API: the whole configuration loads from a single URL, identically on every instance.
 
@@ -46,4 +48,4 @@ Keep the layout controls in frame when they explain the configuration — the Co
 
 Set `--right` to something near the right edge of the table. Without it the crop keeps the full-width layout bar and you get a wide image with a small table in the corner.
 
-Name files so the ticket can refer to them in order: `01-nan-subtotals-2.43.1.png`, `02-mixed-data-element.png`. Present them to the user alongside the ticket file.
+Name files so the ticket can refer to them in order: `01-nan-subtotals-2.43.2.png`, `02-mixed-data-element.png`. Present them to the user alongside the ticket file.

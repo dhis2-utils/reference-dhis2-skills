@@ -2,7 +2,7 @@
 
 Inputs:  work_dir/review.json; a decisions snapshot (--decisions, default work_dir/decisions.json) in any of:
            - the page's "Export decisions" file  {"format": "pireview-meeting-decisions", "decisions": {key: doc}}
-           - a dump of the artifact db collection "decisions": {key: doc} or [{"id": key, "data": doc}, ...]
+           - hosted mode: a dump of the shared db collection "decisions": {key: doc} or [{"id": key, "data": doc}, ...]
              (doc = {"verdict", "note", "by", "byName", "at", "excluded": [uid], "items": {uid: fix|ok|rename|domain}})
            - several files (repeat --decisions): merged per topic, newest "at" wins
 Output:  work_dir/<P>-REVIEW-DECISIONS.md (or --out; <P> = the type's PREFIX, e.g. PI): summary, decision table,

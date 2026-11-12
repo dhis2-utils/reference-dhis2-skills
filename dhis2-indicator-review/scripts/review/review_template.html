@@ -1,7 +1,9 @@
 <!-- Meeting page of the review (any metadata type: labels and item fields come from review.json, built by the type
      adapter). build_review.py replaces __TITLE__ and __DATA__ (review.json).
-     Shared mode: Claude artifact capabilities db (collection "decisions", one doc per topic key) and user.
-     Offline mode (no window.claude): decisions are kept in this browser and exported as a JSON file. -->
+     Offline mode (the default; no window.claude): one self-contained file, decisions kept in this browser and
+     exported / loaded as JSON files.
+     Hosted mode (optional): a host providing window.claude.use('db') (collection "decisions", one doc per topic key)
+     and use('user'), e.g. a Claude artifact; decisions are then shared live. -->
 <title>__TITLE__ · review</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">

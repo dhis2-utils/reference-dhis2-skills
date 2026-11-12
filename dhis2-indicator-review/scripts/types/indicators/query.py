@@ -1,7 +1,7 @@
 """Runtime check: query every aggregate indicator through /api/analytics at the test root and at each facility, for
 each month of the test quarter and for the quarter.
 
-    python3 scripts/types/indicators/query.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
+    python3 scripts/types/indicators/query.py [--config review.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
                                               [--pe 2026Q1] [--ou UID ...] [--out FILE] [--threads 4] [--rounded]
 
   --metadata   overlays (see common.py): only change which indicators are queried; analytics uses the definitions

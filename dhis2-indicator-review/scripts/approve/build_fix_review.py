@@ -10,8 +10,10 @@ fix-review.json is everything a reviewer needs to decide, per fix group and per 
   excluded; names (uid -> name for the names/UIDs toggle); test {instance, period, truthPersons, scenarios, engine,
   stillFailing, steps, apiCalls, readBack, syntax}; shots {name: data URI}, shotCaptions.
 
-<p>-fix-review.html (<p> = adapter.PREFIX) is the Claude-artifact variant: publish it with capabilities db (collections
-approvals, descriptions), user and downloads. make_standalone.py derives the no-account variant.
+<p>-fix-review.html (<p> = adapter.PREFIX) is the hosted-mode variant, for a host that gives the page a shared
+database and the viewer's identity (e.g. a Claude artifact with capabilities db (collections approvals,
+descriptions), user and downloads; see references/review-pages.md, "Hosted mode"). The default way to share the page
+is the self-contained file make_standalone.py derives from the same data (run.py approval builds both).
 
 Downstream notes (optional, config "notes"): {"_consumer": "Downstream report pipeline",
   "<group key>": {"impact": "same|none|changes|action", "text": "..."}}   (or ["impact", "text"])

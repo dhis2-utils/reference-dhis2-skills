@@ -1,6 +1,6 @@
 """Load generated aggregate test data into the TEST instance and build analytics (aggregate indicators).
 
-    python3 scripts/types/indicators/import_data.py [--config pireview.json] [--file datavalues.json ...]
+    python3 scripts/types/indicators/import_data.py [--config review.json] [--file datavalues.json ...]
             [--org-units UID ...] [--org-units-file data/scen-ous.json] [--closed strip|force] [--no-user-ou]
             [--no-analytics] [--analytics-only] [--last-years N]
 
@@ -35,7 +35,7 @@ Steps (each logged to <work_dir>/api-log.jsonl; summary in <work_dir>/import.jso
   11. run the analytics tables job unless --no-analytics.
 
 Output: <work_dir>/import.json. Config keys: metadata, work_dir, test_period, org_units.root / facilities,
-test_instance. Connection: DHIS2_URL + DHIS2_TOKEN or DHIS2_USER/DHIS2_PASSWORD.
+test_instance. Connection: DHIS2_BASE_URL + DHIS2_API_TOKEN or DHIS2_USERNAME/DHIS2_PASSWORD.
 """
 import collections as C, datetime as dt, json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

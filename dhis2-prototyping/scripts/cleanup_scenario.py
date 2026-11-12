@@ -2,7 +2,7 @@
 """Delete scenario and test entries (not the synthetic population) before a final
 recording pass. Dry run unless --delete is given.
 
-    D2_URL=... D2_AUTH=user:pass python3 scripts/cleanup_scenario.py scenario-match.json [--delete]
+    DHIS2_BASE_URL=... DHIS2_USERNAME=... DHIS2_PASSWORD=... python3 scripts/cleanup_scenario.py scenario-match.json [--delete]
 
 scenario-match.json lists, per program, the attribute values that identify
 scenario entries (the scenario's phone numbers and surnames for each platform,
@@ -28,7 +28,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("match")
     ap.add_argument("--delete", action="store_true", help="actually delete (default: list only)")
-    ap.add_argument("--url", help="overrides D2_URL")
+    ap.add_argument("--url", help="overrides DHIS2_BASE_URL")
     a = ap.parse_args()
     s, url = session(a.url)
     found = {}

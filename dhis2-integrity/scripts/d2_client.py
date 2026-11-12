@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Auto-logging DHIS2 HTTP client shared by the cleanup scripts.
 
-Auth via env vars (same convention as the dhis2-api skill):
-  DHIS2_BASE_URL   e.g. http://dhis2-foo:8080   (no /api suffix)
+Auth via env vars (same convention as the dhis2-docs skill):
+  DHIS2_BASE_URL   e.g. http://localhost:8080   (no /api suffix)
   DHIS2_API_TOKEN  -> sent as 'Authorization: ApiToken <token>'
-  or DHIS2_USER + DHIS2_PASS  -> HTTP basic auth
+  or DHIS2_USERNAME + DHIS2_PASSWORD  -> HTTP basic auth
+  (the older DHIS2_USER / DHIS2_PASS are still read as fallbacks)
 
 Every write (POST/PUT/PATCH/DELETE) is appended to OPS_LOG (default ./operations-log.md) so the
 cleanup is fully auditable. Import this module, or instantiate D2() directly:
@@ -37,14 +38,17 @@ def _ensure_log_header(path):
 
 class D2:
     def __init__(self, base=None, token=None, user=None, password=None, ops_log=None):
-        base = (base or os.environ["DHIS2_BASE_URL"]).rstrip("/")
+        base = base or os.environ.get("DHIS2_BASE_URL")
+        if not base:
+            raise SystemExit("DHIS2_BASE_URL is not set (and no base= given); see the module docstring")
+        base = base.rstrip("/")
         self.base = base + "/api"
         self.ops_log = ops_log or OPS_LOG
         headers = {"Accept": "application/json"}
         auth = None
         token = token or os.environ.get("DHIS2_API_TOKEN")
-        user = user or os.environ.get("DHIS2_USER")
-        password = password or os.environ.get("DHIS2_PASS")
+        user = user or os.environ.get("DHIS2_USERNAME") or os.environ.get("DHIS2_USER")
+        password = password or os.environ.get("DHIS2_PASSWORD") or os.environ.get("DHIS2_PASS")
         if token:
             headers["Authorization"] = f"ApiToken {token}"
         elif user:
@@ -92,6 +96,9 @@ class D2:
 
 
 if __name__ == "__main__":
+    import sys
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        print(__doc__); sys.exit(0)
     d2 = D2()
     info = d2.get("/system/info")
     print("Connected:", d2.base, "| version", info.get("version"), info.get("revision"))

@@ -1,8 +1,9 @@
-"""One command for every step of a review:  python3 run.py [--config pireview.json] <step> [args...]
+"""One command for every step of a review:  python3 run.py [--config review.json] <step> [args...]
 
 The config's "type" (default program-indicators) picks the type adapter in scripts/types/<type>/. Core steps run the
 scripts outside types/; type steps run the type's own script. Remaining args are passed through unchanged; --config
-(anywhere on the line) is also exported as $PIREVIEW_CONFIG. A step the type doesn't support exits with status 2.
+(anywhere on the line) is also exported as $PIREVIEW_CONFIG. Without --config: $PIREVIEW_CONFIG, else ./review.json,
+else an older ./pireview.json. A step the type doesn't support exits with status 2.
 `python3 run.py steps` prints the table below with the script each step runs for the configured type.
 
   phase     step              runs                                   what
@@ -30,8 +31,9 @@ scripts outside types/; type steps run the type's own script. Remaining args are
             shots             e2e/shots.py                           screenshots (Playwright)
             probes            types/<type>/probes.py                 probe objects for scenarios (create|query|delete)
             evidence          e2e/evidence.py                        regenerate E2E-TEST.md (--force)
-  approve   approval          approve/build_fix_review.py            approval page -> <p>-fix-review.html
-            standalone        approve/make_standalone.py             offline approval page
+  approve   approval          approve/build_fix_review.py,           fix-review.json, hosted-mode page <p>-fix-review.html,
+                              then approve/make_standalone.py        and the file to share: <p>-fix-review-standalone.html
+            standalone        approve/make_standalone.py             rebuild only the standalone approval page
             guide             approve/manual_shots.py                reviewer guide PDF (Playwright)
             export            approve/export_approved.py             import files from the approvals
 """
@@ -61,7 +63,7 @@ def config_path(args):
             return args[i + 1]
         if a.startswith('--config='):
             return a.split('=', 1)[1]
-    return os.environ.get('PIREVIEW_CONFIG', 'pireview.json')
+    return config.default_config_path()
 
 
 def script_for(typ, step):
@@ -126,7 +128,11 @@ def main():
         if rc or not asm:
             return rc
         return run([sys.executable, asm, *a_args], env)
-    return run([sys.executable, script, *extra], env)
+    rc = run([sys.executable, script, *extra], env)
+    if step == 'approval' and not rc:
+        # the self-contained file is the default way to share the approval page; build it every time
+        return run([sys.executable, script_for(typ, 'standalone'), '--config', os.path.abspath(cpath)], env)
+    return rc
 
 
 if __name__ == '__main__':

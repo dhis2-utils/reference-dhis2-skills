@@ -1,6 +1,6 @@
 """Prepare the description batches for the sub-agents that write the new descriptions of the changed items.
 
-    python3 scripts/fix/prep_desc.py [--config pireview.json] [--batches 3] [--fixes fixes.json]
+    python3 scripts/fix/prep_desc.py [--config review.json] [--batches 3] [--fixes fixes.json]
 
 Input   work_dir/fixes.json (build_fixes.py); optional work_dir/dictionary.json (phase 2: plain-language description of
         the old definition per item, used as context)

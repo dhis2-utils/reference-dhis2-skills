@@ -1,6 +1,6 @@
 # Change proposal — sl-demo
 
-Source: `http://dhis2-agent-sl-43:8080` · DHIS2 **2.43.0.1** · control snapshot `data/control.pgdump` · decisions: `docs/decisions.md` · prepared 2026-07-19
+Source: `http://localhost:8080` · DHIS2 **2.43.0.1** · control snapshot `data/control.pgdump` · decisions: `docs/decisions.md` · prepared 2026-07-19
 
 Every change below was developed and verified on a copy of this system. Apply via the rendered playbook (stepwise, with preconditions and verification) or — for the importable subset — the metadata import package. Items under *Flagged for owner* are deliberate NON-changes that need a decision from the metadata owner.
 

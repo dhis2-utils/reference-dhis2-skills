@@ -6,7 +6,7 @@
 The dashboard scrolls inside its own container, so full_page does not capture it: use a tall
 viewport, scroll to trigger lazily loaded items, return to the top, then shoot. Take dashboard
 screenshots after the *last* analytics run (and re-run analytics after an instance restart:
-analytics tables are UNLOGGED and come back empty).
+unlogged analytics tables can come back empty).
 """
 import argparse
 import base64
@@ -19,8 +19,11 @@ def main():
     ap.add_argument("url")
     ap.add_argument("dashboard")
     ap.add_argument("out")
-    ap.add_argument("--user", default=os.environ.get("D2_USER", "admin"))
-    ap.add_argument("--password", default=os.environ.get("D2_PASS", "district"))
+    env = os.environ.get
+    ap.add_argument("--user", default=env("DHIS2_USERNAME") or env("D2_USER") or "admin",
+                    help="default $DHIS2_USERNAME, else admin")
+    ap.add_argument("--password", default=env("DHIS2_PASSWORD") or env("D2_PASS") or "district",
+                    help="default $DHIS2_PASSWORD, else district")
     ap.add_argument("--width", type=int, default=1600)
     ap.add_argument("--height", type=int, default=3200)
     ap.add_argument("--settle", type=float, default=20, help="seconds to wait for items to render")

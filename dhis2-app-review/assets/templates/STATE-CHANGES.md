@@ -8,11 +8,11 @@ Every persistent change made during this review, and its disposition.
 |---|---|---|
 | `d2auth.json` | Repointed at test instance | Restored from backup / left pointing at `<url>` |
 
-## DHIS2 instances (broker)
+## DHIS2 instances created
 
 | Instance | Version | Seed | Disposition |
 |---|---|---|---|
-| `agent-review-…-242` | 2.42 | sierra-leone v42 | Deleted / left running because <reason> |
+| `<name or URL>` | 2.42 | Sierra Leone demo 2.42 | Deleted / left running because <reason> |
 
 ## Test data created
 

@@ -1,7 +1,7 @@
 """Engine check: recompute every aggregate indicator at each org unit and period from the generated values with the
 independent evaluator (indexpr.py) and diff against analytics. Offline.
 
-    python3 scripts/types/indicators/compare.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
+    python3 scripts/types/indicators/compare.py [--config review.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
                                                 [--truth FILE ...] [--analytics FILE] [--setup FILE] [--out FILE]
                                                 [--rule A1=0 ...]
 

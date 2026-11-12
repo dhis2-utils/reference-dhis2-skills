@@ -1,50 +1,53 @@
 ---
 name: dhis2-docs
-description: "Use when working with the DHIS2 Web API or looking up DHIS2 documentation: executing ad-hoc API calls against a live instance, endpoint behavior and parameters, developer guides, implementation or system-administration guidance, or DHIS2 concepts. Triggers on requests to connect to a DHIS2 instance, fetch data elements, indicators, organisation units, or analytics, find how an endpoint works or what parameters it accepts, or any question that requires consulting the official DHIS2 docs. For bulk metadata export/transform/import, use dhis2-metadata instead."
+description: "Use when working with the DHIS2 Web API or its documentation: writing curl calls or scripts against the API, ad-hoc calls on a live instance, endpoint behaviour and parameters, filter/fields/paging syntax, partial updates (PATCH) and sharing changes, and API differences between DHIS2 versions ('will this call work on 2.40 and 2.43', an endpoint renamed, a 415 or E1003 after an upgrade). Also for looking up docs.dhis2.org: developer guides, implementation or system-administration guidance, DHIS2 concepts. Triggers on requests to connect to a DHIS2 instance, fetch data elements, indicators, organisation units or analytics through the API, find how an endpoint works or what parameters it accepts, check what an API response means, or any question that needs the official DHIS2 docs. For bulk metadata export/transform/import, use dhis2-metadata instead."
 ---
 
 ## Overview
 
 Two things in one skill: how to find and fetch official DHIS2 documentation from docs.dhis2.org, and the conventions for making ad-hoc API calls against a live instance. For docs, the site publishes machine-readable indexes (`llms.txt`) and serves every page as Markdown, so every lookup is the same two steps: fetch an index to find the page, then fetch the page as `.md`. Never guess page URLs.
 
+Plain web access is all this needs: WebFetch, `curl`, or any HTTP client. No MCP server is required. If your environment happens to offer a DHIS2 docs search tool, it can help find a page, but quote and link the docs.dhis2.org page itself.
+
 ---
 
 ## Lookup workflow
 
-**1. Fetch the right index** (WebFetch or equivalent):
+**1. Fetch the right index:**
 
 | Question is about | Index URL | Size |
 |---|---|---|
 | Web API, developer guides, Android SDK, app development | `https://docs.dhis2.org/en/llms-develop.txt` | ~6 KB |
-| Implementation guidance (config, tracker design, data quality, …) | `https://docs.dhis2.org/en/llms-implement.txt` | larger (~400 pages) |
-| System administration (installation, upgrades, monitoring) | `https://docs.dhis2.org/en/llms-manage.txt` | small |
-| End-user app guides (Capture, Maintenance, analytics apps, Android) | `https://docs.dhis2.org/en/llms-use.txt` | medium |
-| Cross-cutting topics | `https://docs.dhis2.org/en/llms-topics.txt` | medium |
+| Implementation guidance (config, tracker design, data quality, …) | `https://docs.dhis2.org/en/llms-implement.txt` | ~50 KB (~400 pages) |
+| System administration (installation, upgrades, monitoring) | `https://docs.dhis2.org/en/llms-manage.txt` | ~3 KB |
+| End-user app guides (Capture, Maintenance, analytics apps, Android) | `https://docs.dhis2.org/en/llms-use.txt` | ~15 KB |
+| Cross-cutting topics | `https://docs.dhis2.org/en/llms-topics.txt` | ~17 KB |
 | Unsure which section | `https://docs.dhis2.org/llms.txt` (master index, all sections) | ~94 KB |
 
 For API questions, `llms-develop.txt` is almost always the right starting point and is cheap enough to fetch every time.
 
-**2. Pick the page from the index and fetch it with `.html` replaced by `.md`.** Every docs page serves its Markdown source this way (`Content-Type: text/markdown`), which is far better to read than the rendered HTML:
+**2. Fetch the page the index links.** Index links already end in `.md` and return the Markdown source (`Content-Type: text/markdown`). For a rendered `.html` URL found elsewhere, replace `.html` with `.md`:
 
 ```
-https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-243/metadata.html   ← index links this
+https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-243/metadata.html   ← rendered page
 https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-243/metadata.md    ← fetch this
 ```
 
-Some pages (e.g. `metadata.md`) are very large; if a fetch is truncated, fetch again with a prompt targeting the specific section.
+Some pages (e.g. `metadata.md`) are very large. If a summarising fetch tool truncates them, save the page with `curl -s <url> -o page.md` and `grep -n` for the section.
 
 ## Versions
 
-The indexes link the **current stable** version (e.g. `dhis-core-version-243`). If the user is on a different DHIS2 version, substitute the version segment in the URL — API behavior changes between releases:
+The indexes link the **latest stable** version (the master `llms.txt` names it; 2.43 as of November 2026). If the user is on a different DHIS2 version, substitute the version segment in the URL: API behaviour changes between releases, and endpoint names do too.
 
 ```
-dhis-core-version-243      DHIS2 2.43 (stable at time of writing)
+dhis-core-version-243      DHIS2 2.43
 dhis-core-version-242      DHIS2 2.42
 dhis-core-version-241      DHIS2 2.41
+dhis-core-version-240      DHIS2 2.40
 dhis-core-version-master   development branch
 ```
 
-Older doc pages show API-versioned paths like `/api/33/configuration/corsAllowlist` — the numeric prefix is optional and the unversioned path (`/api/configuration/corsAllowlist`) works on current servers. Don't copy `/api/NN/` verbatim from examples.
+Doc examples show API-versioned paths like `/api/33/configuration/corsAllowlist`. The numeric prefix is optional and the unversioned path works; don't copy `/api/NN/` verbatim. Check the endpoint name for the user's version, though: `corsAllowlist` exists from 2.41 (with `corsWhitelist` kept as an alias), while 2.40 only has `/api/configuration/corsWhitelist` (dhis2-core `ConfigurationController`, branches 2.40 and 2.41). The POST replaces the whole list, so GET it first and resend the existing entries.
 
 ---
 
@@ -73,20 +76,21 @@ Conventions for ad-hoc API calls (plain `curl` or a few lines of Python — no s
 ```
 DHIS2_BASE_URL=https://myhost.org/dhis     # no /api suffix
 DHIS2_API_TOKEN=d2pat_...                  # personal access token, or
-DHIS2_AUTH=admin:district                  # user:password (typical for sandboxes)
+DHIS2_USERNAME=admin                       # Basic auth (typical for sandboxes)
+DHIS2_PASSWORD=district
 ```
 
-If credentials are missing, ask the user, write them to `.env` in CWD (preserving any existing variables), and make sure `.env` is gitignored. The `dhis2-metadata` scripts read the same variables.
+If credentials are missing, ask the user, write them to `.env` in CWD (preserving any existing variables), and make sure `.env` is gitignored. Every skill's scripts read these same variables. An older `.env` may have `DHIS2_AUTH=user:password` instead; the `dhis2-metadata` scripts still accept it.
 
 **Auth header for PATs is `Authorization: ApiToken {token}` — NOT `Bearer`.** Basic auth works as usual (`curl -u user:pass`).
 
-**Always `curl -g` against DHIS2 APIs.** Any `fields=` selection with brackets (`fields=categoryCombo[id,name]`) is silently eaten by curl's URL globbing — the failure mode is an empty body, not an error. `-g` disables globbing; urllib/requests are unaffected.
+**Always `curl -g` against DHIS2 APIs.** Any `fields=` selection with brackets (`fields=categoryCombo[id,name]`) is silently eaten by curl's URL globbing — the failure mode is an empty body, not an error. `-g` disables globbing. `-G --data-urlencode 'fields=…'` also works, because it percent-encodes the brackets; urllib/requests are unaffected.
 
 **Keep responses out of context.** Default to `pageSize=50` and a narrow `fields=` selection (e.g. `fields=id,name`) on collection GETs. When a response may be large (full metadata, analytics, schemas), write it to a file and inspect it selectively (`jq`, Read with offsets) instead of printing it in full.
 
-**Verified quirks live in `references/api-quirks.md`.** Read it before concluding an endpoint is broken, or before writing a script that filters, patches collections or exports metadata for sharing. It covers rotating play.im.dhis2.org demo URLs, unsupported filter operators, unsafe index-based JSON Patch paths, unclearable COC codes, SQL-view word bans, and `:owner` exports leaking editors' names.
+**Verified quirks live in `references/api-quirks.md`.** Read it before concluding an endpoint is broken, or before writing a script that filters, patches collections or exports metadata for sharing. It covers unsupported filter operators, unsafe index-based JSON Patch paths, unclearable COC codes, SQL-view word bans, and `:owner` exports leaking editors' names.
 
-**Writes.** Before any POST/PUT/PATCH/DELETE to an instance that is not localhost or explicitly disposable, show the request (method, URL, body) and get the user's confirmation. Sandboxes and throwaway test instances don't need per-write confirmation. If a disposable instance is needed and the `dhis2-instances` skill is available, it can provision one.
+**Writes.** Before any POST/PUT/PATCH/DELETE, show the request (method, URL, body) and get the user's confirmation, unless the instance is known to be disposable (you created it, or the user said so). A localhost URL alone is not proof: it can be a tunnel to production. To get one, see the `dhis2-test-instances` skill.
 
 ---
 
@@ -102,7 +106,7 @@ filter=valueType:eq:NUMBER
 filter=shortName:ilike:art
 ```
 
-Operators: `eq` `!eq` `like` `ilike` `gt` `gte` `lt` `lte` `in` `!in` `null` `!null` `empty` `!empty` (`!empty` is rejected on 2.40; see `references/api-quirks.md`)
+Operators (2.40–2.43): `eq` `!eq` `gt` `gte` `lt` `lte` `like` `!like` `ilike` `!ilike` `$like`/`$ilike` (starts with) `like$`/`ilike$` (ends with) `token` `!token` `in` `!in` (`in:[a,b]`) `null` `!null` `empty`. `ieq` exists from 2.41 and `!empty` from 2.42; on older versions they fail with 400 E1003 (dhis2-core `DefaultQueryParser`/`DefaultJpaQueryParser`).
 
 Multiple filters default to AND logic. Use `rootJunction=OR` for OR logic:
 
@@ -157,15 +161,15 @@ Partial updates are version-split by content-type:
 
 | DHIS2 version | `PATCH /api/<plural>/<uid>` | Result |
 |---|---|---|
-| ≤ 2.41 | `Content-Type: application/json`, body `{"name":"…"}` | **204** No Content |
-| ≥ 2.42 | same request | **415** Unsupported Media Type |
-| ≥ 2.42 | `Content-Type: application/json-patch+json`, body `[{"op":"replace","path":"/name","value":"…"}]` | 200 |
+| 2.40 | `Content-Type: application/json`, body `{"name":"…"}` | **204** No Content |
+| ≥ 2.41 | same request | **415** Unsupported Media Type |
+| all (2.40–2.43) | `Content-Type: application/json-patch+json`, body `[{"op":"replace","path":"/name","value":"…"}]` | 200 |
 
-Portable pattern: try the plain-JSON PATCH first; on **415**, retry as JSON-Patch and remember the choice for the rest of the run.
+Source: the plain-JSON "old PATCH" handler in `AbstractCrudController` exists on 2.40.12 and is gone from 2.41.0; the JSON Patch handler exists on all four. Live-checked: 204 on 2.40, 415 on 2.43. Portable pattern: send JSON Patch everywhere. Use plain JSON only for 2.40-specific code.
 
 Two general rules for writes:
 
-- **JSON-Patch (and any full-object write) re-validates the whole object**, so it can **409 on pre-existing integrity issues unrelated to your change** (`E6012` "attribute not assigned to type", `E6000`, …) — common on old production metadata. Prefer dedicated endpoints (`/api/sharing`) where they exist; on 2.42+ there is no partial-update escape hatch for other fields.
+- **JSON-Patch (and any full-object write) re-validates the whole object**, so it can **409 on pre-existing integrity issues unrelated to your change** (`E6012` "attribute not assigned to type", `E6000`, …) — common on old production metadata. Prefer dedicated endpoints (`/api/sharing`) where they exist; on 2.41+ there is no partial-update escape hatch for other fields.
 - **Success isn't always 200.** Partial PATCH returns 204; metadata imports can return 200 with `"status": "ERROR"`/`"WARNING"` in the body. Treat any 2xx as transport success, then check the response body and (for writes that matter) re-GET the object to confirm the change landed.
 
 ### Analytics endpoint

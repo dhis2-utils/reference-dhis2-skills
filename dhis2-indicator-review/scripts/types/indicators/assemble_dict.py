@@ -1,6 +1,6 @@
 """Render the aggregate-indicator dictionary page from dictionary.json, merging per-indicator descriptions if any.
 
-    python3 scripts/types/indicators/assemble_dict.py [--config pireview.json] [--descriptions DIR]
+    python3 scripts/types/indicators/assemble_dict.py [--config review.json] [--descriptions DIR]
 
 Inputs:  work_dir/dictionary.json (build_dictionary.py); optional --descriptions DIR with JSON files
          {uid: {"description": "...", "nameMismatch": null | "..."}} (default work_dir/dict-desc/out when it exists).

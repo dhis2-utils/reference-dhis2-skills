@@ -1,6 +1,6 @@
 """Runtime check: query every PI through /api/analytics, as a total and broken down by its disaggregation categories.
 
-    python3 scripts/types/program-indicators/query.py [--config pireview.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
+    python3 scripts/types/program-indicators/query.py [--config review.json] [--metadata OVERLAY ...] [--pis IDS] [--tag TAG]
                                       [--pe 2026Q1] [--ou UID] [--out FILE] [--threads 4]
 
   --metadata   overlays (see common.py). The definitions on the INSTANCE are what analytics uses; overlays only change

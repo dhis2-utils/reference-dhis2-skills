@@ -7,6 +7,7 @@
 - Indicator types and the factor
 - Common patterns (totals, disaggregation, ratios, percentages, annualized)
 - Categorical data: why option sets don't work and what to do
+- How the engine evaluates an indicator (verified behaviours)
 - Pitfalls
 
 ## Anatomy and fields
@@ -33,8 +34,8 @@ Operands inside numerator/denominator:
 - `D{programUID.dataElementUID}`, `A{programUID.attributeUID}`, `I{programIndicatorUID}` — pull program data or a program indicator into an aggregate indicator.
 - Operators: `+ - * /`, parentheses, numeric literals.
 - Functions for null/zero safety: `if(condition, x, y)`, `isNull(...)`, `isNotNull(...)`, `firstNonNull(...)`, `greatest(...)`, `least(...)`.
-- `subExpression(...)` may reference **several** data elements or operands (dhis2-core 2.41 builds one SQL column per item). It is not limited to one data element. It is evaluated per org unit per *requested* period (the inner query groups by `ou` and the query's period-type column, e.g. `quarterly`, in 2.40–2.43), so a quarterly query evaluates the subexpression once per facility-quarter (data summed within the quarter), not once per facility-month.
-- **Average of facility rates is possible** (don't tell users it isn't): the default indicator gives Σnum/Σden at the parent (a weighted rate); for an unweighted mean of facility rates use a guarded subexpression, e.g. numerator `subExpression(if(#{A} > 0, (#{A} - #{B}) / #{A}, 0))`, denominator `subExpression(if(#{A} > 0, 1, 0))` → Σ(facility rates) / number of facilities with A > 0. Outer aggregation of a subexpression defaults to SUM (`.aggregationType(AVERAGE)` overrides it); missing values inside it read as 0 (2.41.10 source). Offer it alongside the pooled rate and flag the weighting trade-off; prove it on a throwaway instance.
+- `subExpression(...)` (2.40+) may reference **several** data elements or operands (dhis2-core 2.41 builds one SQL column per item). It is not limited to one data element. It is evaluated per org unit per *requested* period (the inner query groups by `ou` and the query's period-type column, e.g. `quarterly`, in 2.40–2.43), so a quarterly query evaluates the subexpression once per facility-quarter (data summed within the quarter), not once per facility-month.
+- **Average of facility rates is possible** (don't tell users it isn't): the default indicator gives Σnum/Σden at the parent (a weighted rate); for an unweighted mean of facility rates use a guarded subexpression, e.g. numerator `subExpression(if(#{A} > 0, (#{A} - #{B}) / #{A}, 0))`, denominator `subExpression(if(#{A} > 0, 1, 0))` → Σ(facility rates) / number of facilities with A > 0. Outer aggregation of a subexpression defaults to SUM (`.aggregationType(AVERAGE)` overrides it); missing values inside it read as 0 (2.41.10 source). Deliver it **together with** the pooled indicator (same file, both labelled), and flag the weighting trade-off: each facility weighs the same, so a clinic with 3 visits moves the mean as much as a hospital with 3,000, and the result is not the population rate. Prove it on a throwaway instance.
 
 Example null-safe denominator so a missing value yields no result rather than an error:
 
@@ -104,6 +105,22 @@ To count by category in aggregate analytics you must move the categorisation int
 
 Numeric-looking option codes do **not** rescue this, and they still can't give a "count where value = X". For per-record display of a categorical value, show the data element directly (custom report, line listing, data value API) — no indicator. Counting by option *is* native to program indicators (filter on the option), which is one reason to choose that path.
 
+## How the engine evaluates an indicator (verified behaviours)
+
+Confirmed on 2.43.2 with probe indicators over hand-made data; re-check on other versions before relying on an edge case. The IDs match `dhis2-indicator-review/references/indicators/behaviours.md`, which has the probe evidence and the recipe.
+
+- **A1 Missing operands.** An operand with no data reads 0 if at least one other operand on the same side (numerator or denominator) has data. If every operand on a side is missing, that side is null and the indicator has no value. A constant doesn't rescue a side (`#{a} + 0` is null where `a` has no data). Only operands actually visited count: `if()` evaluates its condition and the branch taken; operands inside `isNull`, `isNotNull` and `firstNonNull` don't count. `OUG{}`, `C{}` and `[days]` are not operands for this rule; `R{}` is. An unknown data element UID is just a missing operand, and `/api/expressions/description` still says "Valid".
+- **A2 Denominator 0 or null** → no value (the row is omitted).
+- **A5 Aggregate first, then evaluate.** Each operand is aggregated over org units and periods by its aggregation type, then the expression is evaluated once on those totals. So a parent value is Σnum ÷ Σden, and a ratio written inside the numerator is the ratio of the totals.
+- **A6 Aggregation types over time and org units.** SUM adds. COUNT counts stored values (three reports of 7, 9 and 11 give 3). AVERAGE is the plain mean of every value in the period and org units (no weighting by days). AVERAGE_SUM_ORG_UNIT averages over time per org unit (weighted by days), then sums over org units; data in a **longer** period than the query (a yearly population for a month) is used as it is.
+- **A7 SUM data in a longer period is not used.** A yearly SUM data element has no value for any month or quarter.
+- **A8 `annualized`** multiplies by 365 ÷ days in the query period (January 365/31, Q1 365/90, a year 1).
+- **A9 Rounding** to `decimals`; unset means 2 decimals.
+- **A14/A15** `OUG{group}` counts the group's org units at or below the queried org unit, whatever the data; `C{constant}` is its value; `[days]` is the number of days in the query period.
+- **A17 Functions:** `if`, `isNull`, `isNotNull`, `firstNonNull` (0 when every argument is null), `greatest`, `least`, `log`, `log10`, `^`, `%`. A bare boolean as a whole side (numerator `isNotNull(#{b})`) reads 0; use it inside `if()`.
+- **A20 A side the server can't parse reads 0, silently.** The old reporting-rate form `#{dataSet.REPORTING_RATE}` imports fine, is "not well-formed" for `/api/expressions/description`, and makes a numerator 0 everywhere (a denominator gives no value). Use `R{dataSet.REPORTING_RATE}`.
+- **A21 `R{ds.REPORTING_RATE}`** is 100 × complete registrations ÷ expected reports at or below the org unit; it is rounded to 2 decimals before entering the expression unless the query has `skipRounding=true`. An assigned parent org unit counts as an expected report. With no complete registrations at all on the instance, analytics fails with E7144.
+
 ## Pitfalls
 
 - **Factor / indicator type** wrong → off by 100× (or 1000×). Confirm every percentage uses a factor-100 type and every ratio a factor-1 type.
@@ -115,6 +132,6 @@ Numeric-looking option codes do **not** rescue this, and they still can't give a
 - **Parent aggregation of percentages** — analytics recomputes Σnum/Σden×factor at the parent, which is correct; do not expect the average of child percentages. The same holds inside an expression: every operand is aggregated first (over org units and periods, by its aggregation type) and the expression is evaluated once on the totals, so a ratio written inside the numerator (`(a - b) / a` over denominator 1) gives the ratio of the totals at the parent, not a sum of facility ratios (verified on 2.43.2). Missing operands read as 0 unless every operand on that side of the indicator is missing, in which case the indicator has no value.
 - **Time aggregation** — numerator/denominator aggregate across periods by each element's `aggregationType` (SUM, AVERAGE, LAST). An AVERAGE or LAST element behaves differently from SUM when a year is built from months.
 - **Data element `aggregationType` set wrong at the source** — an element that should sum but ships with `COUNT`, `AVERAGE`, or `LAST` produces wrong indicator values, and the expression looks fine. This is invisible to expression review; check the DE config directly (see the pre-flight lint in `testing.md`).
-- **`zeroIsSignificant` and stored zeros** — a `0` is dropped on import for DEs with `zeroIsSignificant=false`, and analytics omits stored zeros unless `keyIncludeZeroValuesInAnalytics` is on. If a real reported zero must count (e.g. in a denominator or a count), set both.
+- **`zeroIsSignificant` and stored zeros** — a `0` for a DE with `zeroIsSignificant=false` is lost: dropped by the importer on earlier versions, stored but ignored by analytics on 2.43.2. Analytics also omits stored zeros unless `keyIncludeZeroValuesInAnalytics` is on. If a real reported zero must count (e.g. in a denominator or a count), set both. A dropped zero is a missing value (see A1 below), so a facility reporting 0 shows no value instead of 0 %.
 - **Legacy / wrong COCs** — a `#{de.coc}` whose COC isn't in the DE's current category combo imports and validates cleanly but never carries data, so the term silently contributes nothing. Derive COCs from current metadata.
 - **Text/option-set elements** can't be summed — see above.

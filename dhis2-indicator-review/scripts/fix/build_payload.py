@@ -1,6 +1,6 @@
 """Build the import payloads from fixes.json and the new descriptions.
 
-    python3 scripts/fix/build_payload.py [--config pireview.json] [--allow-missing]
+    python3 scripts/fix/build_payload.py [--config review.json] [--allow-missing]
 
 Inputs  work_dir/fixes.json; work_dir/desc_out/*.json ({"<itemUid>": {"description", "concern"}}, from the sub-agents);
         optional hand overrides in work_dir/desc_overrides.json or desc_out/zz_overrides.json (same shape, applied last);

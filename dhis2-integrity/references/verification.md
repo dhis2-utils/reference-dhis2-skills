@@ -37,12 +37,18 @@ verification theater.
 1. **Raw data values** (`datavalue` / `/api/dataValueSets`): the set of `(dataElement, period, orgUnit,
    categoryOptionCombo, attributeOptionCombo, value)` must be identical except deliberate COC remaps.
    Pure DB diff — the bedrock against accidental data loss/movement.
+   For COC remaps and merges, compare **per cell**: group by `(dataElement, period, orgUnit,
+   attributeOptionCombo)` and the sum across COCs must be unchanged. The only allowed differences are
+   collisions listed before the merge (source and target COC both held a value for the cell:
+   `categoryOptionCombos/merge` with `dataMergeStrategy=LAST_UPDATED` keeps the newer one, `DISCARD`
+   deletes the sources' values; verified in 2.43.2 `DataCategoryOptionComboMergeHandler`) and agreed
+   deletions. Row counts legitimately drop on merges, so they prove nothing.
 2. **Aggregate analytics** (`/api/analytics`): **regenerate analytics on BOTH** instances with identical
    params, then diff every indicator + the data elements feeding changed structures, at national + a few
    districts over e.g. `LAST_5_YEARS`. Compare **totals AND disaggregations**.
 3. **Data-entry form resolvability:** for every dataset form (section + custom HTML) extract all
-   `deUID-cocUID(-val)` input references and assert each COC still exists and is valid for that DE's
-   combo — the set unchanged except intended additions. A deleted/changed COC is exactly how a custom
+   `deUID-cocUID(-val)` input references and assert each COC is a member of the DE's *current* combo
+   (the data set element's override if set), not merely an existing COC — the set unchanged except intended additions. A deleted/changed COC is exactly how a custom
    form silently loses a field.
 4. **Tracker:** diff event/enrollment counts per program/stage (identical if you touched no event data);
    diff program-indicator values for affected programs; run the program-rule engine on sample
@@ -73,9 +79,10 @@ verification theater.
 ## Fallback when there's no control snapshot — delta-verification (run against the live fixed DB)
 Verify each logged change produced exactly its intended effect and nothing else:
 - **Conservation check:** for every combo whose COCs you touched, the **sum across COCs** for each
-  `(DE, period, orgUnit)` is unchanged before vs after (use backups), and grand totals are preserved.
+  `(DE, period, orgUnit, attributeOptionCombo)` is unchanged before vs after (use backups), except
+  listed merge collisions and agreed deletions.
 - Every changed expression **validates** (`/api/expressions/description`) and returns sane numbers.
-- Every dataset form field **resolves** to an existing, valid COC.
+- Every dataset form field (section cell, custom-form input id) **resolves** to a COC of the DE's current combo.
 - **No dangling references** to any deleted UID.
 - Re-run **all** integrity checks (catches structural regressions).
 Cheap and immediate, but weaker against *unknown* side effects than a true A/B — hence "snapshot first".

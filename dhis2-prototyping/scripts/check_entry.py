@@ -2,7 +2,7 @@
 """Read back what an entry flow saved: tracked entities, enrollments, events and
 relationships matching an attribute value, with codes instead of UIDs.
 
-    D2_URL=... D2_AUTH=user:pass python3 scripts/check_entry.py --program <uid> --attr <uid> --value 08012345678
+    DHIS2_BASE_URL=... DHIS2_USERNAME=... DHIS2_PASSWORD=... python3 scripts/check_entry.py --program <uid> --attr <uid> --value 08012345678
 
 Run it after every scripted or manual flow: a "synced" status in Capture is not
 proof that the server accepted the data. --code-prefix DEMO limits the code lookup
@@ -39,7 +39,7 @@ def main():
     ap.add_argument("--value", required=True)
     ap.add_argument("--op", default="eq", help="filter operator (eq, like, ...)")
     ap.add_argument("--code-prefix")
-    ap.add_argument("--url", help="overrides D2_URL")
+    ap.add_argument("--url", help="overrides DHIS2_BASE_URL")
     a = ap.parse_args()
     s, url = session(a.url)
     dn = code_map(s, url, "dataElements", a.code_prefix)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Load a synthetic tracker population in batches, with error reports.
 
-    D2_URL=... D2_AUTH=user:pass python3 scripts/load_tracker.py data/population_A.json [--batch 40]
+    DHIS2_BASE_URL=... DHIS2_USERNAME=... DHIS2_PASSWORD=... python3 scripts/load_tracker.py data/population_A.json [--batch 40]
 
 The input is what the project's population code writes (see
 references/synthetic-data.md): a JSON object with any of
@@ -62,7 +62,7 @@ def show(prefix, errs, limit=5):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("files", nargs="+", help="population JSON file(s)")
-    ap.add_argument("--url", help="overrides D2_URL")
+    ap.add_argument("--url", help="overrides DHIS2_BASE_URL")
     ap.add_argument("--batch", type=int, default=40)
     ap.add_argument("--strategy", default="CREATE_AND_UPDATE", help="or DELETE to remove a load")
     ap.add_argument("--geometry-sql", metavar="FILE",

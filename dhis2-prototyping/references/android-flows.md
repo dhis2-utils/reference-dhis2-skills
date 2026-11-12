@@ -29,7 +29,7 @@ The login flow is per app version (the login screen differs between releases): b
 
 ### Setup and running
 
-- Maestro 2.10 with the 5037 forward works against the host's emulator; each `maestro test` has
+- Maestro 2.10 worked (it needs the adb server on `localhost:5037`, see `setup.md`); each `maestro test` has
   15–20 s JVM start-up, so write whole flows, not one command per call. For exploration, short
   throw-away flows plus `uiautomator dump` are fine.
 - **`uiautomator dump` is the best pair of eyes** (works even when screenshots are blocked):

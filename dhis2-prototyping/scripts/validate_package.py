@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Validate every expression in a metadata package against a live DHIS2 instance.
 
-    D2_AUTH=admin:district python3 validate_package.py https://server metadata/*.json
+    DHIS2_USERNAME=admin DHIS2_PASSWORD=district python3 validate_package.py https://server metadata/*.json
+
+Auth: DHIS2_API_TOKEN, or DHIS2_USERNAME + DHIS2_PASSWORD (older D2_TOKEN /
+D2_AUTH=user:pass also read); admin:district when none is set.
 
 Checks program rule conditions and action expressions, program indicator
 expressions and filters, indicator numerators/denominators, and program
@@ -15,6 +18,9 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from d2http import auth_from_env  # noqa: E402
+
 
 def main(url, files):
     try:
@@ -22,7 +28,11 @@ def main(url, files):
     except ImportError:
         sys.exit("needs requests: pip install requests")
     s = requests.Session()
-    s.auth = tuple(os.environ.get("D2_AUTH", "admin:district").split(":", 1))
+    auth = auth_from_env() or ("basic", ("admin", "district"))
+    if auth[0] == "token":
+        s.headers["Authorization"] = "ApiToken " + auth[1]
+    else:
+        s.auth = auth[1]
     s.headers["Content-Type"] = "text/plain"
     meta = {}
     for f in files:
@@ -38,7 +48,7 @@ def main(url, files):
         try:
             j = resp.json()
         except ValueError:
-            sys.exit(f"HTTP {resp.status_code} from {resp.url} is not JSON (wrong URL or D2_AUTH?):\n"
+            sys.exit(f"HTTP {resp.status_code} from {resp.url} is not JSON (wrong URL or credentials?):\n"
                      f"{resp.text[:200]}")
         if j.get("status") != "OK":
             bad += 1

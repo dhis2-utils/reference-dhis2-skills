@@ -17,11 +17,11 @@ Second enabling trick: feed **distinct, recorded input values** per data cell, n
 
 Always test on a fresh, empty instance — never a real or shared one. The method needs full control over org units, data, and analytics generation: a clean hierarchy, only the metadata under test, known values, analytics run over the whole instance. A populated instance contaminates every result with existing data, org units, sharing, and prior analytics. Spin up a throwaway instance, run the test, discard it.
 
-**Getting a throwaway instance.** If the `dhis2-instances` skill is available (it requires `DHIS2_BROKER_URL`/`DHIS2_BROKER_TOKEN`, typically set inside an agent sandbox), use it: create an instance with a `version` and **no seed** for an empty database, wait for the job to succeed, and use the `devnet_url` it returns as `BASE`. Reset or delete it when done. If that skill is not available, ask the user how to get a disposable instance — do not invent a Docker setup yourself.
+**Getting a throwaway instance.** Follow the `dhis2-test-instances` skill: use what the environment provides, else a local Docker instance, else ask the user. Ask for (or create) the target `version` with **no seed**, so the database is empty, and use its base URL as `BASE`. Reset or delete it when done.
 
 Match the version to the instance the indicators will eventually live on. The database must start **empty** — no demo seed, no leftovers from a previous run.
 
-Config block to reuse (`BASE` is the `devnet_url` from `dhis2-instances`, or whatever the user provides):
+Config block to reuse (`BASE` is the test instance's base URL as reachable from where you run):
 
 ```
 BASE=http://localhost:8080
@@ -110,6 +110,12 @@ curl -sg -u "$AUTH" -H 'Content-Type: application/json' -X POST \
   --data-binary @datavalues.json | jq '.status,.importCount,.conflicts'
 ```
 
+Three more traps seen on 2.43.2 (likely earlier too, but unverified there):
+
+- `POST /api/dataValueSets` handles **one data set per request**; a payload spanning several fails with "Data set detection failed, found multiple sets", and a data element in no data set fails with E8003. Split the payload by data set.
+- A data element with a **`commentOptionSet`** makes every value import fail with HTTP 500 ("Cannot invoke DataEntryGroup.values() because valid is null"). Remove the comment option set on the test copy.
+- With empty **`dataOutputPeriodTypes`** (the default on a fresh instance), aggregate analytics returns no rows at all, without an error. `POST /api/configuration/dataOutputPeriodTypes` with the period types you query.
+
 Do not rely on `ignored == 0` and `conflicts == empty` as the import check — silently-dropped zeros appear in neither. The correct assertion is **`imported + updated == number of dataValues in the payload`**. A short count is a dropped value, and a dropped value invalidates the comparison.
 
 Two more import facts that bite:
@@ -120,8 +126,8 @@ Two more import facts that bite:
 ### 3. Run analytics
 
 ```bash
-curl -sg -u "$AUTH" -X POST "$BASE/api/resourceTables/analytics?lastYears=5&skipResourceTables=false"
-curl -sg -u "$AUTH" "$BASE/api/system/tasks/ANALYTICS_TABLE.json"   # poll until completed:true
+JOB=$(curl -sg -u "$AUTH" -X POST "$BASE/api/resourceTables/analytics?lastYears=5&skipResourceTables=false" | jq -r .response.id)
+curl -sg -u "$AUTH" "$BASE/api/system/tasks/ANALYTICS_TABLE/$JOB" | jq '.[0].completed'   # repeat until true
 ```
 
 `lastYears` must reach back to your test period. Re-run analytics after every data change.
@@ -176,8 +182,8 @@ Tracker import gotchas on 2.43:
 Program-indicator results live in the event/enrollment analytics tables, so do **not** skip events:
 
 ```bash
-curl -sg -u "$AUTH" -X POST "$BASE/api/resourceTables/analytics?lastYears=5"
-curl -sg -u "$AUTH" "$BASE/api/system/tasks/ANALYTICS_TABLE.json"
+JOB=$(curl -sg -u "$AUTH" -X POST "$BASE/api/resourceTables/analytics?lastYears=5" | jq -r .response.id)
+curl -sg -u "$AUTH" "$BASE/api/system/tasks/ANALYTICS_TABLE/$JOB" | jq '.[0].completed'   # repeat until true
 ```
 
 ### 4. Query and compare
@@ -213,7 +219,7 @@ Compare the aggregated value, your engine-layer recomputation of expression+filt
 - **Independent expected values, scripted** — read the saved input payload and metadata; produce the engine layer (evaluate the stored expression) and the intent layer (classify from metadata) separately; diff both against analytics. For program indicators, the engine layer is a small evaluator of the PI expression language with SQL null semantics, extended with the verified behaviours (blank coalescing in ENROLLMENT filters, latest-event lookup, disaggregation drop rules, offsets). When it agrees with analytics on every total and cell, the remaining problems are in the configuration, not the engine. `dhis2-indicator-review` bundles one per type (`scripts/types/program-indicators/piexpr.py`, and `scripts/types/indicators/indexpr.py` for aggregate indicators).
 - **Expect the test to change the fix.** Running a corrected definition end to end on test data routinely shows something a review can't: in one round, four of the fixes needed changing (an event-date cap, an offset type, a `null` mapping entry, a blank-as-0 guard).
 - **Reconcile against raw data** — `GET /api/dataValueSets` (aggregate) or the events/tracker API (program) confirms what landed, independent of analytics.
-- **Drop to the database when analytics is mysterious.** If a value is inexplicable, querying the `analytics_*` tables and `datavalue` directly is the fastest way to root-cause it (e.g. confirming whether a zero was stored at all). Have read access to the test database, not just the API — instances created via the `dhis2-instances` skill (if available) expose their PostgreSQL directly (`devnet_db`, database `dhis2`, user/password `dhis`/`dhis`).
+- **Drop to the database when analytics is mysterious.** If a value is inexplicable, querying the `analytics_*` tables and `datavalue` directly is the fastest way to root-cause it (e.g. confirming whether a zero was stored at all). Ask for read access to the test database, not just the API; a local Docker instance (see `dhis2-test-instances`) gives it to you directly.
 - **Remember the test mutates the instance.** Beyond imported data, you may change DE `aggregationType`/`zeroIsSignificant` and system settings during setup. That is another reason the instance must be fresh and disposable — never carry these changes into a second run or a real system.
 
 ## API notes (version-sensitive — confirm against dhis2-docs)
@@ -221,7 +227,7 @@ Compare the aggregated value, your engine-layer recomputation of expression+filt
 - Metadata import stats for a single-type import live under `.response.stats`, not `.stats`; a top-level `jq '.stats'` prints null.
 - Poll a *specific* analytics job via `/api/system/tasks/ANALYTICS_TABLE/<jobId>` (the `id` from the trigger response) rather than slicing the whole task list.
 - `GET /api/system/id.json?limit=N` returns valid server-generated UIDs for the org units (and anything else) you create.
-- Changing a single property like `aggregationType` via JSON-patch (`PATCH /api/dataElements/<uid>`) needs `Content-Type: application/json-patch+json`; plain `application/json` returns 400.
+- Changing a single property like `aggregationType` (`PATCH /api/dataElements/<uid>`): use JSON Patch; the version-dependent content-type rules are in the dhis2-docs skill (*Updating single fields*).
 
 # Checklist
 

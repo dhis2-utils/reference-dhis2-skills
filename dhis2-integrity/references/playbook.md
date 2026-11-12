@@ -18,13 +18,15 @@ Table of contents:
   `isProgrammatic`, `introduction`, `recommendation`). Severities: `CRITICAL`, `SEVERE`, `WARNING`,
   `INFO`.
 - `POST /api/dataIntegrity/summary` and `POST /api/dataIntegrity/details?checks=a,b,c` trigger async
-  runs; `GET` the same paths to read results.
+  runs; `GET` the same paths to read results. Also: `GET /api/dataIntegrity/{check}/summary|details`
+  for one check, `GET …/summary/running|completed` (and `details/…`) for job state, and a `timeout`
+  (ms) parameter on the GETs that waits for a running check. Same controller in 2.40–2.43.
 - **Async AND cached** — two traps:
   - A `GET` immediately after `POST` returns the **previous** result. Gate your wait-loop on the
     per-check **`finishedTime` changing** (capture it before POST, poll until it moves) — not on the key
     merely being present. `scripts/integrity.py` does this for you.
-  - `summary` does **not** populate `details`, and the **slow/programmatic** checks (~17:
-    `isSlow`/`isProgrammatic`) are **excluded from the summary run**. Trigger them explicitly via
+  - `summary` does **not** populate `details`, and the **slow/programmatic** checks
+    (`isSlow`/`isProgrammatic`; 21 of 113 on 2.42.7) are **excluded from the summary run**. Trigger them explicitly via
     `details?checks=...`. If a check is "missing" from the summary, it's a slow one — run it.
 - Summary's issue count is the `count` field. Details give `issues[].{id,name,comment,refs}` — the
   `comment`/`refs` usually encode the exact problem (e.g. `"Diagnosis:{Anaemia,AFP}"` = the two
@@ -50,14 +52,28 @@ Table of contents:
 - **On 2.40 a bare `GET /dataIntegrity/summary` returns `{}`** even after the job completes — results come
   back only for explicitly named `?checks=a,b,c` (`integrity.py` always names them). A second POST while a
   run is in progress returns `409 E1004`.
-- **Check names differ between versions** (2.38 has ~39 checks, several named differently from 2.40+:
-  `org_units_being_orphaned`, `program_rules_without_action`, …). A precondition or verify naming a check
-  the target lacks must fail, not read as 0 — the playbook's `check()` raises on unknown names. Take names
-  from the target's own `GET /api/dataIntegrity`, never from another version's playbook.
+- **Check names differ between versions.** Take names from the target's own `GET /api/dataIntegrity`,
+  never from another version's playbook. A precondition or verify naming a check the target lacks must
+  fail, not read as 0 (the playbook's `check()` raises on unknown names). Examples from the YAML check
+  definitions in dhis2-core:
+  - 2.40 `data_elements_excess_groupset_membership`, `orgunit_group_sets_excess_groups`,
+    `orgunits_compulsory_group_count` became `*_violating_exclusive_group_sets` and
+    `org_units_not_in_compulsory_group_sets` by 2.42; `category_option_combos_have_duplicates`,
+    `program_rules_no_priority`, `datasets_not_assigned_to_org_units` are absent on 2.40.
+  - `tracker_geometry_invalid_srid` exists on 2.40–2.42 and was removed in 2.43.
+  - The trigram checks (`tracked_entity_attributes_invalid_trigram_search_configuration`,
+    `…_trigram_index_out_of_sync`) are 2.43+.
+  - 2.38 (unsupported) has ~39 checks with older names (`org_units_being_orphaned`,
+    `program_rules_without_action`, …).
+- **Large instances (100k+ org units or users):** bulk API operations OOM Tomcat even at 8 GB heap
+  (big imports, a 22 MB `dataSets` export, modest `dataValueSets` POSTs), seen as silent
+  `RemoteDisconnected` / HTTP 000. Push bulk work to SQL (§6), chunk API writes resumably, and run one
+  heavy instance at a time on a shared host. The slow checks time out and return empty, so verify fixed
+  checks with direct SQL (§8, `verification.md`).
 
 ## 2. Triage taxonomy
 
-Default rule (see SKILL.md §4): **auto-fix the deterministic bucket; ASK for the judgment bucket** —
+Default rule (see SKILL.md principle 4): **auto-fix the deterministic bucket; ASK for the judgment bucket** —
 unless the user has explicitly authorized best-effort autonomy for this engagement. Instance-specific
 answers from an earlier engagement never carry over; *policy-level* answers (never delete by
 `DELETE_`-name; restore-and-flag broken rules; bucket group-set stragglers into "Other/unknown") may be
@@ -78,7 +94,7 @@ applied. Start from each check's own `recommendation`.
     that **only when the user is working in isolation / granted autonomy**; otherwise ask. *Broken-but-
     intentional objects are NOT "unused" — repair/restore+flag, never delete* — with one exception:
     **abandonment** (broken AND `lastUpdated` years old AND zero data AND zero references) makes batch
-    deletion acceptable with a documented list, no per-object ask (see SKILL.md §4). **Decide PER OBJECT
+    deletion acceptable with a documented list, no per-object ask (see SKILL.md principle 4). **Decide PER OBJECT
     TYPE — there is no single blanket rule** (the appropriate handling differs):
     - *indicators not used in any analysis* (`indicator_no_analysis`) — being unused ≠ wrong; deletion is a
       content decision (an indicator may be kept for future dashboards). Default: ask/keep.
@@ -138,7 +154,7 @@ applied. Start from each check's own `recommendation`.
   there's **no safe per-item fix** — "completing" a set with incompatible options corrupts the dimension.
   **Accept and document as a data-model review item** (stop sharing options across overlapping
   categorizations / consolidate them); auto-leave only under granted autonomy, else surface to the owner.
-- **`org_units_not_in_compulsory_group_sets`:** the **recommended default** (validated across four
+- **`org_units_not_in_compulsory_group_sets`** (2.40: `orgunits_compulsory_group_count`): the **recommended default** (validated across four
   engagements — present it pre-selected in the decisions round, the remaining judgment call being only
   the membership of specific objects) is to add an **"Unknown" / "Other" group** (fixed pre-generated
   UID) to the group set and assign the unclassified org units to it — **especially when the group set
@@ -149,14 +165,14 @@ applied. Start from each check's own `recommendation`.
   stay compulsory and usable as a dimension. Never fabricate a *real* classification (don't guess Public
   vs Private) — that's what "Unknown" is for.
   **BUT only when the dimension is *universal*** — i.e. every OU plausibly has a value (Ownership: every
-  facility has an ownership). For a **niche/subset** dimension that only applies to some units (e.g.
-  "REHAB - Administrative levels" applies only to rehab facilities), forcing 900+ unrelated facilities
-  into a "REHAB - Unknown" bucket is wrong — **don't** auto-complete it; flag for the owner (it may
+  facility has an ownership). For a **niche/subset** dimension that only applies to some units (e.g. a
+  group set that classifies only rehabilitation facilities), forcing hundreds of unrelated facilities
+  into its "Unknown" bucket is wrong — **don't** auto-complete it; flag for the owner (it may
   simply not belong as compulsory). Judge universal-vs-niche from the set's name/scope; if unsure, ask.
   Apply the same "Unknown/Other group" principle to **any** group set used as an analytical dimension
   (org-unit, category-option, data-element group sets), compulsory or not, so dimension splits never
   silently drop members.
-- **`tracker_geometry_invalid_srid`** (2.42+): tracker/enrollment/**event** geometries with SRID≠4326
+- **`tracker_geometry_invalid_srid`** (2.40–2.42; not in 2.43): tracker/enrollment/**event** geometries with SRID≠4326
   (WGS84). Often SRID 0 at scale (e.g. 27k event geoms). The check ships its own remediation SQL —
   `UPDATE event SET geometry=ST_SetSRID(geometry,4326) WHERE geometry IS NOT NULL AND ST_SRID(geometry)!=4326`
   (same for `enrollment`, `trackedentity`) — which only **labels** the SRID (no coordinate transform) →
@@ -201,7 +217,7 @@ applied. Start from each check's own `recommendation`.
     delete cleanly (and remember to revert the attach if you then decide NOT to delete). Delete dangling
     rule actions / section + PSDE children first (a populated stage's API delete may still 409 on a
     `programruleaction` FK — remove that action, or restore instead).
-- **trigram TEA config** (`tracked_entity_attributes_invalid_trigram_search_configuration`): **NOT
+- **trigram TEA config** (`tracked_entity_attributes_invalid_trigram_search_configuration`, 2.43+): **NOT
   deterministic — the check's own recommendation says "depending on your needs."** Read it. At scale the
   flagged TEAs are typically *all* `trigramIndexable=false` with `LIKE`/`EW` *not* blocked (searchable but
   unindexed → slow). Two resolutions: **index** (`trigramIndexable=true` + `minCharactersToSearch>=3` +
@@ -215,8 +231,8 @@ applied. Start from each check's own `recommendation`.
   - **Non-text TEAs** (DATE/NUMBER/ORG_UNIT/BOOLEAN/IMAGE/COORDINATE) can't be trigram-searched → block
     `LIKE`/`EW` on them (deterministic-safe). - **Drop TEAs used in 0 programs** from the index set — no
     search benefit. (Heads-up: high flagged counts usually come from **per-program attribute
-    proliferation** — each module defines its own `name`/`ID`/`phone` TEA, hence prefixes like `GEN -`,
-    `MPOX CS:`; indexing is per-attribute/global, so one index serves every program that reuses it.)
+    proliferation** — each module defines its own `name`/`ID`/`phone` TEA, hence prefixed copies
+    of the same attribute per program; indexing is per-attribute/global, so one index serves every program that reuses it.)
   - Persist via **json-patch PATCH** of the three fields; a full `:owner` PUT can `409` on unique-name
     validation. Then run `TRACKER_TRIGRAM_INDEX_MAINTENANCE` (create jobConfiguration, `POST .../execute`,
     delete after) to clear `*_trigram_index_out_of_sync`.
@@ -312,7 +328,7 @@ Privilege/escalation realities:
 ## 5. The merge/dedup endpoints (2.38+, expanding per version) — prefer these; SQL is last resort
 
 **The merge framework keeps EXPANDING across versions.** `POST /api/<type>/merge` exists for (checked in
-dhis2-core source at 2.40.12, 2.41.10, 2.42.6, 2.43.1):
+dhis2-core source at 2.40.12, 2.41.10, 2.42.6, 2.43.1; re-checked on the 2.40–2.43 branch heads in 2026-11):
 
 | Type | 2.40 | 2.41 | 2.42 | 2.43 |
 |---|---|---|---|---|
@@ -333,7 +349,7 @@ rejecting the empty payload). On 2.43 the confirmed POST-merge types are the eig
 > `indicators`, `indicatorTypes`, `organisationUnits`. **Consequence:** on ≤2.42, consolidating duplicate categories/combos *that have
 > data* has no endpoint, so the `E1120` guard leaves **SQL as legitimate first-line** for those two types
 > (or upgrade the target to 2.43+ first). This is the opposite of the 2.43 rule below — so PROBE the actual
-> target version every engagement; the §6b "always use the endpoint, never SQL" lesson is 2.43-specific.
+> target version every engagement; the "always use the endpoint, never SQL" lesson below is 2.43-specific.
 > COC-level dedup (`categoryOptionCombos/merge`) is available on 2.42 and remains the right tool there.
 
 > **Hard lesson (do not repeat):** `category` (the dimension itself) **has a merge endpoint** in 2.43.
@@ -394,14 +410,15 @@ into (a true one-combo metadata correction), or relocating data under a closed p
 ## 6. Direct SQL — when, and how to do it safely
 
 Only for fixes an API guard blocks (§4) **and** that no merge endpoint can do — **probe `/<type>/merge`
-first** (§5); an `E1120`/`E4030` block alone does not justify SQL. Find the DB: for **broker / dev-net
-instances, prefer the container-internal DB host** (e.g. `dhis2-<name>-db:5432` on dev-net) over the
-host-published port — it's immune to host-port churn (a broker restart can reassign the published port, or
-a sibling can grab it, breaking a `PGHOST=gateway PGPORT=54xx` config mid-run). Non-broker instances
-often **publish PostgreSQL to the host gateway** — `ip route | awk '/default/{print $3}'` for the
-gateway IP, then scan candidate ports (broker instances and siblings sit on adjacent ports). Typical
-test creds `dbname=dhis2 user=dhis password=dhis`. No `psql`? `pip install psycopg2-binary`. Confirm
-you're on the right DB by cross-checking a count against the API (e.g. `dataelement` count).
+first** (§5); an `E1120`/`E4030` block alone does not justify SQL.
+
+Finding the DB: take host, port, database and credentials from whatever provisioned the instance
+(dhis2-test-instances records DB access as one of an instance's facts; for a local Docker compose it is
+the published PostgreSQL port, or the `db` service name from inside the compose network). When both a
+container-network name and a host-published port exist, prefer the network name: published ports can
+change when the instance restarts, breaking `PGHOST`/`PGPORT` mid-run. No `psql`?
+`pip install psycopg2-binary`. **Confirm you are on the right DB** by cross-checking a count against the
+API (e.g. `dataelement` count) before any write.
 
 **Real deployments: assume NO direct DB route.** Direct SQL from your environment is realistic on
 sandboxes/local copies (triage, developing the fix), but on online dev/production instances SQL is
@@ -467,6 +484,13 @@ Proven surgical patterns:
 - **Swap a combo's category** (fixes disjoint COCs without moving any data — the data already sits under
   the right COCs, only the combo metadata is wrong):
   `UPDATE categorycombos_categories SET categoryid=<new> WHERE categorycomboid=<combo> AND categoryid=<old>`.
+  That premise must be checked, not assumed. Group the combo's `datavalue` rows by COC and classify each
+  COC by its options: COCs whose options all come from the intended categories survive the swap with
+  their data. COCs carrying an option of the *wrong* category hold values someone entered against the
+  wrong disaggregation; `categoryOptionComboUpdate` will orphan them, and there is no automatic correct
+  target. List them with value counts and periods, and get an owner decision: an explicit old-COC →
+  new-COC mapping (migrate with the conflict check below), or keep/archive the values (export them)
+  before any of those COCs is deleted.
 - **Consolidate duplicate combos / merge categories** (the ONLY path when `categoryCombos/merge` /
   `categories/merge` are unavailable — i.e. ≤2.42). Pick a survivor per `(dataDimensionType, sorted
   category-ids)`; map each source COC → survivor COC by identical option-set; then repoint **every**
@@ -532,14 +556,16 @@ SQL safety checklist:
    self-join (usually none if source/target serve different DEs).
 3. **After any SQL metadata change, `POST /api/maintenance?cacheClear=true`** — DHIS2 caches metadata
    in memory; the API/checks won't see your change otherwise. Run `categoryOptionComboUpdate` too if you
-   changed combo/COC structure.
+   changed combo/COC structure. It recreates any COC the combo's categories still imply, so fix the
+   combo before deleting orphaned COCs.
 4. Prefer the **API for deletions** (it cascades join tables + runs deletion handlers) — but only after
    you've migrated the data/audit away so the delete isn't vetoed.
 5. psycopg2 treats `%` as a placeholder — pass `LIKE` patterns as **parameters**, or escape `%%`.
 
 ## 7. Naming conventions — deterministic fixes ONLY (own track)
 
-Reference: dhis2-docs `metadata-naming-conventions.md`. This process applies **only the deterministic,
+Reference: the metadata naming conventions in the DHIS2 implementation guidance on docs.dhis2.org
+(look them up with the dhis2-docs skill). This process applies **only the deterministic,
 objectively-correct naming fixes**, and keeps them as a **separate track/playbook** from the integrity
 fixes (they change end-user-visible labels, so an admin may apply/review them on a different cadence).
 Object **UIDs don't change on rename**, so forms/visualizations/rules keep working — renames are

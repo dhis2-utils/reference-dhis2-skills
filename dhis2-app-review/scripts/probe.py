@@ -5,14 +5,17 @@ Run this before writing real tests to see the lay of the land: frame structure,
 console errors, failed requests, HTTP errors, and a full-page screenshot.
 
 Usage:
-    python3 probe.py --base http://dhis2-agent-review:8080 --dev http://localhost:8081/ \
+    python3 probe.py --base http://localhost:8080 --dev http://localhost:8081/ \
                      [--user admin] [--password district] [--screenshot /tmp/probe.png] \
                      [--wait-selector "[data-test='dhis2-uicore-...']"]
 
 --base is the DHIS2 instance; --dev is the app dev server (port from
-webpack.config.js / d2.config.js — don't assume).
+webpack.config.js / d2.config.js — don't assume). --base, --user and --password
+default to $DHIS2_BASE_URL, $DHIS2_USERNAME and $DHIS2_PASSWORD (the older
+$DHIS2_URL, $DHIS2_USER and $DHIS2_PASS are read as fallbacks), else admin/district.
 """
 import argparse
+import os
 import sys
 import urllib.request
 
@@ -23,7 +26,7 @@ def login_cookie(base, user, password):
     """Return the authenticated session cookie (name, value).
 
     Uses Basic-auth `GET /api/me` — works on every DHIS2 version 2.40+.
-    Cookie name varies per instance (JSESSIONID, JSESSIONID_hmis_trk, ...) —
+    Cookie name varies per instance (JSESSIONID, JSESSIONID_<suffix>, ...) —
     match on substring. We deliberately do NOT try `/api/auth/login` first:
     on 2.40 it 302s to the legacy login page, urllib follows the redirect,
     and we silently capture an *anonymous* cookie (HTTP 200, no error).
@@ -44,10 +47,13 @@ def login_cookie(base, user, password):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", required=True, help="DHIS2 instance URL")
+    env = os.environ.get
+    base = env("DHIS2_BASE_URL") or env("DHIS2_URL")
+    ap.add_argument("--base", required=not base, default=base,
+                    help="DHIS2 instance URL (default: $DHIS2_BASE_URL)")
     ap.add_argument("--dev", required=True, help="App dev-server URL")
-    ap.add_argument("--user", default="admin")
-    ap.add_argument("--password", default="district")
+    ap.add_argument("--user", default=env("DHIS2_USERNAME") or env("DHIS2_USER") or "admin")
+    ap.add_argument("--password", default=env("DHIS2_PASSWORD") or env("DHIS2_PASS") or "district")
     ap.add_argument("--screenshot", default="/tmp/probe.png")
     ap.add_argument("--wait-selector", default=None,
                     help="CSS selector to wait for after load. Use for apps "

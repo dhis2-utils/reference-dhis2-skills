@@ -6,7 +6,7 @@ Who can see, search and act on a record is decided by the model as much as by us
 
 Three org units are easy to conflate:
 
-- **Registration org unit**: where the tracked entity was first created. Stored on the tracked entity; never changes.
+- **Registration org unit**: where the tracked entity was first created. Stored on the tracked entity; ownership transfer does not change it.
 - **Enrollment org unit**: where the enrollment in a given program was made. The default org unit of ENROLLMENT program indicators.
 - **Owner org unit**: per (tracked entity, program), initially the enrollment org unit; ownership transfer changes it. It decides whose capture scope the record falls in for that program.
 
@@ -29,7 +29,7 @@ Write a table of roles × the three scopes as part of the design; it is also the
 
 ## Ownership and transfer
 
-- Each (tracked entity, program) has an owner org unit, initially the registering one. Transfer moves the record into another org unit's scope (`PUT /api/tracker/ownership/transfer?trackedEntity=&program=&orgUnit=`, or the Capture UI), e.g. when a child enrols at a school outside the catchment.
+- Each (tracked entity, program) has an owner org unit, initially the enrollment org unit. Transfer moves the record into another org unit's scope (Capture UI, or `PUT /api/tracker/ownership/transfer` with `trackedEntity`, `program` and `orgUnit` on 2.42+; `ou` instead of `orgUnit` on 2.41, and `trackedEntityInstance` instead of `trackedEntity` on 2.40), e.g. when a child enrols at a school outside the catchment. Break-the-glass is `POST /api/tracker/ownership/override?trackedEntity=&program=&reason=`.
 - Program access level decides what users outside the owner's capture scope can do with a record found in their search scope:
   - **OPEN**: access within search scope, no justification asked.
   - **AUDITED**: the same, but the access is logged.

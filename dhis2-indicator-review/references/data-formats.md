@@ -6,9 +6,9 @@ The core scripts (`scripts/run.py`, `lib/`, `validate/assemble.py`, `review/`, `
 
 Type-specific files (aggregate indicators: `truth.json` with null blanks, `testsetup.json`, `"NaN"`/null values in `analytics.json`, `scenarios.json` with `values`) are in `references/indicators/data-formats.md`.
 
-## Run configuration: `pireview.json`
+## Run configuration: `review.json`
 
-One file per run (default `./pireview.json`, or `--config` / `$PIREVIEW_CONFIG`; `run.py --config` sets the variable). Paths are relative to the config file. Read by every script through `scripts/lib/config.py`, which returns the type's config class (`adapter.CONFIG`) so type keys are available to type scripts. Credentials never go in it: `DHIS2_URL` plus `DHIS2_TOKEN`, or `DHIS2_USER` + `DHIS2_PASSWORD`.
+One file per run, next to the export (default `./review.json`; an older `./pireview.json` is still found when there is no `review.json`; or `--config` / `$PIREVIEW_CONFIG`, and `run.py --config` sets the variable). Not to be confused with `work_dir/review.json`, the meeting topics written by `topics`: keep `work_dir` a subfolder (the scripts refuse a `work_dir` that would overwrite the config). Paths are relative to the config file. Read by every script through `scripts/lib/config.py`, which returns the type's config class (`adapter.CONFIG`) so type keys are available to type scripts. Credentials never go in it: they come from the environment, `DHIS2_BASE_URL` plus `DHIS2_API_TOKEN` (a personal access token), or `DHIS2_USERNAME` + `DHIS2_PASSWORD` (`scripts/lib/d2.py`; the older `DHIS2_URL`, `DHIS2_TOKEN` and `DHIS2_USER` are still read).
 
 ```json
 {"type": "program-indicators", "title": "Child Programme", "metadata": "export/metadata.json", "program": "<programUid>", "work_dir": "out",
@@ -98,7 +98,7 @@ The core reads only the generic fields: `status`, `expected_total`, `analytics_t
 ```
 Item = `adapter.describe()` + `label`, `details`, `test`. Aux topic items = `adapter.aux_describe()` + `{"userCount", "users": [code], "issues": [...]}`, where `fields` are table rows (PIs: one per category option with its filter). Uncovered findings land in topics `other` / `other-<aux kind>` (`checkEach: true`). `dataVersion` = hash of topic keys and item ids.
 
-**Meeting decisions**: artifact db collection `decisions`, one document per topic key:
+**Meeting decisions**: one document per topic key, kept in the page's browser storage and exported in the decisions file below (hosted mode: the shared db collection `decisions`):
 ```json
 {"verdict": "agree|each|domain|park|disagree", "note": "free text", "by": "<user id> | null", "byName": "typed name (offline) | null",
  "at": "ISO time", "excluded": ["<item uid>"], "items": {"<item uid>": "fix|ok|rename|domain"}}
@@ -106,8 +106,8 @@ Item = `adapter.describe()` + `label`, `details`, `test`. Aux topic items = `ada
 `excluded` = items marked "not affected" (only offered when the verdict is not `each`); `items` = per-item marks under "Check each item".
 
 Accepted decisions file shapes:
-- write_decisions.py (`--decisions`, repeatable, default `decisions.json`; newest `at` wins per topic): the page's export `{"format": "pireview-meeting-decisions", "dataVersion", "type", "scope", "reviewer", "exportedAt", "decisions": {key: doc}}` (older exports carry `program` instead of `type`/`scope`); a plain `{key: doc}`; a db dump `[{"id"|"doc_id"|"key": key, "data": doc}]`; compact `{key: [verdict, note, at]}`.
-- build_fixes.py (`--decisions`, default `decisions.json`, else `decisions-snapshot.json`): `{key: doc}` or `{"decisions": {...}}`, compact `{key: [verdict, note]}`, or a list of docs carrying `key`/`id` (an artifact db dump `[{"id", "data": doc}]` is unwrapped). Verdicts `agree|agreed|fix` → agree; `each|check|check-each|individual` → check each. Items to change in a check-each topic or a confirm group: `confirmed: [uid]` plus the items marked `fix` in `items`; items marked `ok`, `rename` or `domain` are treated as excluded.
+- write_decisions.py (`--decisions`, repeatable, default `decisions.json`; newest `at` wins per topic): the page's export `{"format": "pireview-meeting-decisions", "dataVersion", "type", "scope", "reviewer", "exportedAt", "decisions": {key: doc}}` (older exports carry `program` instead of `type`/`scope`); a plain `{key: doc}`; a hosted-mode db dump `[{"id"|"doc_id"|"key": key, "data": doc}]`; compact `{key: [verdict, note, at]}`.
+- build_fixes.py (`--decisions`, default `decisions.json`, else `decisions-snapshot.json`): `{key: doc}` or `{"decisions": {...}}`, compact `{key: [verdict, note]}`, or a list of docs carrying `key`/`id` (a hosted-mode db dump `[{"id", "data": doc}]` is unwrapped). Verdicts `agree|agreed|fix` → agree; `each|check|check-each|individual` → check each. Items to change in a check-each topic or a confirm group: `confirmed: [uid]` plus the items marked `fix` in `items`; items marked `ok`, `rename` or `domain` are treated as excluded.
 
 **`<P>-REVIEW-DECISIONS.md`** (write_decisions.py): summary, decision table, follow-ups, per-topic detail, per-item checklists for "Check each item" topics; `--link`, `--meeting`, `--clarifications` add header links, meeting line and a hand-written section.
 
@@ -221,7 +221,7 @@ The aux entry's own keys are type-specific (`patterns.explicit_aux`; PIs: `optio
 ```
 `diff fields` = `adapter.diff_fields(obj, cfg)`: `{"<label>": "text", "description": "..."}` (PIs: Filter, Expression, Analytics type, Aggregation type, Period boundaries, Category mappings used, Decimals). The page diffs every label whose text differs (multi-line text line by line, single-line text by tokens) and shows `description` in its own editable box. `auxExport` (PIs): `{"kind": "jsonpatch", "path": "/categoryMappings", "all": [program mappings as exported], "file": "categoryMappings", "endpoint": "PATCH /api/programs/<uid>", "contentType": "application/json-patch+json", "why"}`; the other kind is `{"kind": "metadata", "key": "<collection>", "file", "endpoint"}`.
 
-**Artifact store** (approval page, artifact mode):
+**Shared store** (hosted mode only: `<p>-fix-review.html`, template mode `artifact`):
 - collection `approvals`, one document per fix group: `{"states": {"<itemId>": "approved|rejected"}, "meta": {"<itemId>": {"by", "at"}}, "by", "at"}` (`by` = user id; a missing state = pending)
 - collection `descriptions`, one document per item: `{"text", "by", "at"}`
 

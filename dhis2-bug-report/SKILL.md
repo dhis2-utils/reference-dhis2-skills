@@ -1,6 +1,6 @@
 ---
 name: dhis2-bug-report
-description: Reproduce a suspected DHIS2 bug on the play instances, check Jira for an existing issue, isolate it, capture screenshots, record versions, and write the Jira ticket content (Steps to Reproduce / Actual Result / Expected Result). Use this whenever the user reports something in DHIS2 behaving wrongly and wants it tested, confirmed, narrowed down, or written up — including phrasings like "make a Jira ticket", "file a bug", "help me reproduce this", "has this been reported already", "is this a known issue", "does this also happen in 2.42", "is this a regression", "check this on play", "capture screenshots of this", or just a description of broken behaviour with a play URL attached. Also use it when the user asks to check which version of an app or of DHIS2 core an instance is running, or whether an installed app is the latest on the App Hub.
+description: Reproduce a suspected DHIS2 bug on the play instances, check Jira for an existing issue, isolate it, capture screenshots, record versions, and write the Jira ticket content (Steps to Reproduce / Actual Result / Expected Result). Use this whenever the user reports something in DHIS2 behaving wrongly and wants it tested, confirmed, narrowed down, or written up — including phrasings like "make a Jira ticket", "file a bug", "help me reproduce this", "has this been reported already", "is this a known issue", "does this also happen in 2.42", "is this a regression", "check this on play", "capture screenshots of this", or just a description of broken behaviour with a play URL attached. This includes checking app and core versions (and App Hub latest) as part of a report; a plain version lookup on its own is not a bug report.
 ---
 
 # DHIS2 bug reproduction and reporting
@@ -14,6 +14,10 @@ The default failure mode is a ticket that is long, hedged, and vague. The second
 ### 1. Restate the bug as a testable claim
 
 Before touching an instance, write down in one line what should happen and what the user says happens. If the user's description is ambiguous about which cells, which items, or which layout, pick the most likely reading and say which one you picked. Test that.
+
+Then ask whether the claim describes a defect at all. Many reports are documented behaviour or a configuration that cannot produce what the user wants (a layout, an option that needs a precondition, a setting on a different object). If one variant on an instance shows the behaviour is by design, stop there: reply briefly with the rule and the configuration change that gives the user what they want, and write no ticket, even if the user asked for one.
+
+Not reproducing on a newer version is different: it suggests a fix, not a design. Still write the ticket against the reported version, put the non-reproduction first (versions tried, same steps), and advise searching Jira for the fix or upgrading before filing.
 
 Keep the user's original wording somewhere. At the end, compare: anything in their description you could not reproduce is a finding worth reporting, not something to quietly drop.
 
@@ -34,6 +38,8 @@ See `references/instance-testing.md` for the analytics calls that matter, includ
 ### 4. Build the exact configuration, don't click it together
 
 For anything with a saved-object model (visualizations, event reports, maps, dashboards), create the configuration through the API as a temporary favourite rather than driving the UI. Reasons: the config is exact, it is identical across the versions you test, and you can open the same object on three instances without repeating fifteen clicks.
+
+Use fixed periods (`202601`, `2026Q1`) in every test object, not relative ones (`LAST_12_MONTHS`), even when the user's report used a relative period: translate it to the periods it covers today. Relative periods change what the object shows next month, so the repro stops being one.
 
 Name test objects with a prefix like `ZZTEST` so they are easy to find and delete. Delete them at the end of the session, in the same turn where you report results, so cleanup is not left to a later message that may never come. Play instances reset regularly, but leaving debris in a shared demo is rude.
 
@@ -89,12 +95,12 @@ If the draft feels thorough, it is probably too long. Cut the parts that make yo
 
 ## Scope
 
-Written for DHIS2 against the play instances, but the workflow holds for any web application with an API: verify the backend, build config programmatically, isolate with a variant, record versions, screenshot, write short. When testing a user's own instance rather than a public demo, ask before creating or deleting anything.
+Written for DHIS2 against the public play instances (the only dhis2-* skill that uses them), but the workflow holds for any web application with an API: verify the backend, build config programmatically, isolate with a variant, record versions, screenshot, write short. When a version is no longer on play, or the test needs heavy writes, use a disposable instance (see `dhis2-test-instances`). When testing a user's own instance, ask before creating or deleting anything.
 
 ## Reference files
 
 - `references/jira-search.md` — the DHIS2 tracker, how to search it for duplicates, what to do with a hit
-- `references/instance-testing.md` — play instances, credentials, version and App Hub lookups, analytics calls, saved-object payload shapes, silent-failure traps
+- `references/instance-testing.md` — finding the current play URL, credentials, version and App Hub lookups, analytics calls, saved-object payload shapes, silent-failure traps
 - `references/ticket-template.md` — the Jira template, per-section length limits, a worked example
 - `references/screenshots.md` — headless browser setup, authenticated screenshots, cropping
 

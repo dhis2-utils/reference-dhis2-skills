@@ -2,7 +2,7 @@
 """Check indicator values in analytics against ground truth computed from the
 synthetic population.
 
-    D2_URL=... D2_AUTH=user:pass python3 scripts/verify_indicators.py truth.json [--out report/verification.json]
+    DHIS2_BASE_URL=... DHIS2_USERNAME=... DHIS2_PASSWORD=... python3 scripts/verify_indicators.py truth.json [--out report/verification.json]
 
 The project's own code computes the ground truth from the same population it
 loaded (see references/synthetic-data.md) and writes truth.json:
@@ -60,7 +60,7 @@ def query(s, url, t, dx, dims=()):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("truth")
-    ap.add_argument("--url", help="overrides D2_URL")
+    ap.add_argument("--url", help="overrides DHIS2_BASE_URL")
     ap.add_argument("--option", action="append", help="only these options")
     ap.add_argument("--out")
     a = ap.parse_args()

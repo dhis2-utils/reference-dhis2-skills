@@ -1,6 +1,6 @@
 # DHIS2 program indicator behaviours (verified)
 
-Each behaviour below was confirmed on **DHIS2 2.43.2** with throwaway probe indicators on a test instance (October 2026). Re-verify on other versions: use the probe recipe at the end. They are built into the independent evaluator (`scripts/types/program-indicators/piexpr.py`, used by `scripts/types/program-indicators/compare.py`), and several of them drive fix patterns (`fix-patterns.md`). The same facts, in prose and with authoring advice, are in the `dhis2-indicators` skill (`references/program-indicators.md`); keep the two in step when you verify something new.
+Each behaviour below was confirmed on **DHIS2 2.43.2** with throwaway probe indicators on a test instance (October 2026). Re-verify on other versions: use the probe recipe at the end. They are built into the independent evaluator (`scripts/types/program-indicators/piexpr.py`, used by `scripts/types/program-indicators/compare.py`), and several of them drive fix patterns (`fix-patterns.md`). This file is the evaluator's specification: behaviour IDs used by the lint, the fix patterns and the scripts. The meaning of each behaviour, the authoring advice and the version notes (for example the 2.43 SQL engine, `experimentalAnalyticsSqlEngineEnabled`, which defaults to true on 2.43 and false on 2.42 per dhis2-core `SystemSettings`) live in the `dhis2-indicators` skill (`references/program-indicators.md`), which owns them. When you verify something new or on another version, update both.
 
 ## Import and validation
 

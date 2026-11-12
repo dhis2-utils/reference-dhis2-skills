@@ -10,7 +10,7 @@ Hard-won patterns for UI-testing DHIS2 apps. Read this before writing any test �
 
 ## Installed bundle: load it with `?redirect=false` (preferred for scripted checks)
 
-Driving a dev server against a remote instance from the sandbox is fragile: the login cookie is cross-site, and some `d2-app-scripts` versions do not proxy `/api` (see the dev-server section below). For automated verification, install the built zip and drive it on the instance's own origin:
+Driving a dev server against an instance on another hostname is fragile: the login cookie is cross-site, and some `d2-app-scripts` versions do not proxy `/api` (see the dev-server section below). For automated verification, install the built zip and drive it on the instance's own origin:
 
 ```python
 # after: build → POST /api/apps with the zip (see SKILL.md "Verification pass")
@@ -49,9 +49,9 @@ def get_session_cookie(base_url, user, password):
 # ctx.add_cookies([{"name": cn, "value": cv, "domain": "localhost", "path": "/", ...}])
 ```
 
-The cookie name varies per instance (e.g. `JSESSIONID`, `JSESSIONID_hmis_trk`) — match on the substring `JSESSIONID`.
+The cookie name varies per instance (e.g. `JSESSIONID`, `JSESSIONID_<suffix>`) — match on the substring `JSESSIONID`.
 
-**Why not `POST /api/auth/login`**: on 2.40 that endpoint doesn't exist and responds `302 → /dhis-web-commons/security/login.action`. urllib follows redirects by default, so the request ends with HTTP 200 — no `HTTPError` fires — and you silently capture the *anonymous* session cookie set by the login page. The test then renders the login screen instead of the app, surfacing only as a baffling selector timeout much later. Basic-auth `/api/me` yields an authenticated cookie on every version 2.40 → current.
+**Why not `POST /api/auth/login`** (say this when you replace it, with the versions): the endpoint only exists from 2.41 (dhis2-core `AuthenticationController`, absent on the 2.40 branch). On 2.40 the request gets `302 → /dhis-web-commons/security/login.action`; urllib follows the redirect, ends with HTTP 200, and you capture the *anonymous* session cookie the login page sets, so the browser later shows the login screen and the failure surfaces as a selector timeout. On 2.41+ it exists but answers HTTP 200 with a JSON `loginStatus` and no session when the account is locked, disabled, expired or needs 2FA (checked in the 2.42 source), so a status-code check passes there too. Basic-auth `GET /api/me` behaves the same on every version from 2.40: 200 with the user and an authenticated cookie, or 401.
 
 ## App Platform dev server: script the shell's own login form
 
@@ -106,11 +106,11 @@ page.on("requestfailed", lambda r: failed.append((r.url, r.failure)))
 page.on("response", lambda r: http_errors.append((r.status, r.url)) if r.status >= 400 else None)
 ```
 
-A test that "passes" but logged 12 console errors is not a passing test.
+A test that "passes" but logged 12 console errors is not a passing test. Make the streams **fail the run**: at the end (in a `finally`, before the browser closes), assert that `errors`, `failed` and `http_errors` are empty and that `console` holds no `error` entries, and exit non-zero with the list if not. Printing a warning and then `PASS` is the same as not listening. Allowlist known noise explicitly and narrowly (one URL pattern or message per entry, with the reason), never by downgrading the whole stream to a warning.
 
 **Scope route mocks to the app's frame.** On 2.42+ the global shell calls `/api/apps` itself to locate the app. A `page.route` that fails `/api/apps` to exercise the app's error path blanks the whole shell instead. Match on `route.request.frame.url` containing `/<app-key>/`, and let the shell's requests through.
 
-**Shell hygiene for suites.** `RC=$?` after a pipeline records the exit status of the last command (`python3 suite.py | tail; echo RC=$?` reports `tail`'s 0). Use `set -o pipefail` or `${PIPESTATUS[0]}`. Run background Python with `python3 -u`: with block buffering, stdout redirected to a log can stay empty even though the script exits 0. Launch Chromium with `--disable-dev-shm-usage` (the sandbox's `/dev/shm` is 64 MB), and close the browser as a script's last step, because subagents leave orphaned Chromium processes behind.
+**Shell hygiene for suites.** `RC=$?` after a pipeline records the exit status of the last command (`python3 suite.py | tail; echo RC=$?` reports `tail`'s 0). Use `set -o pipefail` or `${PIPESTATUS[0]}`. Run background Python with `python3 -u`: with block buffering, stdout redirected to a log can stay empty even though the script exits 0. In containers with a small `/dev/shm` (Docker's default is 64 MB), launch Chromium with `--disable-dev-shm-usage`. Close the browser as a script's last step, because subagents leave orphaned Chromium processes behind.
 
 ## Wait on app state, not on time
 
@@ -159,12 +159,12 @@ Adjust the package glob to whichever `@dhis2-ui/*` component you're targeting (`
 
 ## Cookie SameSite: same *site*, not same *port*
 
-Injecting the instance's `JSESSIONID` only works when the app origin and the API origin are **same-site** — same hostname; the port doesn't matter. Testing an App Platform **dev server** from inside the sandbox breaks this: the app is served at `localhost:<devPort>` but its API is the dev-net instance (`dhis2-agent-…:8080`), a different host — so the browser drops the cookie and you get the login screen with no error. (Installing the built zip sidesteps it: the app and its API then share the instance origin.)
+Injecting the instance's `JSESSIONID` only works when the app origin and the API origin are **same-site** — same hostname; the port doesn't matter. Testing an App Platform **dev server** against an instance on another hostname breaks this: the app is served at `localhost:<devPort>` but its API is at e.g. `dhis2-test:8080`, a different host — so the browser drops the cookie and you get the login screen with no error. (Installing the built zip sidesteps it: the app and its API then share the instance origin.)
 
-Fix: forward the instance's API to `localhost:<port>` so both sides are `localhost`, mirroring the host user's setup. Simplest is `socat` (preinstalled in the standard agent-sandbox):
+Fix: forward the instance's API to `localhost:<port>` so both sides are `localhost`. Simplest is `socat`, if installed:
 
 ```bash
-socat TCP-LISTEN:8080,fork,reuseaddr TCP:dhis2-agent-x:8080 &
+socat TCP-LISTEN:8080,fork,reuseaddr TCP:dhis2-test:8080 &
 ```
 
 Or, with no dependency at all, a tiny Python forwarder:
@@ -193,15 +193,15 @@ def forward(local_port, remote_host, remote_port):
         threading.Thread(target=_pipe, args=(client, upstream), daemon=True).start()
         threading.Thread(target=_pipe, args=(upstream, client), daemon=True).start()
 
-# threading.Thread(target=forward, args=(8080, "dhis2-agent-x", 8080), daemon=True).start()
+# threading.Thread(target=forward, args=(8080, "dhis2-test", 8080), daemon=True).start()
 # then point the dev server's API and your cookie domain at localhost:8080
 ```
 
 ## Testing a program rule firing in the Capture app
 
-To verify client-side rule behaviour (warnings, errors, hide-field) end-to-end in the Capture app on a dev-net instance, three quirks stack up:
+To verify client-side rule behaviour (warnings, errors, hide-field) end-to-end in the Capture app on an instance not served from `localhost`, these quirks stack up:
 
-1. **Capture's App-Platform build refuses a non-`localhost` origin**. It shows "The application could not be loaded … privacy mode", because it needs a secure context. `--unsafely-treat-insecure-origin-as-secure` did not help in headless mode. Run a loopback forwarder to the instance (the `socat` or Python forwarder above, bound to `127.0.0.1`), drive `http://localhost:<port>` instead of `http://dhis2-agent-x:8080`, and set cookies for domain `localhost`.
+1. **Capture's App-Platform build refuses a non-`localhost` origin**. It shows "The application could not be loaded … privacy mode", because it needs a secure context. `--unsafely-treat-insecure-origin-as-secure` did not help in headless mode. Run a loopback forwarder to the instance (the `socat` or Python forwarder above, bound to `127.0.0.1`), drive `http://localhost:<port>` instead of `http://dhis2-test:8080`, and set cookies for domain `localhost`.
 2. **Locate the app inside `/dhis-web-capture/index.html` via `page.frames`** — on 2.42+ it's wrapped in the global-shell iframe like any other app.
 3. **Mandatory fields render the label with a trailing `*`**, so exact-text lookups miss — use `get_by_text("First name", exact=False)` or match on the label prefix.
 4. **Capture labels fields with the data element's `formName`**, while the maintenance apps show its `name`. A selector built from metadata `name` finds nothing in the form, so fetch `formName`/`displayFormName` too.

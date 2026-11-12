@@ -1,6 +1,6 @@
 """Generate synthetic aggregate data for the engine check: a distinct value in every cell the indicators read.
 
-    python3 scripts/types/indicators/gen.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
+    python3 scripts/types/indicators/gen.py [--config review.json] [--metadata OVERLAY ...] [--items IDS] [--tag TAG]
                                             [--seed N] [--blank-share 0.08] [--zero-share 0.05] [--zeros significant|asis]
 
 Cells: for every data element an indicator in scope reads, every COC of its category combo(s) (as exported: the

@@ -19,8 +19,8 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT_DIR="$REPO_ROOT/dist"
 
 # Skills that remain useful without live-instance access (knowledge +
-# file-based workflows). dhis2-instances is deliberately absent; the
-# app-dev/review skills lose too much without a build/test loop.
+# file-based workflows). The app, prototyping and test-instance skills lose
+# too much without a shell, a build/test loop or a live instance.
 DEFAULT_SKILLS=(dhis2-docs dhis2-indicators dhis2-integrity dhis2-metadata dhis2-tracker-design)
 
 EXCLUDES=(

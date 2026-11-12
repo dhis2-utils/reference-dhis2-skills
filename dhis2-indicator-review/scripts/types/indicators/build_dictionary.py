@@ -1,6 +1,6 @@
 """Plain-language dictionary of the aggregate indicators in scope: numerator and denominator rendered with names.
 
-    python3 scripts/types/indicators/build_dictionary.py [--config pireview.json] [--metadata OVERLAY ...] [--items IDS]
+    python3 scripts/types/indicators/build_dictionary.py [--config review.json] [--metadata OVERLAY ...] [--items IDS]
 
 Each side is rendered term by term when it is a sum or difference of operands ("ANC 1st visit: Fixed, Outreach");
 any other shape (products, divisions, functions) is shown as the expression with names in place of uids. Every row

@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
-# Prepares the agent sandbox (Ubuntu 24.04) to build apps on the DHIS2 Android SDK; on aarch64 it
+# Prepares a Linux container (Ubuntu 24.04) to build apps on the DHIS2 Android SDK; on aarch64 it
 # also sets up aapt2 under qemu.
-# Needs passwordless sudo and the Maven/Google/Gradle hosts on the egress allowlist.
+# Needs passwordless sudo and network access to the Maven/Google/Gradle hosts checked below.
 # Idempotent: safe to run again, including after a failed run. Everything lands in the container
 # and ~/, not in the project.
 set -euo pipefail
 
 SDK="${ANDROID_HOME:-$HOME/android-sdk}"
-BUILD_TOOLS="36.0.0"
-PLATFORM="android-36"
+BUILD_TOOLS="${ANDROID_BUILD_TOOLS:-36.0.0}"   # set ANDROID_PLATFORM=android-37 for the Capture 3.5.0 set
+PLATFORM="${ANDROID_PLATFORM:-android-36}"
 ARCH="$(uname -m)"
 
-sudo -n true || { echo "needs passwordless sudo (ask the user to grant it)"; exit 1; }
+sudo -n true || { echo "needs passwordless sudo"; exit 1; }
 # Every host the build needs; any HTTP answer (even 404) means reachable, a timeout means blocked.
 for u in https://repo1.maven.org/maven2/ \
          https://dl.google.com/android/repository/repository2-1.xml \
          https://maven.google.com/web/index.html \
          https://services.gradle.org/distributions/ \
          https://plugins.gradle.org/m2/; do
-  curl -s -o /dev/null -m 10 "$u" || { echo "blocked: $u (allowlist it in init-firewall.sh)"; exit 1; }
+  curl -s -o /dev/null -m 10 "$u" || { echo "unreachable: $u (outbound access to this host is needed)"; exit 1; }
 done
 
 pkgs="openjdk-17-jdk-headless unzip"

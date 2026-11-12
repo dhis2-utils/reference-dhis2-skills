@@ -1,27 +1,38 @@
 """Minimal DHIS2 API client. Every call is appended to <work_dir>/api-log.jsonl (method, path, status, short bodies),
 so the evidence write-up can show exactly what was done.
 
-Connection from the environment: DHIS2_URL, and DHIS2_TOKEN (personal access token) or DHIS2_USER + DHIS2_PASSWORD.
+Connection from the environment: DHIS2_BASE_URL, and DHIS2_API_TOKEN (personal access token) or DHIS2_USERNAME +
+DHIS2_PASSWORD. The older names DHIS2_URL, DHIS2_TOKEN and DHIS2_USER are still read as fallbacks.
 """
 import base64, json, os, random, string, sys, time, urllib.error, urllib.parse, urllib.request
 
 _LOG = None
 
 
+def _env(*names):
+    """First non-empty value among the environment variables (canonical name first, then old aliases)."""
+    return next((os.environ[n] for n in names if os.environ.get(n)), None)
+
+
+def connection():
+    """(base_url or None, token or None, username or None, password or None) from the environment."""
+    return (_env('DHIS2_BASE_URL', 'DHIS2_URL'), _env('DHIS2_API_TOKEN', 'DHIS2_TOKEN'),
+            _env('DHIS2_USERNAME', 'DHIS2_USER'), _env('DHIS2_PASSWORD', 'DHIS2_PASS'))
+
+
 def _base():
-    b = os.environ.get('DHIS2_URL')
+    b = connection()[0]
     if not b:
-        sys.exit('set DHIS2_URL (and DHIS2_TOKEN, or DHIS2_USER and DHIS2_PASSWORD)')
+        sys.exit('set DHIS2_BASE_URL (and DHIS2_API_TOKEN, or DHIS2_USERNAME and DHIS2_PASSWORD)')
     return b.rstrip('/')
 
 
 def _auth():
-    tok = os.environ.get('DHIS2_TOKEN')
+    _, tok, u, p = connection()
     if tok:
         return 'ApiToken ' + tok
-    u, p = os.environ.get('DHIS2_USER'), os.environ.get('DHIS2_PASSWORD')
     if not (u and p):
-        sys.exit('set DHIS2_TOKEN, or DHIS2_USER and DHIS2_PASSWORD')
+        sys.exit('set DHIS2_API_TOKEN, or DHIS2_USERNAME and DHIS2_PASSWORD')
     return 'Basic ' + base64.b64encode(f'{u}:{p}'.encode()).decode()
 
 

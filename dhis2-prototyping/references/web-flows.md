@@ -18,11 +18,11 @@ General Playwright-on-DHIS2 patterns (the global-shell iframe on 2.42+, the loca
 Capture needs, session cookies across origins) are in `dhis2-app-review/references/playwright-patterns.md`;
 read it first. What follows is specific to scripted Capture entry flows.
 
-- Launch Chromium with `--disable-dev-shm-usage`: the sandbox's 64 MB `/dev/shm` crashes long runs.
+- Launch Chromium with `--disable-dev-shm-usage`: in containers with Docker's default 64 MB `/dev/shm`, long runs crash ("Page crashed").
   Close the browser at the end of every script; orphaned Chromium processes pile up.
 - Log in by `GET /api/me` with Basic auth on the browser context; then open
-  `/dhis-web-capture/index.html#…` through the localhost forward (`D2_WEB`, default
-  `http://localhost:8089`; `socat TCP-LISTEN:8089,bind=127.0.0.1,fork,reuseaddr TCP:<dhis2-host>:8080`).
+  `/dhis-web-capture/index.html#…` through a localhost origin (`D2_WEB`, default
+  `http://localhost:8089`; see "Web Capture needs a secure origin" in `setup.md`).
 - **Capture runs in an iframe** (global shell): find the frame whose URL contains `dhis-web-capture`
   and query inside it (see `playwright-patterns.md`).
 - Useful deep links: `#/search?programId=&orgUnitId=`, `#/new?…`, `#/enrollment?enrollmentId=&…`.

@@ -7,7 +7,7 @@ option name used instead of its code) and one ENROLLMENT PI, to exercise the map
 
 | File | What it is |
 |---|---|
-| `pireview.json` | run configuration (`export/` and `out/` are created by the run) |
+| `review.json` | run configuration (`export/` and `out/` are created by the run) |
 | `inject_disagg.py` | test fixture: adds the defective disaggregation to the export |
 | `decisions.json` | the (simulated) meeting decisions, in the document shape the review page exports |
 | `fixes-explicit.json` | one explicit fix the meeting asked for (quote a stage UID) |
@@ -16,7 +16,7 @@ option name used instead of its code) and one ENROLLMENT PI, to exercise the map
 ## How it was run
 
 ```bash
-export DHIS2_URL=http://<empty 2.43 test instance> DHIS2_USER=… DHIS2_PASSWORD=…   # never production
+export DHIS2_BASE_URL=http://<empty 2.43 test instance> DHIS2_USERNAME=… DHIS2_PASSWORD=…   # never production
 # export the program from a Sierra Leone 2.43 demo instance
 curl -u … "$SL/api/programs/qDkgAbB5Jlk/metadata.json?download=true" -o export/metadata.json
 python3 inject_disagg.py                                   # -> export/metadata-disagg.json

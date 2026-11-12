@@ -1,6 +1,6 @@
-"""Standalone approval page for reviewers without a Claude account -> <p>-fix-review-standalone.html (<p> = adapter.PREFIX).
+"""Standalone approval page, the default way to share it -> <p>-fix-review-standalone.html (<p> = adapter.PREFIX).
 
-Same template and data as the artifact page (fix_review_template.html + fix-review.json), in "standalone" mode:
+Same template and data as the hosted-mode page (fix_review_template.html + fix-review.json), in "standalone" mode:
 - decisions are kept in the browser (localStorage, per data version) instead of the shared store;
 - a "Your name" field; every decision records who and when;
 - "Save decisions file" downloads a small file

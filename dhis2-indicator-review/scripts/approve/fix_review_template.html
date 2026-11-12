@@ -136,7 +136,7 @@ body { margin: 0 }
 </div>
 <script>
 const DATA = __DATA__;
-const MODE = '__MODE__';            // 'artifact': shared store (claude.use db/user/downloads); 'standalone': browser storage + decisions files
+const MODE = '__MODE__';            // 'standalone' (default way to share): browser storage + decisions files; 'artifact': hosted mode, shared store (claude.use db/user/downloads)
 const SA = MODE === 'standalone';
 const FORMAT = 'pireview-fix-decisions/1';
 const $ = s => document.querySelector(s);

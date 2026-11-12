@@ -1,9 +1,9 @@
 """Import files from the approvals, without the page: the same four files the page downloads.
 
-Decisions come from either or both (reviewers on the shared page and reviewers on the standalone file):
-  --dump DIR         a dump of the artifact store: DIR/approvals/<group>.json and DIR/descriptions/<itemId>.json
-                     (e.g. ArtifactData "list" with out_dir; a document may be wrapped as {"data": {...}})
-  --decisions F ...  decisions files saved from the standalone page
+Decisions come from either or both (reviewers on the standalone file, the default, and on a hosted page):
+  --decisions F ...  decisions files saved from the standalone page ("Save decisions file")
+  --dump DIR         hosted mode only: a dump of the page's shared store, DIR/approvals/<group>.json and
+                     DIR/descriptions/<itemId>.json (a document may be wrapped as {"data": {...}})
 All sources are merged like the page does: per (group, item) the newest "at" wins; disagreements between reviewers
 are printed; files from another data version are used with a warning.
 Export rule: an item is exported only when EVERY fix on it is approved (the proposed object combines them); one
@@ -26,7 +26,7 @@ import config  # noqa: E402
 
 
 def load_dump(d):
-    """The artifact store dump in the shape of a decisions file (no dataVersion: the store belongs to this page)."""
+    """The hosted page's store dump in the shape of a decisions file (no dataVersion: the store belongs to this page)."""
     def coll(name):
         r = {}
         for f in glob.glob(os.path.join(d, name, '*.json')):
@@ -74,7 +74,7 @@ def merge(sources, version, groups):
 
 def main():
     ap_ = config.arg_parser(__doc__.split('\n')[0])
-    ap_.add_argument('--dump', help='artifact store dump directory (the shared page)')
+    ap_.add_argument('--dump', help='hosted mode: dump directory of the shared page store')
     ap_.add_argument('--decisions', nargs='+', default=[], help='decisions files from the standalone page')
     ap_.add_argument('--out', help='output directory (default <work_dir>/export)')
     args = ap_.parse_args()

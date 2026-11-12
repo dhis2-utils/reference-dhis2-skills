@@ -64,11 +64,15 @@ def fetch(session, url, params=None, timeout=600, tries=5, backoff=2.0):
 
 
 def default_auth():
-    auth = os.environ.get("DHIS2_AUTH")
-    if auth:
-        return auth
+    """Canonical env first: DHIS2_API_TOKEN, else DHIS2_USERNAME + DHIS2_PASSWORD.
+    Falls back to the older DHIS2_AUTH (user:pass or token:<PAT>)."""
     token = os.environ.get("DHIS2_API_TOKEN")
-    return f"token:{token}" if token else None
+    if token:
+        return f"token:{token}"
+    user = os.environ.get("DHIS2_USERNAME")
+    if user:
+        return f"{user}:{os.environ.get('DHIS2_PASSWORD', '')}"
+    return os.environ.get("DHIS2_AUTH") or None
 
 
 def metadata_types(session, base):
@@ -133,7 +137,8 @@ def main():
                    help="DHIS2 base URL, e.g. http://localhost:9021 (default: $DHIS2_BASE_URL)")
     p.add_argument("--auth", default=default_auth(),
                    help="user:password or 'token:<PAT>' for personal access token "
-                        "(default: $DHIS2_AUTH, or token:$DHIS2_API_TOKEN)")
+                        "(default: token:$DHIS2_API_TOKEN, else "
+                        "$DHIS2_USERNAME:$DHIS2_PASSWORD; legacy $DHIS2_AUTH)")
     p.add_argument("--out", default=".", help="Output directory")
 
     what = p.add_argument_group("what to fetch")
@@ -187,7 +192,7 @@ def main():
 
     if not args.url or not args.auth:
         p.error("--url and --auth are required (or set DHIS2_BASE_URL and "
-                "DHIS2_AUTH or DHIS2_API_TOKEN)")
+                "DHIS2_API_TOKEN, or DHIS2_USERNAME + DHIS2_PASSWORD)")
     if not (args.metadata or args.schemas or args.types or args.all_types):
         p.error("nothing to fetch: pass --metadata, --schemas, --types, or --all-types")
     if opts.minimize and not args.schemas:
