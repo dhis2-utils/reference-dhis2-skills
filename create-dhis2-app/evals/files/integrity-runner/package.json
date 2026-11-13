@@ -1,0 +1,43 @@
+{
+  "name": "integrity-runner",
+  "description": "Runs selected DHIS2 data integrity checks and lists the issues",
+  "version": "0.2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^7.1.2",
+    "d2-manifest": "^1.0.0",
+    "dotenv": "^17.0.0",
+    "eslint": "^10.0.3",
+    "globals": "^17.0.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.4",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^7.0.0",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "main": "./src/app.js",
+  "scripts": {
+    "build": "webpack --progress",
+    "lint": "eslint src",
+    "manifest": "d2-manifest package.json build/manifest.webapp",
+    "postbuild": "yarn manifest",
+    "prebuild": "rm -rf build && yarn lint",
+    "start": "d2-manifest package.json manifest.webapp && webpack-dev-server",
+    "zip": "rm -rf compiled && yarn build && mkdir compiled && cd build && zip -r ../compiled/$npm_package_name.zip *"
+  },
+  "manifest.webapp": {
+    "developer": {
+      "company": "HISP Centre - University of Oslo",
+      "email": "dev@dhis2.org",
+      "name": "HISP Centre"
+    },
+    "icons": {
+      "48": "img/icons/app_logo_48x48.png",
+      "96": "img/icons/app_logo_96x96.png"
+    },
+    "appType": "APP"
+  }
+}

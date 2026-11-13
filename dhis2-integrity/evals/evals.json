@@ -3,11 +3,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Our DHIS2 2.43 test instance is a copy of the Sierra Leone demo, at http://dhis2-agent-sl-integrity:8080 (admin/district). It fails a lot of data integrity checks. Work through the CRITICAL and SEVERE ones, fix what you safely can, and tell me which ones need a decision from me before you touch them. Afterwards, tell me what you fixed, what you left alone and why.",
+      "prompt": "Our DHIS2 2.43 test instance is a copy of the Sierra Leone demo, at {{DHIS2_BASE_URL}} ({{DHIS2_USERNAME}} / {{DHIS2_PASSWORD}}). It is disposable. It fails a lot of data integrity checks. Work through the CRITICAL and SEVERE ones, fix what you safely can, and tell me which ones need a decision from me before you touch them. Afterwards, tell me what you fixed, what you left alone and why.",
       "expected_output": "Reads /api/system/info. Runs the FULL inventory, including the slow/programmatic checks that the summary skips (integrity.py inventory, or details?checks=... gated on finishedTime changing). Re-runs until two inventories agree, and treats a timeout, an empty summary or DATA_INTEGRITY jobs stuck in SCHEDULED as 'no inventory', never as zero. Takes a snapshot before the first write. Triages into deterministic / judgment / accepted / blocked, and asks every judgment call (plus the autonomy level) in one batched round before fixing: 'fix what you safely can' limits scope and does not grant autonomy. Inspects program_stages_no_programs before deleting anything; on SL 2.43 the stage has DEs and a HIDEPROGRAMSTAGE rule, so it is restored, not deleted. Uses merge endpoints (probed) for duplicates, logs every write, re-runs the broad summary after each batch, and reports fixed / needs-decision / accepted with reasons.",
       "files": [],
-      "requires": "dhis2-instance: Sierra Leone demo 2.43, created via d2-broker as agent-sl-integrity (reachable at http://dhis2-agent-sl-integrity:8080); substitute the actual broker instance name in the prompt",
-      "notes": "Only live-instance case: tests the inventory mechanics (slow checks, async/cache, fail-loud on timeouts/stuck jobs), snapshot-first, and the rule that scope is not autonomy.",
+      "requires": {
+        "instance": {
+          "seed": "sierra-leone",
+          "version": "2.43"
+        }
+      },
+      "notes": "Live case on a stock Sierra Leone 2.43 demo: tests the inventory mechanics (slow checks, async/cache, fail-loud on timeouts/stuck jobs), snapshot-first, and the rule that scope is not autonomy.",
       "assertions": [
         "Runs the slow/programmatic checks explicitly (scripts/integrity.py inventory, or POST /api/dataIntegrity/details?checks=... for the isSlow/isProgrammatic checks), and does not rely on the summary run alone. It states or shows that the summary skips them",
         "Waits for fresh results: gates on finishedTime changing (or uses integrity.py), and does not read the GET right after the POST as the new result",
@@ -21,15 +26,20 @@
     },
     {
       "id": 2,
-      "prompt": "Attached is a metadata export from our production DHIS2 (evals/files/metadata-dump-2.42.json, a /api/metadata.json export). I do NOT want anyone touching prod. Clean it up on a throwaway instance: dedupe the duplicate category combos, category option combos and indicators, and fix the broken indicator, validation rule and program indicator expressions. Then give me back a fixed metadata.json I can review before we apply it.",
-      "expected_output": "Dump -> sandbox mode. Takes the version from the dump (system.version 2.42.1 and 2.42 property markers such as programIndicators.categoryCombo and programs.categoryMappings), creates an EMPTY 2.42 instance via d2-broker, imports twice, reconciles counts against the dump arrays and keeps the original file as the untouched control. Because the target is 2.42, probes and finds that categoryCombos/merge and categories/merge are missing (405). It uses categoryOptionCombos/merge for the duplicate Male COC (cocSexM0002 -> cocSexM0001) and indicators/merge for inMalConf02 -> inMalConf01. The combo consolidation (ccSexDel001 'Sex DELETE' into ccSex000001) is a reference-repointing SQL merge, not a delete by name, and it repoints deOPD000001, the inOPDMale01 numerator and the dfOPD000001 custom-form htmlCode. BEmONC/CEmONC stay separate. Fixes #{dsOPD000001.REPORTING_RATE} -> R{...}, strips AVG() in vrConfTst01, replaces d2:hasValue(V{event_date}) with 1, and quotes the UID in the piMalPf0001 filter, validating each expression first. Flags the inANCcov001 reference to the missing deAncMiss01 as pre-existing. Raises that the instance is empty (asks about synthetic data, or states the fixes were not exercised against data). Re-exports fixed.metadata.json and diffs it against the original.",
+      "prompt": "Attached is a metadata export from our production DHIS2 (evals/files/metadata-dump-2.42.json, a /api/metadata.json export). I do NOT want anyone touching prod. Clean it up on a throwaway instance: there is an empty, disposable DHIS2 at {{DHIS2_BASE_URL}} ({{DHIS2_USERNAME}} / {{DHIS2_PASSWORD}}) you can use. Dedupe the duplicate category combos, category option combos and indicators, and fix the broken indicator, validation rule and program indicator expressions. Then give me back a fixed metadata.json I can review before we apply it.",
+      "expected_output": "Dump -> sandbox mode. Takes the version from the dump (system.version 2.42.1 and 2.42 property markers such as programIndicators.categoryCombo and programs.categoryMappings), confirms the provided empty instance runs the same version (GET /api/system/info), imports twice, reconciles counts against the dump arrays and keeps the original file as the untouched control. Because the target is 2.42, probes and finds that categoryCombos/merge and categories/merge are missing (405). It uses categoryOptionCombos/merge for the duplicate Male COC (cocSexM0002 -> cocSexM0001) and indicators/merge for inMalConf02 -> inMalConf01. The combo consolidation (ccSexDel001 'Sex DELETE' into ccSex000001) is a reference-repointing SQL merge, not a delete by name, and it repoints deOPD000001, the inOPDMale01 numerator and the dfOPD000001 custom-form htmlCode. BEmONC/CEmONC stay separate. Fixes #{dsOPD000001.REPORTING_RATE} -> R{...}, strips AVG() in vrConfTst01, replaces d2:hasValue(V{event_date}) with 1, and quotes the UID in the piMalPf0001 filter, validating each expression first. Flags the inANCcov001 reference to the missing deAncMiss01 as pre-existing. Raises that the instance is empty (asks about synthetic data, or states the fixes were not exercised against data). Re-exports fixed.metadata.json and diffs it against the original.",
       "files": [
         "evals/files/metadata-dump-2.42.json"
       ],
-      "requires": "dhis2-instance: EMPTY DHIS2 2.42 instance created via d2-broker (no seed); the dump file is the input",
-      "notes": "Dump->sandbox workflow on 2.42, where the category/combo merge endpoints do not exist. Catches the naive 'categoryCombos/merge' or 'delete the DELETE-named combo' answer.",
+      "requires": {
+        "instance": {
+          "seed": "empty",
+          "version": "2.42"
+        }
+      },
+      "notes": "Dump->disposable-instance workflow on 2.42, where the category/combo merge endpoints do not exist. Catches the naive 'categoryCombos/merge' or 'delete the DELETE-named combo' answer.",
       "assertions": [
-        "Identifies the dump as 2.42 (from system.version and/or 2.42-only properties) and imports into an empty sandbox of that same version, not 2.43/2.41 or a seeded instance. Production and the original dump file are left untouched and the original is kept as the control",
+        "Identifies the dump as 2.42 (from system.version and/or 2.42-only properties) and checks that the provided empty instance is also 2.42 (GET /api/system/info) before importing; if the versions differed it would say so rather than import. Production and the original dump file are left untouched and the original is kept as the control",
         "States that categoryCombos/merge and categories/merge do not exist on 2.42 (probe returns 404/405), so the duplicate-combo consolidation is done by reference-repointing SQL (or deferred until an upgrade to 2.43). It does not claim categoryCombos/merge worked on this instance",
         "Does NOT delete ccSexDel001 ('Sex DELETE') because of its name. It repoints its references to the survivor combo/COCs first: deOPD000001.categoryCombo, the inOPDMale01 numerator #{deOPD000001.cocSDelM001}, and the dfOPD000001 custom-form htmlCode input ids",
         "Merges cocSexM0002 into cocSexM0001 with categoryOptionCombos/merge (same combo, same option), and merges inMalConf02 into inMalConf01 with indicators/merge. It keeps inBEmONC001 and inCEmONC001 as distinct indicators despite their identical formulas",

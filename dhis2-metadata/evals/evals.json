@@ -44,11 +44,23 @@
     },
     {
       "id": 3,
-      "prompt": "Two broker instances are up on dev-net: agent-sl42 (Sierra Leone demo seed, 2.42) at http://dhis2-agent-sl42:8080 and agent-empty42 (empty 2.42) at http://dhis2-agent-empty42:8080, both admin/district. Please copy every ANC data element and ANC indicator (names starting with 'ANC') from the SL instance to the empty one, together with whatever they need to actually work there. This is the dry run for doing the same between two real servers next month, so do it the way you'd do it for real, then show me proof that it landed.",
+      "prompt": "Two disposable DHIS2 2.42 test instances are up: a source with the Sierra Leone demo database at {{DHIS2_BASE_URL_1}} (user {{DHIS2_USERNAME_1}}, password {{DHIS2_PASSWORD_1}}) and an empty target at {{DHIS2_BASE_URL_2}} (user {{DHIS2_USERNAME_2}}, password {{DHIS2_PASSWORD_2}}). Please copy every ANC data element and ANC indicator (names starting with 'ANC') from the source to the target, together with whatever they need to actually work there. This is the dry run for doing the same between two real servers next month, so do it the way you'd do it for real, then show me proof that it landed.",
       "expected_output": "Uses scripts/fetch_metadata.py on the source with --types and --filter for the ANC data elements and indicators, then pulls in their dependency closure (categoryCombos, categories, categoryOptions, categoryOptionCombos, indicatorTypes, plus optionSets/legendSets if referenced) and exports with --unshare --delocalize, not --minimize. Excludes users. Imports with scripts/import_metadata.py using --schemas (or --passes 2) and judges the result by the final pass. Migrates COCs rather than regenerating them, or runs categoryOptionComboUpdate afterwards. Verifies on the target with API counts and UIDs that match the source, and confirms the target admin is untouched.",
       "files": [],
-      "requires": "dhis2-instance: Sierra Leone demo 2.42 (source, seed dhis2-db-sierra-leone_v42) + empty 2.42 (target), both via d2-broker",
-      "notes": "Live end-to-end transfer; traps: dependency closure beyond the name filter, users/admin clobbering, sharing that does not resolve on the target, and not minimizing for transfer.",
+      "requires": {
+        "instances": [
+          {
+            "seed": "sierra-leone",
+            "version": "2.42",
+            "mutates": false
+          },
+          {
+            "seed": "empty",
+            "version": "2.42"
+          }
+        ]
+      },
+      "notes": "Live end-to-end transfer between two instances (needs the harness to provision both and substitute the _1/_2 placeholders). Traps: dependency closure beyond the name filter, users/admin clobbering, sharing that does not resolve on the target, and not minimizing for transfer.",
       "assertions": [
         "Uses the bundled scripts/fetch_metadata.py and scripts/import_metadata.py (or reproduces their per-type, dependency-ordered behaviour) rather than a single hand-rolled POST of a bulk /api/metadata export",
         "The exported slice includes the dependencies the name filter would miss: at least the categoryCombos, categories, categoryOptions and categoryOptionCombos used by the ANC data elements, and the indicatorTypes used by the ANC indicators",
@@ -56,8 +68,45 @@
         "Does not import users: no users.json is sent (or --exclude users is passed), and the answer gives the reason: a user object overwrites any target user with the same UID or username (renaming, re-roling or disabling it). Makes no assumption about admin accounts or their UIDs (e.g. claiming a fixed or shared admin UID); for the real servers it does not rely on an enabled built-in admin",
         "Programmatic: on the target, GET /api/dataElements?filter=name:$like:ANC&fields=id&paging=false and the same for /api/indicators return exactly the same UID sets as on the source",
         "Programmatic: for at least one ANC data element, the categoryOptionCombo UIDs of its categoryCombo on the target equal those on the source (COCs migrated, not regenerated with fresh UIDs)",
-        "Programmatic: after the run the target still accepts admin/district (GET /api/me returns 200 with username 'admin')",
+        "Programmatic: after the run the target still accepts the credentials it was given ({{DHIS2_USERNAME_2}}): GET /api/me returns 200 with that username",
         "Reports the import result from the final pass's errors (not pass-1 E5002s) and shows the verification output rather than asserting success"
+      ],
+      "state_checks": [
+        {
+          "label": "Source ANC data elements",
+          "instance": 1,
+          "path": "/api/dataElements?filter=name:$like:ANC&fields=id&paging=false&order=id:asc"
+        },
+        {
+          "label": "Target ANC data elements",
+          "instance": 2,
+          "path": "/api/dataElements?filter=name:$like:ANC&fields=id&paging=false&order=id:asc"
+        },
+        {
+          "label": "Source ANC indicators",
+          "instance": 1,
+          "path": "/api/indicators?filter=name:$like:ANC&fields=id&paging=false&order=id:asc"
+        },
+        {
+          "label": "Target ANC indicators",
+          "instance": 2,
+          "path": "/api/indicators?filter=name:$like:ANC&fields=id&paging=false&order=id:asc"
+        },
+        {
+          "label": "Source ANC data element COCs",
+          "instance": 1,
+          "path": "/api/dataElements?filter=name:$like:ANC&fields=id,categoryCombo[id,categoryOptionCombos[id]]&paging=false&order=id:asc"
+        },
+        {
+          "label": "Target ANC data element COCs",
+          "instance": 2,
+          "path": "/api/dataElements?filter=name:$like:ANC&fields=id,categoryCombo[id,categoryOptionCombos[id]]&paging=false&order=id:asc"
+        },
+        {
+          "label": "Target login with the credentials the agent was given",
+          "instance": 2,
+          "path": "/api/me?fields=username"
+        }
       ]
     },
     {
@@ -78,7 +127,7 @@
         "The rewritten script sends an explicit categoryOptionCombo for every value, taken from the data element's own category combo (the data set element's override if set), e.g. the Fixed/Outreach COCs for the ANC visit elements, not the default COC and not omitted. (On 2.43.1 an omitted COC is not rejected: it is stored under the default COC HllvX50cXC0, which is not in these elements' combo, so the values do not appear in the form cells or in disaggregated analytics)",
         "Programmatic: the rewritten script compiles (python -m py_compile succeeds)",
         "The rewritten script supports a server-side dry run (dryRun=true, e.g. behind a --dry-run flag, opt-in is fine) and the answer tells the user to run it first on 2.43; and the script parses the JSON import summary to print status, imported/updated/ignored counts and conflicts. Printing only raw response text (r.text) does not pass",
-        "Handles period timeliness on 2.43: the rewritten script generates only complete past periods (or periods within the data set's open future periods), or the answer states that for users without F_EDIT_EXPIRED a single expired or not-yet-open period rejects the whole data-set group with E8030 (superusers skip this check). Generating Oct-Dec 2026 on 2026-09-30 without any mention of this fails"
+        "Handles period timeliness on 2.43: the rewritten script generates only complete past periods (or periods within the data set's open future periods), or the answer states that for users without F_EDIT_EXPIRED a single expired or not-yet-open period rejects the whole data-set group with E8030 (superusers skip this check). Keeping the script's all-of-2026 period list (which includes the current and future months) without any mention of this fails"
       ]
     }
   ]

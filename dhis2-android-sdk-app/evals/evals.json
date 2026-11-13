@@ -3,36 +3,64 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "We're building a small offline-first Android app (Kotlin, Jetpack Compose) on the DHIS2 Android SDK instead of Capture, for a household listing: register a household (tracked entity type Household, 3 attributes, one of them auto-generated from a text pattern), enroll it in the Household program, create the first event of the 'Visit' stage with two data values, and upload when there's a connection. Write the data layer (repository class) for this, with proper error handling, and tell me which SDK version and dependencies to pin in Gradle. Server is 2.42.",
-      "expected_output": "Kotlin repository using the SDK's create projections for TEI, enrollment and event, value setting through the SDK's value repositories, reserved-value handling for the generated attribute (downloaded in advance, not per org unit), upload via the SDK's upload with import-conflict inspection, blocking calls off the main thread; pinned SDK version and matching dependencies; notes that the SDK uploads with atomicMode OBJECT.",
+      "prompt": "Our household-listing app is built on the DHIS2 Android SDK 1.15.0 (Kotlin, server 2.42). Enumerators work offline for up to three weeks at a time. Each household is a tracked entity with members as separate tracked entities linked by a relationship; an enumerator can delete a member registered by mistake, also after it has been sent. The household ID is a generated attribute with the text pattern ORG_UNIT_CODE(...) + \"-\" + SEQUENTIAL(#####), and enumerators can change the village (org unit) while registering a household. For privacy, personal data must be wiped from the phone once a month. Write the SyncManager in Kotlin: upload households the enumerator has marked complete, decide for each household whether it is sent, needs attention or not sent yet, run the monthly wipe, and make sure enumerators never run out of household IDs. Explain your design decisions briefly.",
+      "expected_output": "Uploads only completed households by filtering the repository (trackedEntityInstances().byUid().in(household + member TEs, including pending member deletions).blockingUpload()), since upload() respects filters; keeps a per-household status in its own store because uploads use atomicMode=OBJECT; decides sent from every TE's aggregatedSyncState == SYNCED, needs attention on ERROR/WARNING, and treats a deleted member that vanished locally after its deletion was uploaded as done; wipes with wipeData() only when online and every household is clean, and re-downloads reserved values straight after because wipeData() also deletes them; reserved values: blockingDownloadReservedValues fills for every coded org unit linked to the program at once (no per-org-unit download), org units without a code get none, values expire (60 days by default on the server), so top up on every sync and warn/block offline when the count for the current village is low; when the village changes, move the TE, enrollment and events and pop a new ID for the new org unit because the old value carries the old org unit code; deleting synced members needs the cascade-delete authorities.",
       "files": [],
+      "requires": "offline",
       "assertions": [
-        "Uses the SDK create projections for tracked entity, enrollment and event (TrackedEntityInstanceCreateProjection, EnrollmentCreateProjection, EventCreateProjection) with blockingAdd or add",
-        "Sets attribute and data values through the SDK's value repositories (e.g. trackedEntityAttributeValues().value(...).blockingSet / trackedEntityDataValues().value(...).blockingSet)",
-        "Handles the auto-generated attribute via reserved values downloaded in advance (blockingDownloadReservedValues / reservedValueManager) and handles running out offline",
-        "Uploads via the SDK upload (trackedEntityInstances().upload()/blockingUpload) and inspects import conflicts (trackerImportConflicts) afterwards",
-        "Runs blocking SDK calls off the main thread (Dispatchers.IO, RxJava schedulers or equivalent)",
-        "Pins a specific SDK version (1.14.x) in Gradle and lists matching dependencies",
-        "Mentions a concrete SDK sync/upload behaviour that affects error handling (e.g. atomicMode OBJECT/partial acceptance, conflicts stored locally, state flags)",
-        "Kotlin code is syntactically plausible and consistent with the SDK API (no invented module or method names found by the grader)"
+        "Uploads only the households marked complete by filtering the upload (e.g. trackedEntityInstances().byUid().in(...).blockingUpload() or upload()), not a bare trackedEntityInstances().blockingUpload() of everything pending",
+        "Includes deleted member tracked entities of a household in that household's upload and treats a deleted member that no longer exists locally after upload as done (not as missing or failed)",
+        "Decides per household from the SDK sync state of every tracked entity in it (aggregatedSyncState/syncState: SYNCED = sent; ERROR/WARNING = needs attention; otherwise not sent yet) and keeps that status in the app's own store, not as one flag for the whole phone",
+        "States that wipeData() also deletes the downloaded reserved values, and re-downloads reserved values right after the wipe (and wipes only when online and no household is unsent or needs attention)",
+        "States that the SDK's reserved-value download fills values for all (coded) org units linked to the program at once, with no single-org-unit download, and/or that org units without a code get no values for an ORG_UNIT_CODE pattern",
+        "Handles running out offline: checks the remaining count for the current org unit (blockingCount) and warns or blocks before starting a household, and tops up on every sync; mentions that reserved values expire",
+        "When the village changes during registration, moves the tracked entity, enrollment and events to the new org unit AND replaces the household ID with a new value reserved for the new org unit (the old value carries the old org unit code)",
+        "Kotlin code is plausible against the SDK 1.15 API (reservedValueManager, wipeModule().wipeData(), syncState/aggregatedSyncState, trackerImportConflicts) with no invented SDK classes or methods found by the grader"
       ],
-      "requires": "offline"
+      "notes": "Probes SDK sync/purge/reserved-value behaviour verified in SDK 1.15.0 sources: TrackedEntityModuleWiper.wipeData() wipes TrackedEntityAttributeReservedValueTable; TrackedEntityAttributeReservedValueManager downloads per coded org unit linked to the attribute's programs (no per-org-unit download) and deletes expired values (server generateAndReserve default expiration 60 days, dhis2-core 2.42); upload() respects filters; deleted synced TEs disappear locally once the deletion is uploaded (skill, verified on 1.14.2)."
     },
     {
       "id": 2,
-      "prompt": "Our custom DHIS2 Android SDK app has a registration form and a visit form built in Compose. The program already has program rules on the server (hide fields, show warnings, assign an 'age group' value, make a field mandatory). How do we make our forms respect those rules exactly as Capture does? Write the integration code and explain what to watch out for.",
-      "expected_output": "Uses the DHIS2 rule engine (the library Capture uses) with an adapter from SDK metadata/values to rule-engine inputs, evaluates on every value change, applies hide/show/warning/error/mandatory/assign actions, persists assigned values, clears or handles hidden values carefully (hidden + assigned case), tests rules against the server/Capture; version alignment of rule engine with the SDK.",
-      "files": [],
-      "assertions": [
-        "Uses the DHIS2 rule engine library (org.hisp.dhis.rules / rule-engine) that Capture uses, rather than writing a custom expression evaluator",
-        "Builds rule-engine inputs from SDK metadata and current values via an adapter (rules, variables, attribute/data values, enrollment/event context)",
-        "Re-evaluates rules on every value change and applies hide/show, warning/error, mandatory and assign actions to the Compose form",
-        "Persists assigned values (and states whether they are saved like user-entered values)",
-        "Addresses hidden fields that hold values or are assigned (clear or show read-only) and the risk of server-side rejection",
-        "Addresses version alignment between the rule engine and the SDK/Capture/server",
-        "Recommends testing rule behaviour against Capture or the server with concrete cases"
+      "prompt": "Our custom DHIS2 Android SDK app (SDK 1.15.0, Compose) needs to apply the Person registration program's rules exactly as Capture does. The program's attributes and rules are exported in evals/files/rules/person-registration-rules.json. Write the Kotlin adapter that turns these rules into form state (hidden, mandatory, warnings, assigned values) with the DHIS2 rule engine, plus JVM unit tests that load this JSON, and tell me which rule-engine version to use. Point out anything in this rule set that will cause trouble.",
+      "expected_output": "Uses rule-engine-jvm from the Capture 3.5.0 set (3.8.5 with SDK 1.15.0) and forces one expression-parser version; maps variables as Capture does (INTEGER types → NUMERIC, BOOLEAN/TRUE_ONLY → BOOLEAN, everything else including the DATE 'dob' → TEXT; options from the option set; useCodeForOptionSet honoured); evaluates the enrollment with program-wide rules; applies effects as Capture: ASSIGN formatted by the target's value type (integer via toDouble().toInt(), boolean) and stored, warnings as content + \" \" + data; re-evaluates after applying assignments until stable so the age-group rules see the age assigned from the date of birth in the same change; flags the 'Currently pregnant' field that is both hidden and assigned for males: nothing is assigned to a hidden field and hidden values are cleared, so the server's rule check can reject the enrollment (E1309 seen with web Capture on 2.42) — recommend showing it read-only instead of hiding, or testing it; unit tests read the JSON (not hard-coded rules), one per rule plus a DOB→age→age-group chain test.",
+      "files": [
+        "evals/files/rules/person-registration-rules.json"
       ],
-      "requires": "offline"
+      "requires": "offline",
+      "assertions": [
+        "Uses the DHIS2 rule engine (org.hisp.dhis.rules, RuleEngine.getInstance().evaluate or equivalent) rather than a hand-written expression evaluator",
+        "Maps rule variable value types as Capture does: integer/number types to NUMERIC, BOOLEAN/TRUE_ONLY to BOOLEAN, and the DATE attribute 'dob' to TEXT (not RuleValueType.DATE)",
+        "Re-evaluates the rules after applying ASSIGN effects (loop until no value changes, or an equivalent second pass), so the age-group rules see the age assigned from the date of birth in the same change; a test covers the date of birth → age → age group chain",
+        "Formats an ASSIGN result by the target attribute's value type before storing it (e.g. '34.0' → '34' for the integer age; '1'/'0' or 'true'/'false' for the boolean) and stores assigned values",
+        "Builds the warning message as the action's content followed by a space and the evaluated data (e.g. 'Please check the date of birth. Age: 104')",
+        "Identifies that 'Currently pregnant' is both hidden and assigned for males, says the assigned value is not applied to a hidden field / the hidden value is cleared, warns that the server may reject the enrollment because of it (e.g. E1309), and recommends changing the metadata (show read-only instead of hiding) or testing it on a server",
+        "The JVM tests load evals/files/rules/person-registration-rules.json (or a copy of it) rather than restating the rules in code",
+        "Names rule-engine 3.8.5 with SDK 1.15.0 (the Capture 3.5.0 set) or otherwise ties the version to a released Capture version set, and forces a single expression-parser version"
+      ],
+      "notes": "Capture 3.5.0 sources: RuleEngineExtensions.toRuleValueType maps only integer/numeric and boolean types; DATE → TEXT; ValueTypeFormatter formats ASSIGN data (integer toDouble().toInt()); RulesUtilsProviderImpl builds messages content + ' ' + data, skips assignment to hidden fields and clears hidden non-mandatory fields. Rule engine 3.8.5 RuleConditionEvaluator updates the value map under the field UID for field ASSIGNs, so a later rule reading the variable '#{age}' needs a re-evaluation."
+    },
+    {
+      "id": 3,
+      "prompt": "A contractor started our household-listing Android app on the DHIS2 Android SDK. The build files and the data-layer class are in evals/files/review/ (app.build.gradle.kts is the app module's build.gradle.kts). Problems so far: the build fails with \"Could not find com.github.dhis2:sms-compression:0.2.0\", and a tester says the first Visit event never appears on the server although the stage is set to auto-generate. Review everything before we go further: list every problem you find, with the fix, in review.md, and give corrected versions of the files. Server is DHIS2 2.42.",
+      "expected_output": "review.md finds: JitPack missing (sms-compression is published only there; add it restricted to com.github.dhis2); core library desugaring not enabled; rule engine 3.9.0 is not part of a released Capture set and pulls expression-parser 1.5.2 while SDK 1.15.0 uses 1.5.0, so align with the Capture 3.5.0 set (rule engine 3.8.5) and force expression-parser (and kotlinx-datetime compat); the SDK does not create auto-generated events, the app must create the Visit event (EventCreateProjection) with a date; blockingSet does not validate value types, so validate 'members' before setting; sendAll uploads unfinished households, upload only completed units via byUid().in(...); a single-thread dispatcher puts form writes behind a long metadata download, use Dispatchers.IO; check import conflicts after upload.",
+      "files": [
+        "evals/files/review/libs.versions.toml",
+        "evals/files/review/settings.gradle.kts",
+        "evals/files/review/app.build.gradle.kts",
+        "evals/files/review/HouseholdWriter.kt"
+      ],
+      "requires": "offline",
+      "assertions": [
+        "review.md explains the sms-compression failure as a missing JitPack repository and the fix adds JitPack (ideally restricted to the com.github.dhis2 group) in settings.gradle.kts",
+        "review.md flags that core library desugaring is not enabled (isCoreLibraryDesugaringEnabled plus a coreLibraryDesugaring desugar_jdk_libs dependency) and the corrected build file adds it",
+        "review.md states that the DHIS2 Android SDK does not create auto-generated events and the corrected writer creates the Visit event itself (EventCreateProjection.create(...) with an event date)",
+        "review.md flags the SDK/rule-engine version pairing: rule engine 3.9.0 is not in a released Capture version set and/or its expression-parser version differs from the SDK's, and recommends aligning to a Capture release set and/or forcing a single expression-parser version",
+        "review.md says the code comment is wrong: blockingSet does not validate values against the value type (the server rejects them on upload), so the app must validate e.g. the INTEGER 'members' value itself",
+        "review.md flags that sendAll uploads every pending tracked entity including unfinished households, and the fix uploads only selected/completed ones (e.g. trackedEntityInstances().byUid().in(...).blockingUpload())",
+        "review.md flags the single-thread executor dispatcher (a metadata download blocks form writes behind it) and recommends Dispatchers.IO or equivalent",
+        "The review or corrected code inspects import conflicts or sync state after upload (trackerImportConflicts, syncState/aggregatedSyncState)"
+      ],
+      "notes": "Plants the traps the skill documents: JitPack-only sms-compression, desugaring, expression-parser drift between SDK and rule engine, no auto-generated events in the SDK, blockingSet not validating, upload() respecting filters, single-thread dispatcher freeze. Rule engine 3.9.0 is real on Maven Central (Nov 2026) and depends on expression-parser 1.5.2; SDK 1.15.0 depends on 1.5.0; Capture 3.5.0 pins rule engine 3.8.5."
     }
   ]
 }

@@ -3,21 +3,22 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "We're about to pilot an antenatal care follow-up programme on DHIS2 2.42 and can't agree between two designs: (A) one ANC program with a repeatable 'ANC visit' stage per pregnancy, or (B) mother as a tracked entity with each pregnancy as a separate linked 'Pregnancy' tracked entity carrying the visits. Management wants evidence, not opinions: which indicators each design can produce (ANC1-4 coverage, visits by trimester, % high-risk referred), and how long a nurse spends entering a typical visit on Capture Android and web. Plan the proof of concept for me and write the metadata generator for both options so we can start building next week. Don't touch any server yet — just give me the plan and the code.",
-      "expected_output": "plan.md with an ordered PoC process (plan → environment → generator → synthetic data with ground truth → indicator verification → manual Android pass → scripted flows → dry-runs → recorded passes → effort from logs → report), plus a Python generator for both options using deterministic UIDs and code prefixes, both options side by side on one instance; validation of expressions via API; interface-time effort model.",
+      "prompt": "We're about to pilot an antenatal care follow-up programme on DHIS2 2.42 and can't agree between two designs: (A) one ANC program with a repeatable 'ANC visit' stage per pregnancy, or (B) mother as a tracked entity with each pregnancy as a separate linked 'Pregnancy' tracked entity carrying the visits. Management wants evidence, not opinions: which indicators each design can produce (ANC1-4 coverage, visits by trimester, % high-risk referred, all broken down by mother's age band 15-19 / 20-24 / 25-34 / 35+), and how long a nurse spends entering a typical visit on Capture Android and web. Some details: the trimester is calculated from the LMP by a program rule; nurses tick up to three high-risk reasons from a list of 12; each pregnancy gets a generated pregnancy number that should include the facility code (codes look like FAC0451, FAC1207). Plan the proof of concept for me in plan.md and write the metadata generator (Python) for both options so we can start building next week. Don't touch any server yet — just give me the plan and the code.",
+      "expected_output": "plan.md with an ordered PoC process (plan → environment → generator → synthetic data with ground truth → indicator verification → manual Android pass → scripted flows → dry-runs → recorded passes → effort from logs → report), both options side by side on one instance with prefixes in codes (not names); expressions validated through the /description endpoints; effort from counted actions with a keystroke-level model, stating automation run time is not effort. Generator: deterministic UIDs; age bands via one PI per measure with a disaggregation category combo and categoryMappings (2.42) instead of one PI per band; the high-risk reasons as one MULTI_TEXT field counted with containsItems() in PI filters; the pregnancy number pattern uses one dot per character in ORG_UNIT_CODE(.......); the rule-assigned trimester is shown read-only, not hidden, and the synthetic loader computes it because /api/tracker runs program rules on import.",
       "files": [],
+      "requires": "offline",
       "assertions": [
         "The plan lays out an ordered PoC process that includes synthetic data with known ground truth AND verifying every indicator against it",
-        "Both design options are built side by side on one instance, distinguished by code prefixes or distinct codes",
-        "The generator derives UIDs deterministically from stable keys (so re-imports update in place), visible in the code",
-        "All Python files in outputs/ compile (python3 -m py_compile passes)",
+        "Both design options are built side by side on one instance, distinguished by a prefix in codes, while names (shown in Capture and in videos) are kept free of the prefix",
         "The plan validates rule/indicator expressions against the server API (e.g. the /description endpoints) before trusting them",
         "Entry effort is estimated from counted actions of scripted flows with a keystroke-level model, and the plan says automation run time is not effort",
-        "The plan includes a manual pass through the Android UI or dry-runs of all flows before final recordings",
-        "The generator defines program indicators (or equivalent) for ANC1-4 coverage for both options, or states precisely why an option cannot produce one",
-        "No DHIS2 server was contacted or modified during the run (per transcript)"
+        "The age-band breakdown uses one program indicator per measure with a disaggregation category combo and categoryMappings (available from 2.42), not one program indicator per age band",
+        "The high-risk reasons are one multi-select (MULTI_TEXT) field counted per reason with containsItems()/contains() in program-indicator filters (without a d2: prefix), not one yes/no data element per reason",
+        "The pregnancy-number text pattern accounts for ORG_UNIT_CODE taking one character per dot (e.g. ORG_UNIT_CODE(.......) for a 7-character code), not ORG_UNIT_CODE(...) expecting the whole code",
+        "The rule-assigned trimester field is not hidden by a rule (shown read-only instead), and the plan or loader computes the assigned trimester itself for synthetic data because the server runs program rules on tracker import",
+        "All Python files written compile (python3 -m py_compile passes) and no DHIS2 server was contacted or modified during the run (per transcript)"
       ],
-      "requires": "offline"
+      "notes": "Generator traps from references/generator.md and synthetic-data.md (2.42.6): categoryMappings disaggregation, containsItems without d2:, ORG_UNIT_CODE dots, hidden + assigned (E1309), server rules on import, prefix in codes not names, /description validation, keystroke-level effort."
     },
     {
       "id": 2,
@@ -36,6 +37,28 @@
         "A clock/time-zone check between emulator and server is included"
       ],
       "requires": "offline"
+    },
+    {
+      "id": 3,
+      "prompt": "We're in the middle of a DHIS2 prototype comparing three tracker designs, and last night's recording pass went badly. My notes are in evals/files/pass-notes.md. Tell me what went wrong in each numbered case, what to change before the re-run, and how to be sure the next pass really put the data on the server. Write your answer to diagnosis.md. Don't contact any server; just work from the notes.",
+      "expected_output": "diagnosis.md covering each case: (1) Maestro 'passed' and the app's 'Synced' are not proof, read every entry back through the tracker API; (2) emulator in UTC+3 vs server UTC, after local midnight dates are 'future' on the server: compare adb shell date with serverDate and put device and server on the same time zone; (3) Capture reads metadata only at login, so clear app data and log in again after metadata changes (and keep reserved values in mind); (4) allowScreenCapture in the Android settings (ANDROID_SETTING_APP general_settings) or recordings are black; (5) web Capture needs a secure context: serve it through a localhost origin (socat/port forward) or https; (6) analytics tables are UNLOGGED and can be emptied by a restart, and Tuesday's tables never held the pass's data anyway, so run analytics again after the restart and after the pass before looking at dashboards. (7) ORG_UNIT_CODE(...) takes one character per dot, so all villages give 'OU_'; use one dot per character. (8) E4047 on a new stage with its HIDEFIELD/SETMANDATORYFIELD rules in one import: the check reads the stored stage, so import without programRules/programRuleActions first, then in full.",
+      "files": [
+        "evals/files/pass-notes.md"
+      ],
+      "requires": "offline",
+      "assertions": [
+        "diagnosis.md exists and addresses all eight numbered cases",
+        "Case 1: states that a passed Maestro flow and the app's 'Synced' status are not proof, and prescribes reading each entry back from the server through the API (e.g. /api/tracker) after every flow",
+        "Case 2: attributes the 'future date' rejection to the emulator's time zone (UTC+3) being ahead of the server's (UTC) after local midnight, and says to compare device and server dates (e.g. adb shell date vs serverDate from /api/system/info) and align the time zones",
+        "Case 3: explains that Capture Android only picks up changed metadata (the new text pattern) after a fresh metadata download, i.e. clear app data / log out and log in again",
+        "Case 4: names allowing screen capture in the Android settings (allowScreenCapture in the Android Settings app / ANDROID_SETTING_APP general_settings) as the fix for black recordings",
+        "Case 5: says web Capture needs a secure context and fixes it by loading it through a localhost origin (port forward such as socat to localhost) or https, not by more browser flags",
+        "Case 6: says analytics must be re-run after the pass (and after the restart) before dashboards show data, AND gives the restart as the reason the previously working synthetic-population charts are empty (unlogged analytics tables emptied)",
+        "Case 7: says ORG_UNIT_CODE(...) takes one character of the code per dot (so 'OU_' for every village) and the pattern needs one dot per character of the codes (or codes whose first characters differ)",
+        "Case 8: explains E4047 as the server checking the new stage's HIDEFIELD/SETMANDATORYFIELD rules against the stage's stored data elements rather than the payload's, and fixes it by importing once without the program rules/actions and then again in full",
+        "No DHIS2 server was contacted during the run (per transcript)"
+      ],
+      "notes": "Each case is a trap documented in references/setup.md, android-flows.md or synthetic-data.md. Without the skill, models tend to blame the flows for case 1, suggest more Chromium flags for case 5, and miss that a restart can empty the (unlogged) analytics tables in case 6. Cases 7 (ORG_UNIT_CODE dots) and 8 (E4047 on a new stage plus its rules in one import) come from references/generator.md (2.42.6) and were added because Opus and Sonnet passed most other cases without the skill."
     }
   ]
 }

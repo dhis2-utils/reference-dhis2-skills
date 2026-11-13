@@ -1,0 +1,6249 @@
+{
+ "categories": [
+  {
+   "code": "BIRTHS_ATTENDED",
+   "name": "Births attended by",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2022-03-22T08:59:30.023",
+   "translations": [
+    {
+     "locale": "fr",
+     "property": "SHORT_NAME",
+     "value": "French"
+    },
+    {
+     "locale": "fr",
+     "property": "NAME",
+     "value": "French"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {
+     "DXyJmlo9rge": {
+      "displayName": "John Barnes",
+      "access": "rw------",
+      "id": "DXyJmlo9rge"
+     }
+    },
+    "userGroups": {
+     "qMjBflJMOfB": {
+      "displayName": "Family Planning Program",
+      "access": "rw------",
+      "id": "qMjBflJMOfB"
+     }
+    },
+    "public": "rw------"
+   },
+   "shortName": "Births attended by",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "TNYQzTHdoxL"
+    },
+    {
+     "id": "TXGfLxZlInA"
+    },
+    {
+     "id": "QgULqw9YDu2"
+    },
+    {
+     "id": "OjIOxG7vgna"
+    },
+    {
+     "id": "uZUnebiT5DI"
+    },
+    {
+     "id": "HTHvCohKoXt"
+    }
+   ],
+   "id": "KfdsGBcoiCa",
+   "attributeValues": []
+  },
+  {
+   "code": "OUTCOME",
+   "name": "Outcome",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2011-12-24T12:24:25.155",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Outcome",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "rSdQZYDmHJm"
+    }
+   ],
+   "id": "VPqYge5RB93",
+   "attributeValues": []
+  },
+  {
+   "code": "LOC_FIX_OUTREACH",
+   "name": "Location Fixed/Outreach",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2013-05-28T09:59:32.881",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Location Fixed/Outreach",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": true,
+   "categoryOptions": [
+    {
+     "id": "qkPbeWaFsnU"
+    },
+    {
+     "id": "wbrDrL2aYEc"
+    }
+   ],
+   "id": "fMZEcRHuamy",
+   "attributeValues": []
+  },
+  {
+   "code": "POINT_OF_SERV",
+   "name": "Point of service",
+   "created": "2013-03-19T20:20:44.850",
+   "lastUpdated": "2013-03-19T20:42:58.882",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Point of service",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "qkPbeWaFsnU"
+    },
+    {
+     "id": "wbrDrL2aYEc"
+    },
+    {
+     "id": "C1CvTD0GlTU"
+    }
+   ],
+   "id": "EicyMsVYG62",
+   "attributeValues": []
+  },
+  {
+   "code": "PREGNANT",
+   "name": "Pregnant/Non-pregnant",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2013-05-28T09:30:04.465",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Pregnant/Non-pregnant",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": true,
+   "categoryOptions": [
+    {
+     "id": "JR4RSJFjNYl"
+    },
+    {
+     "id": "ZggZw2XNDaw"
+    }
+   ],
+   "id": "qzsxBXFf5yb",
+   "attributeValues": []
+  },
+  {
+   "code": "LAB_COMPL",
+   "name": "Labour complications",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2013-05-28T09:30:54.369",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Labour complications",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "o4K5VAp14z9"
+    },
+    {
+     "id": "LVVjrz1mFQt"
+    },
+    {
+     "id": "agNsiNGcGlf"
+    },
+    {
+     "id": "IqVA7ElOrEw"
+    },
+    {
+     "id": "FfQkdfpvaxx"
+    },
+    {
+     "id": "E5g8xQeBvHa"
+    },
+    {
+     "id": "Mz5LnqoobUz"
+    },
+    {
+     "id": "rVvVG0xb1U9"
+    },
+    {
+     "id": "weOIzRXoUN4"
+    },
+    {
+     "id": "B3xM7LYh0jH"
+    },
+    {
+     "id": "Et4YOXvUod1"
+    },
+    {
+     "id": "b6sKvU8phrc"
+    },
+    {
+     "id": "qZIEVbjYDLI"
+    },
+    {
+     "id": "vGrKQ90SRZt"
+    },
+    {
+     "id": "sJw2lMoJu1f"
+    }
+   ],
+   "id": "SvzFH1XEfJr",
+   "attributeValues": []
+  },
+  {
+   "code": "LOC_PHU_COMM",
+   "name": "Location PHU/Community",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2013-05-28T09:59:48.308",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Location PHU/Community",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "id": "x3uo8LqiTBk",
+   "attributeValues": []
+  },
+  {
+   "code": "GENDER",
+   "name": "Gender",
+   "created": "2011-12-24T12:24:25.155",
+   "lastUpdated": "2013-05-28T09:27:46.728",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Gender",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": true,
+   "categoryOptions": [
+    {
+     "id": "apsOixVZlf1"
+    },
+    {
+     "id": "jRbMi0aBjYn"
+    }
+   ],
+   "id": "cX5k9anHEHd",
+   "attributeValues": []
+  },
+  {
+   "code": "default",
+   "name": "default",
+   "created": "2012-11-21T12:15:18.537",
+   "lastUpdated": "2026-11-12T08:10:37.256",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "default",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": false,
+   "categoryOptions": [
+    {
+     "id": "xYerKDKCefk"
+    }
+   ],
+   "id": "GLevLNI9wkl",
+   "attributeValues": []
+  }
+ ],
+ "categoryCombos": [
+  {
+   "name": "Fixed/Outreach",
+   "created": "2011-12-24T12:24:25.203",
+   "lastUpdated": "2011-12-24T12:24:25.203",
+   "translations": [],
+   "sharing": {
+    "users": {},
+    "userGroups": {}
+   },
+   "categories": [
+    {
+     "id": "fMZEcRHuamy"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "KYYSTxeVw28"
+  },
+  {
+   "name": "Maternal deaths",
+   "created": "2011-12-24T12:24:25.203",
+   "lastUpdated": "2011-12-24T12:24:25.203",
+   "translations": [],
+   "sharing": {
+    "users": {},
+    "userGroups": {}
+   },
+   "categories": [
+    {
+     "id": "x3uo8LqiTBk"
+    },
+    {
+     "id": "SvzFH1XEfJr"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "sgoeVsAbF4r"
+  },
+  {
+   "code": "BIRTHS",
+   "name": "Births",
+   "created": "2011-12-24T12:24:25.203",
+   "lastUpdated": "2016-04-18T16:04:34.745",
+   "translations": [
+    {
+     "locale": "fr",
+     "property": "NAME",
+     "value": "French"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "categories": [
+    {
+     "id": "KfdsGBcoiCa"
+    },
+    {
+     "id": "cX5k9anHEHd"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "m2jTvAj5kkm"
+  },
+  {
+   "name": "Pregnancy complications",
+   "created": "2011-12-24T12:24:25.203",
+   "lastUpdated": "2011-12-24T12:24:25.203",
+   "translations": [],
+   "sharing": {
+    "users": {},
+    "userGroups": {}
+   },
+   "categories": [
+    {
+     "id": "VPqYge5RB93"
+    },
+    {
+     "id": "SvzFH1XEfJr"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "Hz71pt7Eb3e"
+  },
+  {
+   "name": "TT",
+   "created": "2013-03-19T20:26:02.523",
+   "lastUpdated": "2013-03-19T20:38:44.908",
+   "translations": [],
+   "sharing": {
+    "users": {},
+    "userGroups": {}
+   },
+   "categories": [
+    {
+     "id": "qzsxBXFf5yb"
+    },
+    {
+     "id": "EicyMsVYG62"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "arTwh07V6qz"
+  },
+  {
+   "code": "default",
+   "name": "default",
+   "created": "2011-12-24T12:24:25.203",
+   "lastUpdated": "2016-04-12T20:37:49.126",
+   "translations": [],
+   "sharing": {
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "categories": [
+    {
+     "id": "GLevLNI9wkl"
+    }
+   ],
+   "dataDimensionType": "DISAGGREGATION",
+   "skipTotal": false,
+   "id": "bjDvmb4bfuf"
+  }
+ ],
+ "dataElements": [
+  {
+   "code": "DE_45",
+   "name": "TT2 doses given",
+   "created": "2010-02-19T02:45:09.078",
+   "lastUpdated": "2014-11-11T21:56:05.695",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "TT2 doses given"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC_TT2"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC_TT2",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "DUTSJE8MGCw",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   }
+  },
+  {
+   "code": "DE_359657",
+   "name": "Live births",
+   "created": "2010-02-05T10:57:52.428",
+   "lastUpdated": "2014-11-11T21:56:05.793",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Live births"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Live births"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Live births",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "gQNFkFkObU8",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   }
+  },
+  {
+   "code": "DE_359599",
+   "name": "ANC 4th or more visits",
+   "created": "2012-11-05T09:02:54.620",
+   "lastUpdated": "2014-11-11T21:56:05.833",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC >=4 visits"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC 4th or more visits"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC 4th or more",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "hfdmMSPBgLG",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_46",
+   "name": "TT3 doses given",
+   "created": "2010-02-19T02:45:21.031",
+   "lastUpdated": "2014-11-11T21:56:05.730",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "TT3 doses given"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC_TT3"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC_TT3",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "jWaNoH0X0Am",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   }
+  },
+  {
+   "code": "DE_359821",
+   "name": "Maternal death",
+   "created": "2010-02-05T10:57:43.564",
+   "lastUpdated": "2014-11-11T21:56:05.756",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Maternal death"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Maternal death"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Maternal death",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "FUrCpcvMAmC",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   }
+  },
+  {
+   "code": "DE_359598",
+   "name": "ANC 3rd visit",
+   "created": "2010-02-05T10:58:42.474",
+   "lastUpdated": "2014-11-11T21:56:05.795",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC 3rd visit"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC 3rd visit"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC 3rd visit",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "Jtf34kNZhzP",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359672",
+   "name": "Vitamin A given at postnatal",
+   "created": "2010-02-05T10:56:09.633",
+   "lastUpdated": "2014-11-11T21:56:05.897",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Vitamin A postnatal"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Vitamin A given at postnatal"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Vitamin A postnatal",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "btSSE4w61kd",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_65",
+   "name": "Low birth weight in PHU",
+   "created": "2011-12-24T12:24:25.088",
+   "lastUpdated": "2014-11-11T21:56:05.664",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Low birth weight in PHU"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "NoLowBirthWeig<2.5.F"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "NoLowBirthWeig<2.5.F",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "DvEF1SdMORa",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_359658",
+   "name": "Still births",
+   "created": "2010-02-05T10:56:56.629",
+   "lastUpdated": "2014-11-11T21:56:05.793",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Still births"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Still births"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Still births",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "HZSdnO5fCUc",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   }
+  },
+  {
+   "code": "DE_359647",
+   "name": "Complicated deliveries in PHU still births",
+   "created": "2010-02-16T00:43:36.343",
+   "lastUpdated": "2014-11-11T21:56:05.785",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Complicated deliveries in PHU still births"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Compl. del PHU still"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Compl. del PHU still",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "ncEnqRPHFvk",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_359673",
+   "name": "Postnatal 1st contact (within 1 week)",
+   "created": "2010-02-05T10:57:13.718",
+   "lastUpdated": "2014-11-11T21:56:05.900",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Postnatal 1st"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Postnatal 1st contact (within 1 week)"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Postnatal 1st",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "LhoRsqtRn4r",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359597",
+   "name": "ANC 2nd visit",
+   "created": "2010-02-05T10:58:43.068",
+   "lastUpdated": "2015-02-24T16:03:37.022",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC 2nd visit"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC 2nd visit"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC 2nd visit",
+   "legendSets": [
+    {
+     "id": "fqs276KXCXi"
+    }
+   ],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "cYeuwXTCPkU",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359596",
+   "name": "ANC 1st visit",
+   "created": "2010-02-05T10:58:43.646",
+   "lastUpdated": "2022-03-22T08:59:44.053",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC 1st visit"
+    },
+    {
+     "locale": "fr",
+     "property": "NAME",
+     "value": "Soin pr\u00e9natal 1"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC 1st visit"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {
+     "Rg8wusV7QYi": {
+      "displayName": "HIV Program Coordinators",
+      "access": "r-------",
+      "id": "Rg8wusV7QYi"
+     },
+     "qMjBflJMOfB": {
+      "displayName": "Family Planning Program",
+      "access": "rw------",
+      "id": "qMjBflJMOfB"
+     }
+    },
+    "public": "rw------"
+   },
+   "shortName": "ANC 1st visit",
+   "legendSets": [
+    {
+     "id": "fqs276KXCXi"
+    }
+   ],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "fbfJHSPpUQD",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_406918",
+   "name": "Complicated deliveries in PHU live birth",
+   "created": "2010-02-16T00:43:11.859",
+   "lastUpdated": "2014-11-11T21:56:05.658",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Compl. del PHU live"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Complicated deliveries in PHU live birth"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Compl. del PHU live",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "R1WAv9bVXff",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_48",
+   "name": "TT5 doses given",
+   "created": "2010-02-19T02:45:43.765",
+   "lastUpdated": "2014-11-11T21:56:05.715",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "TT5 doses given"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC_TT5"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC_TT5",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "B2ocYtYkPBD",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   }
+  },
+  {
+   "code": "DE_359606",
+   "name": "IPT 2nd dose given by TBA",
+   "created": "2010-02-05T10:57:59.213",
+   "lastUpdated": "2014-11-11T21:56:05.861",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "IPT 2nd by TBA"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "IPT 2nd dose given by TBA"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "IPT 2nd by TBA",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "SA7WeFZnUci",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_47",
+   "name": "TT4 doses given",
+   "created": "2010-02-19T02:45:32.875",
+   "lastUpdated": "2014-11-11T21:56:05.696",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "TT4 doses given"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC_TT4"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC_TT4",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "tbudfYMNFS5",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   }
+  },
+  {
+   "code": "DE_359602",
+   "name": "Albendazole given at ANC (2nd trimester)",
+   "created": "2010-02-05T10:58:22.055",
+   "lastUpdated": "2014-11-11T21:56:05.636",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Albendazole given at ANC (2nd trimester)"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Albendazole at ANC"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Albendazole at ANC",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "hCVSHjcml9g",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359604",
+   "name": "IPT 2nd dose given at PHU",
+   "created": "2010-02-05T10:57:59.401",
+   "lastUpdated": "2014-11-11T21:56:05.699",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "IPT 2nd dose given at PHU"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "IPT 2nd at PHU"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "IPT 2nd at PHU",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "V37YqbqpEhV",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359601",
+   "name": "Iron Folate given at ANC 3rd",
+   "created": "2010-02-05T10:57:58.526",
+   "lastUpdated": "2014-11-11T21:56:05.829",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Iron Folate at ANC 3"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Iron Folate given at ANC 3rd"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Iron Folate at ANC 3",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "rbkr8PL0rwM",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359605",
+   "name": "IPT 1st dose given by TBA",
+   "created": "2010-02-05T10:57:59.589",
+   "lastUpdated": "2014-11-11T21:56:05.854",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "IPT 1st dose given by TBA"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "IPT 1st by TBA"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "IPT 1st by TBA",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "yTHydhurQQU",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_192",
+   "name": "Low birth weight in community",
+   "created": "2011-12-24T12:24:25.088",
+   "lastUpdated": "2014-11-11T21:56:05.628",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Low birth weight in community"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "NoLowBirthWeig<2.5.O"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "NoLowBirthWeig<2.5.O",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "Ce6kAvaHsxR",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_359651",
+   "name": "LLITN given after delivery",
+   "created": "2010-02-05T10:57:58.354",
+   "lastUpdated": "2014-11-11T21:56:05.813",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "LLITN given after delivery"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "LLITN after delivery"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "LLITN after delivery",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "ntzmpYRSKGg",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_359820",
+   "name": "Pregnancy-related complications",
+   "created": "2010-02-05T10:57:13.014",
+   "lastUpdated": "2014-11-11T21:56:05.851",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Pregn complications"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Pregnancy-related complications"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Pregn complications",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "h8vtacmZL5j",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   }
+  },
+  {
+   "code": "DE_406919",
+   "name": "Complicated deliveries in community live birth",
+   "created": "2010-02-16T00:44:50.156",
+   "lastUpdated": "2014-11-11T21:56:05.614",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Compl. del comm live"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Complicated deliveries in community live birth"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Compl. del comm live",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "tn3p7vIxoKY",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_44",
+   "name": "TT1 doses given",
+   "created": "2010-02-19T02:44:54.765",
+   "lastUpdated": "2014-11-11T21:56:05.695",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC_TT1"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "TT1 doses given"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC_TT1",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "zzHwXqxKYy1",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   }
+  },
+  {
+   "code": "DE_359648",
+   "name": "Complicated deliveries in community still births",
+   "created": "2010-02-16T00:45:17.250",
+   "lastUpdated": "2014-11-11T21:56:05.733",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Complicated deliveries in community still births"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Compl. del com still"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Compl. del com still",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "FE82N2sA0YI",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_359603",
+   "name": "IPT 1st dose given at PHU",
+   "created": "2010-02-05T10:57:59.745",
+   "lastUpdated": "2014-11-11T21:56:05.921",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "IPT 1st dose given at PHU"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "IPT 1st at PHU"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "IPT 1st at PHU",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "bqK6eSIwo3h",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359600",
+   "name": "LLITN given at ANC 1st",
+   "created": "2010-02-05T10:57:58.197",
+   "lastUpdated": "2014-11-11T21:56:05.919",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "LITTN at ANC 1st"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "LLITN given at ANC 1st"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "LITTN at ANC 1st",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "ybzlGLjWwnK",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_359674",
+   "name": "Postnatal 2nd contact (at 6 weeks)",
+   "created": "2010-02-05T10:57:13.483",
+   "lastUpdated": "2014-11-11T21:56:05.926",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Postnatal 2nd contact (at 6 weeks)"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Postnatal 2nd"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Postnatal 2nd",
+   "legendSets": [],
+   "aggregationType": "SUM",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "k1vnEuKnRYE",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   }
+  },
+  {
+   "code": "DE_5808",
+   "name": "Total Population",
+   "created": "2010-02-19T00:52:16.578",
+   "lastUpdated": "2014-11-11T21:56:05.837",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Total Population"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Total Population"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Total Population",
+   "legendSets": [],
+   "aggregationType": "AVERAGE_SUM_ORG_UNIT",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "WUg3MYWQ7pt",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_20825",
+   "name": "Population of women of child bearing age (WRA)",
+   "created": "2010-02-19T00:57:11.546",
+   "lastUpdated": "2014-11-11T21:56:05.916",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Population of women of child bearing age (WRA)"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "WRA"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "WRA",
+   "legendSets": [],
+   "aggregationType": "AVERAGE_SUM_ORG_UNIT",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "vg6pdjObxsm",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_20824",
+   "name": "Total population < 1 year",
+   "created": "2010-02-19T00:52:33.421",
+   "lastUpdated": "2014-11-11T21:56:05.918",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Total population <1y"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Total population < 1 year"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Total population <1y",
+   "legendSets": [],
+   "aggregationType": "AVERAGE_SUM_ORG_UNIT",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "DTVRnCGamkV",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_20826",
+   "name": "Total population < 5 years",
+   "created": "2010-02-19T00:52:53.015",
+   "lastUpdated": "2014-11-11T21:56:05.898",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Total population < 5"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Total population < 5 years"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Total population < 5",
+   "legendSets": [],
+   "aggregationType": "AVERAGE_SUM_ORG_UNIT",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "DTtCy7Nx5jH",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  },
+  {
+   "code": "DE_20899",
+   "name": "Expected pregnancies",
+   "created": "2010-02-19T00:55:56.500",
+   "lastUpdated": "2014-11-11T21:56:05.653",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Expected pregnancies"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Expected pregnancies"
+    },
+    {
+     "locale": "en_GB",
+     "property": "DESCRIPTION",
+     "value": "Estimated as 4.4% of the total population."
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Expected pregnancies",
+   "description": "Estimated as 4.4% of the total population.",
+   "legendSets": [],
+   "aggregationType": "AVERAGE_SUM_ORG_UNIT",
+   "valueType": "NUMBER",
+   "domainType": "AGGREGATE",
+   "url": "",
+   "aggregationLevels": [],
+   "zeroIsSignificant": false,
+   "id": "h0xKKjijTdI",
+   "attributeValues": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   }
+  }
+ ],
+ "legendSets": [
+  {
+   "name": "Reporting rates",
+   "created": "2013-10-16T10:40:45.031",
+   "lastUpdated": "2016-10-05T18:25:21.932",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "symbolizer": "color",
+   "legends": [
+    {
+     "name": "Medium",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 60.0,
+     "endValue": 80.0,
+     "color": "#6baed6",
+     "displayName": "Medium",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "jEchJpYeJsj",
+     "attributeValues": []
+    },
+    {
+     "name": "Low",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 30.0,
+     "endValue": 60.0,
+     "color": "#3182BD",
+     "displayName": "Low",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "UmOS6jE35Uy",
+     "attributeValues": []
+    },
+    {
+     "name": "Non reporting",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 0.0,
+     "endValue": 30.0,
+     "color": "#08519C",
+     "displayName": "Non reporting",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "jMw9EOicPbm",
+     "attributeValues": []
+    },
+    {
+     "name": "Excellent",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 90.0,
+     "endValue": 100.0,
+     "color": "#EFF3FF",
+     "displayName": "Excellent",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "baH8XcMGg8d",
+     "attributeValues": []
+    },
+    {
+     "name": "Invalid",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 100.0,
+     "endValue": 1000.0,
+     "color": "#CCCCCC",
+     "displayName": "Invalid",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "DinVyhLbrJK",
+     "attributeValues": []
+    },
+    {
+     "name": "High",
+     "created": "2016-10-05T18:25:21.921",
+     "lastUpdated": "2016-10-05T18:25:21.921",
+     "translations": [],
+     "favorites": [],
+     "sharing": {
+      "users": {},
+      "userGroups": {}
+     },
+     "startValue": 80.0,
+     "endValue": 90.0,
+     "color": "#BDD7E7",
+     "displayName": "High",
+     "access": {
+      "manage": true,
+      "write": true,
+      "read": true,
+      "update": true,
+      "delete": true
+     },
+     "favorite": false,
+     "id": "FNpcjfIWvZZ",
+     "attributeValues": []
+    }
+   ],
+   "id": "k1JHPfXsJND",
+   "attributeValues": []
+  }
+ ],
+ "categoryOptions": [
+  {
+   "code": "IN_COMM",
+   "name": "In Community",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "In Community"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "In Community",
+   "id": "wHFX72Y0KXx",
+   "attributeValues": []
+  },
+  {
+   "code": "MCH_AIDES",
+   "name": "MCH Aides",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "MCH Aides"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "MCH Aides",
+   "id": "TNYQzTHdoxL",
+   "attributeValues": []
+  },
+  {
+   "code": "OUTREACH\nOUTREACH",
+   "name": "Outreach",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Outreach"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Outreach",
+   "id": "wbrDrL2aYEc",
+   "attributeValues": []
+  },
+  {
+   "code": "MANAGED_PHU",
+   "name": "Managed at PHU",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Managed at PHU"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Managed at PHU",
+   "id": "e3oqm527jBS",
+   "attributeValues": []
+  },
+  {
+   "code": "PREGNANT",
+   "name": "Pregnant",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Pregnant"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Pregnant",
+   "id": "JR4RSJFjNYl",
+   "attributeValues": []
+  },
+  {
+   "code": "RETAINED_PLAC",
+   "name": "Retained placenta",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Retained placenta"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Retained placenta",
+   "id": "qZIEVbjYDLI",
+   "attributeValues": []
+  },
+  {
+   "code": "SCHOOL\nSCHOOL",
+   "name": "School",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2013-03-19T19:51:40.402",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": ".School"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "School",
+   "id": "C1CvTD0GlTU",
+   "attributeValues": []
+  },
+  {
+   "code": "MALPRE",
+   "name": "Malpresentation",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Malpresentation"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Malpresentation",
+   "id": "vGrKQ90SRZt",
+   "attributeValues": []
+  },
+  {
+   "code": "OBSTR_LABOUR",
+   "name": "Obstructed labour",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Obstructed labour"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Obstructed labour",
+   "id": "B3xM7LYh0jH",
+   "attributeValues": []
+  },
+  {
+   "code": "UNTRAINED_TBA",
+   "name": "Untrained TBA",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Untrained TBA"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Untrained TBA",
+   "id": "HTHvCohKoXt",
+   "attributeValues": []
+  },
+  {
+   "code": "REFERRED",
+   "name": "Referred",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Referred"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Referred",
+   "id": "rSdQZYDmHJm",
+   "attributeValues": []
+  },
+  {
+   "code": "SECHN",
+   "name": "SECHN",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "SECHN"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "SECHN",
+   "id": "TXGfLxZlInA",
+   "attributeValues": []
+  },
+  {
+   "code": "PORT_PART_HEMM",
+   "name": "Post-partum hemmorhage",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Post-partum hemmorhage"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Post-partum hemmorhage",
+   "id": "b6sKvU8phrc",
+   "attributeValues": []
+  },
+  {
+   "code": "OTHER_LATE_COMPL",
+   "name": "Other late complication",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Other late complication"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Other late complication",
+   "id": "sJw2lMoJu1f",
+   "attributeValues": []
+  },
+  {
+   "code": "MALARIA_1_TRIM",
+   "name": "Malaria in 1st trimester (treat with oral quinine",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Malaria in 1st trimester (treat with oral quinine)"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Malaria in 1st trimester (treat with oral quinine",
+   "id": "o4K5VAp14z9",
+   "attributeValues": []
+  },
+  {
+   "code": "NON_PREGNANT",
+   "name": "Non-pregnant",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Non-pregnant"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Non-pregnant",
+   "id": "ZggZw2XNDaw",
+   "attributeValues": []
+  },
+  {
+   "code": "HYPERTENSION",
+   "name": "Hypertension",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Hypertension"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Hypertension",
+   "id": "IqVA7ElOrEw",
+   "attributeValues": []
+  },
+  {
+   "code": "ABORTION",
+   "name": "Abortion",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Abortion"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Abortion",
+   "id": "FfQkdfpvaxx",
+   "attributeValues": []
+  },
+  {
+   "code": "STI",
+   "name": "STI",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "STI"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "STI",
+   "id": "E5g8xQeBvHa",
+   "attributeValues": []
+  },
+  {
+   "code": "MLE",
+   "name": "Male",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Male"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Male",
+   "id": "jRbMi0aBjYn",
+   "attributeValues": []
+  },
+  {
+   "code": "ANAEMIA",
+   "name": "Anaemia",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Anaemia"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Anaemia",
+   "id": "agNsiNGcGlf",
+   "attributeValues": []
+  },
+  {
+   "code": "ANTE_PART_HEMM",
+   "name": "Ante-partum hemmorhage",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Ante-partum hemmorhage"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Ante-partum hemmorhage",
+   "id": "weOIzRXoUN4",
+   "attributeValues": []
+  },
+  {
+   "code": "OTHER_EARL_COMPL",
+   "name": "Other early complication",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2013-03-19T20:44:39.993",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Other early complication (hyperemesis,UTI, etc)"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Other early complication",
+   "id": "Mz5LnqoobUz",
+   "attributeValues": []
+  },
+  {
+   "code": "CHO",
+   "name": "CHO",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2014-06-22T21:36:38.632",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "CHO"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "CHO",
+   "id": "OjIOxG7vgna",
+   "attributeValues": []
+  },
+  {
+   "code": "MIDWIVES",
+   "name": "Midwives",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Midwives"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Midwives",
+   "id": "QgULqw9YDu2",
+   "attributeValues": []
+  },
+  {
+   "code": "AT_PHU",
+   "name": "At PHU",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "At PHU"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "At PHU",
+   "id": "Fp4gVHbRvEV",
+   "attributeValues": []
+  },
+  {
+   "code": "default",
+   "name": "default",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2016-04-12T20:37:48.414",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "default"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "default",
+   "id": "xYerKDKCefk",
+   "attributeValues": []
+  },
+  {
+   "code": "PREECLAMP",
+   "name": "Pre-eclampsia/Eclampsia/Hypertension",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Pre-eclampsia/Eclampsia/Hypertension"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Pre-eclampsia/Eclampsia/Hypertension",
+   "id": "rVvVG0xb1U9",
+   "attributeValues": []
+  },
+  {
+   "code": "FMLE",
+   "name": "Female",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Female"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Female",
+   "id": "apsOixVZlf1",
+   "attributeValues": []
+  },
+  {
+   "code": "TRAINED_TBA",
+   "name": "Trained TBA",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Trained TBA"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Trained TBA",
+   "id": "uZUnebiT5DI",
+   "attributeValues": []
+  },
+  {
+   "code": "FIXED",
+   "name": "Fixed",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Fixed"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Fixed",
+   "id": "qkPbeWaFsnU",
+   "attributeValues": []
+  },
+  {
+   "code": "MALARIA_2_3_TRIM",
+   "name": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Malaria in 2nd or 3rd trimester (treat with ACT)"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "id": "LVVjrz1mFQt",
+   "attributeValues": []
+  },
+  {
+   "code": "POST_PART_SEPS",
+   "name": "Post-partum sepsis",
+   "created": "2011-12-24T12:24:24.149",
+   "lastUpdated": "2011-12-24T12:24:24.149",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Post-partum sepsis"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rwrw----"
+   },
+   "shortName": "Post-partum sepsis",
+   "id": "Et4YOXvUod1",
+   "attributeValues": []
+  }
+ ],
+ "sections": [
+  {
+   "name": "Antenatal Care",
+   "created": "2014-03-05T05:19:05.304",
+   "lastUpdated": "2014-10-10T17:31:39.475",
+   "translations": [],
+   "description": "",
+   "dataSet": {
+    "id": "QX4ZTUbOt3a"
+   },
+   "dataElements": [
+    {
+     "id": "fbfJHSPpUQD"
+    },
+    {
+     "id": "cYeuwXTCPkU"
+    },
+    {
+     "id": "Jtf34kNZhzP"
+    },
+    {
+     "id": "hfdmMSPBgLG"
+    },
+    {
+     "id": "hCVSHjcml9g"
+    },
+    {
+     "id": "bqK6eSIwo3h"
+    },
+    {
+     "id": "yTHydhurQQU"
+    },
+    {
+     "id": "V37YqbqpEhV"
+    },
+    {
+     "id": "SA7WeFZnUci"
+    },
+    {
+     "id": "rbkr8PL0rwM"
+    },
+    {
+     "id": "ybzlGLjWwnK"
+    }
+   ],
+   "indicators": [
+    {
+     "id": "dy1a1mseGR7"
+    },
+    {
+     "id": "W7MxOZjZ1VC"
+    }
+   ],
+   "greyedFields": [],
+   "sortOrder": 1,
+   "showRowTotals": false,
+   "showColumnTotals": false,
+   "disableDataElementAutoGroup": false,
+   "displayOptions": "{}",
+   "id": "yR4xxlEO0h6",
+   "attributeValues": []
+  },
+  {
+   "name": "Births",
+   "created": "2014-03-05T05:22:02.574",
+   "lastUpdated": "2014-10-10T17:32:26.644",
+   "translations": [],
+   "description": "",
+   "dataSet": {
+    "id": "QX4ZTUbOt3a"
+   },
+   "dataElements": [
+    {
+     "id": "gQNFkFkObU8"
+    },
+    {
+     "id": "HZSdnO5fCUc"
+    }
+   ],
+   "indicators": [
+    {
+     "id": "gNAXtpqAqW2"
+    }
+   ],
+   "greyedFields": [],
+   "sortOrder": 9,
+   "showRowTotals": false,
+   "showColumnTotals": false,
+   "disableDataElementAutoGroup": false,
+   "displayOptions": "{}",
+   "id": "Jv0mq4xQFs1",
+   "attributeValues": []
+  },
+  {
+   "name": "Postnatal Care",
+   "created": "2014-03-05T05:28:23.542",
+   "lastUpdated": "2017-01-30T17:06:27.598",
+   "translations": [],
+   "dataSet": {
+    "id": "QX4ZTUbOt3a"
+   },
+   "dataElements": [
+    {
+     "id": "LhoRsqtRn4r"
+    },
+    {
+     "id": "k1vnEuKnRYE"
+    },
+    {
+     "id": "btSSE4w61kd"
+    }
+   ],
+   "indicators": [
+    {
+     "id": "n3fzCxYk3k3"
+    }
+   ],
+   "greyedFields": [],
+   "sortOrder": 3,
+   "showRowTotals": true,
+   "showColumnTotals": true,
+   "disableDataElementAutoGroup": false,
+   "displayOptions": "{}",
+   "id": "q2u61KqpCKE",
+   "attributeValues": []
+  },
+  {
+   "name": "Delivery",
+   "created": "2014-03-05T05:19:43.010",
+   "lastUpdated": "2014-10-10T17:32:06.278",
+   "translations": [],
+   "description": "",
+   "dataSet": {
+    "id": "QX4ZTUbOt3a"
+   },
+   "dataElements": [
+    {
+     "id": "R1WAv9bVXff"
+    },
+    {
+     "id": "ncEnqRPHFvk"
+    },
+    {
+     "id": "tn3p7vIxoKY"
+    },
+    {
+     "id": "FE82N2sA0YI"
+    },
+    {
+     "id": "ntzmpYRSKGg"
+    },
+    {
+     "id": "DvEF1SdMORa"
+    },
+    {
+     "id": "Ce6kAvaHsxR"
+    }
+   ],
+   "indicators": [
+    {
+     "id": "po1QxztD1K1"
+    }
+   ],
+   "greyedFields": [],
+   "sortOrder": 5,
+   "showRowTotals": true,
+   "showColumnTotals": true,
+   "disableDataElementAutoGroup": false,
+   "displayOptions": "{}",
+   "id": "IhogKKZjzUi",
+   "attributeValues": []
+  },
+  {
+   "name": "Tetanus Toxoid",
+   "created": "2014-03-05T05:21:22.131",
+   "lastUpdated": "2014-10-10T17:32:20.714",
+   "translations": [],
+   "description": "",
+   "dataSet": {
+    "id": "QX4ZTUbOt3a"
+   },
+   "dataElements": [
+    {
+     "id": "zzHwXqxKYy1"
+    },
+    {
+     "id": "DUTSJE8MGCw"
+    },
+    {
+     "id": "jWaNoH0X0Am"
+    },
+    {
+     "id": "tbudfYMNFS5"
+    },
+    {
+     "id": "B2ocYtYkPBD"
+    }
+   ],
+   "indicators": [
+    {
+     "id": "aEtcFtcJjtZ"
+    }
+   ],
+   "greyedFields": [],
+   "sortOrder": 7,
+   "showRowTotals": true,
+   "showColumnTotals": true,
+   "disableDataElementAutoGroup": false,
+   "displayOptions": "{}",
+   "id": "xv8irJHV9lP",
+   "attributeValues": []
+  }
+ ],
+ "indicatorTypes": [
+  {
+   "name": "Number (Factor 1)",
+   "created": "2012-11-05T20:00:33.126",
+   "lastUpdated": "2014-04-22T18:41:57.387",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Number"
+    }
+   ],
+   "factor": 1,
+   "number": true,
+   "id": "JkWynlWMjJR"
+  },
+  {
+   "name": "Per cent",
+   "created": "2011-12-24T12:24:22.592",
+   "lastUpdated": "2013-03-15T16:08:57.670",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Per cent"
+    }
+   ],
+   "factor": 100,
+   "number": false,
+   "id": "bWuNrMHEoZ0"
+  }
+ ],
+ "categoryOptionCombos": [
+  {
+   "code": "COC_359813",
+   "name": "Referred, Ante-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "weOIzRXoUN4"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "NFSAqnC92ct",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359772",
+   "name": "At PHU, Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "LVVjrz1mFQt"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "G83s4UeQzyT",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359797",
+   "name": "Managed at PHU, Pre-eclampsia/Eclampsia/Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "rVvVG0xb1U9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "NboNN44Iwul",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359806",
+   "name": "Referred, Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "LVVjrz1mFQt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "HLdVEzeYl0t",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359792",
+   "name": "Managed at PHU, Anaemia",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "agNsiNGcGlf"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "y1jbXYIuubN",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359773",
+   "name": "At PHU, Anaemia",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "agNsiNGcGlf"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "GTBzVBQY6eA",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359775",
+   "name": "At PHU, Abortion",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "FfQkdfpvaxx"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "v99OAIrqSKj",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359785",
+   "name": "At PHU, Other late complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "sJw2lMoJu1f"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "bL8RBTCC5X1",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359660",
+   "name": "MCH Aides, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "TNYQzTHdoxL"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "b19Ye0TWs1D",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359803",
+   "name": "Managed at PHU, Malpresentation",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "vGrKQ90SRZt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "E4jVwXdL1FE",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359665",
+   "name": "Midwives, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "Fp4gVHbRvEV"
+    },
+    {
+     "id": "QgULqw9YDu2"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Tzg8I9KyEwd",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359794",
+   "name": "Managed at PHU, Abortion",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "FfQkdfpvaxx"
+    },
+    {
+     "id": "e3oqm527jBS"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "eeUNYiMYZlq",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359666",
+   "name": "CHO, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "OjIOxG7vgna"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "w3BcsdjOcfk",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359756",
+   "name": "In Community, Malaria in 1st trimester (treat with oral quinine",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "o4K5VAp14z9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "OrDRjJL9bTS",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359798",
+   "name": "Managed at PHU, Ante-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "weOIzRXoUN4"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "qZ9QcyhO0Vv",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359668",
+   "name": "Trained TBA, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "uZUnebiT5DI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "CYHGl18lR0W",
+   "attributeValues": []
+  },
+  {
+   "name": "CHO, Male",
+   "created": "2016-04-18T16:04:34.733",
+   "lastUpdated": "2016-04-18T16:04:34.734",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "jRbMi0aBjYn"
+    },
+    {
+     "id": "OjIOxG7vgna"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "R3oRRwMRfMT",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359814",
+   "name": "Referred, Obstructed labour",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "B3xM7LYh0jH"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "nquTEyWU7ff",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359767",
+   "name": "In Community, Post-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "b6sKvU8phrc"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "UwZkJFuoed4",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359818",
+   "name": "Referred, Malpresentation",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "vGrKQ90SRZt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "L7aTYZnP5Pe",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_167661",
+   "name": "Fixed",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   },
+   "categoryOptions": [
+    {
+     "id": "qkPbeWaFsnU"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "pq2XI5kz2BY",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359778",
+   "name": "At PHU, Pre-eclampsia/Eclampsia/Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "rVvVG0xb1U9"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Gk7wi8I1cKr",
+   "attributeValues": []
+  },
+  {
+   "name": "Midwives, Male",
+   "created": "2016-04-18T16:04:34.731",
+   "lastUpdated": "2016-04-18T16:04:34.731",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "jRbMi0aBjYn"
+    },
+    {
+     "id": "QgULqw9YDu2"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "w0tNkmER8Lb",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359664",
+   "name": "Midwives, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "QgULqw9YDu2"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "AKQ15Z2uqit",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359759",
+   "name": "In Community, Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "IqVA7ElOrEw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Qvaa6XQsYJG",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359799",
+   "name": "Managed at PHU, Obstructed labour",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "B3xM7LYh0jH"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "HLg2utbMetZ",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359801",
+   "name": "Managed at PHU, Post-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "b6sKvU8phrc"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "iBOkirjs8TH",
+   "attributeValues": []
+  },
+  {
+   "name": "MCH Aides, Female",
+   "created": "2016-04-18T16:04:34.711",
+   "lastUpdated": "2016-04-18T16:04:34.712",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "TNYQzTHdoxL"
+    },
+    {
+     "id": "apsOixVZlf1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Gqs7snASTtF",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359763",
+   "name": "In Community, Pre-eclampsia/Eclampsia/Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "rVvVG0xb1U9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "B0gmWQQnjRB",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359790",
+   "name": "Managed at PHU, Malaria in 1st trimester (treat with oral quinine",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "o4K5VAp14z9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "bckzBoAurHI",
+   "attributeValues": []
+  },
+  {
+   "name": "SECHN, Female",
+   "created": "2016-04-18T16:04:34.720",
+   "lastUpdated": "2016-04-18T16:04:34.721",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "TXGfLxZlInA"
+    },
+    {
+     "id": "apsOixVZlf1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Ifqide84xSh",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359804",
+   "name": "Managed at PHU, Other late complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "sJw2lMoJu1f"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "JvO2GpldrnQ",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359796",
+   "name": "Managed at PHU, Other early complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "Mz5LnqoobUz"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "dMAOu9i2tU4",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359761",
+   "name": "In Community, STI",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "E5g8xQeBvHa"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "R2e7o7AGaZl",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359667",
+   "name": "CHO, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "OjIOxG7vgna"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "PvFFIeF2J9x",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359762",
+   "name": "In Community, Other early complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "Mz5LnqoobUz"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "ylnUkus0uWL",
+   "attributeValues": []
+  },
+  {
+   "name": "SECHN, Male",
+   "created": "2016-04-18T16:04:34.724",
+   "lastUpdated": "2016-04-18T16:04:34.727",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "jRbMi0aBjYn"
+    },
+    {
+     "id": "TXGfLxZlInA"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "NZAKyj67WW2",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359816",
+   "name": "Referred, Post-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "b6sKvU8phrc"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "qtWl5uR98jt",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359812",
+   "name": "Referred, Pre-eclampsia/Eclampsia/Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "rVvVG0xb1U9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "h47XMXroiw4",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359777",
+   "name": "At PHU, Other early complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "Mz5LnqoobUz"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "YYcR8MyHtzY",
+   "attributeValues": []
+  },
+  {
+   "name": "Untrained TBA, Female",
+   "created": "2016-04-18T16:04:34.740",
+   "lastUpdated": "2016-04-18T16:04:34.741",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "HTHvCohKoXt"
+    },
+    {
+     "id": "apsOixVZlf1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "vP9xV78M67W",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150806",
+   "name": "Non-pregnant, Fixed",
+   "created": "2013-03-19T20:26:02.588",
+   "lastUpdated": "2013-03-19T20:26:02.588",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "qkPbeWaFsnU"
+    },
+    {
+     "id": "ZggZw2XNDaw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "r8xySVHExGT",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150809",
+   "name": "Non-pregnant, School",
+   "created": "2013-03-19T20:26:02.594",
+   "lastUpdated": "2013-03-19T20:26:02.594",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "C1CvTD0GlTU"
+    },
+    {
+     "id": "ZggZw2XNDaw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "ONiwc2Eg0R1",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359780",
+   "name": "At PHU, Obstructed labour",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "Fp4gVHbRvEV"
+    },
+    {
+     "id": "B3xM7LYh0jH"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "dKLECGfFphs",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359807",
+   "name": "Referred, Anaemia",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "agNsiNGcGlf"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Pbzdb8uzHBW",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359819",
+   "name": "Referred, Other late complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "sJw2lMoJu1f"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "N8wisgL0KOn",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359774",
+   "name": "At PHU, Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "Fp4gVHbRvEV"
+    },
+    {
+     "id": "IqVA7ElOrEw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "wSIfDRFpQhe",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150808",
+   "name": "Pregnant, Outreach",
+   "created": "2013-03-19T20:26:02.592",
+   "lastUpdated": "2013-03-19T20:26:02.592",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "wbrDrL2aYEc"
+    },
+    {
+     "id": "JR4RSJFjNYl"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "cBQmyRrEKo3",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359805",
+   "name": "Referred, Malaria in 1st trimester (treat with oral quinine",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "o4K5VAp14z9"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "GQsM79Oa8e1",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359795",
+   "name": "Managed at PHU, STI",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "E5g8xQeBvHa"
+    },
+    {
+     "id": "e3oqm527jBS"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "x1Ti1RoTKFr",
+   "attributeValues": []
+  },
+  {
+   "code": "default",
+   "name": "default",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   },
+   "categoryOptions": [
+    {
+     "id": "xYerKDKCefk"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "HllvX50cXC0",
+   "attributeValues": []
+  },
+  {
+   "name": "Midwives, Female",
+   "created": "2016-04-18T16:04:34.729",
+   "lastUpdated": "2016-04-18T16:04:34.730",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "apsOixVZlf1"
+    },
+    {
+     "id": "QgULqw9YDu2"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "xQbMVHxaUiW",
+   "attributeValues": []
+  },
+  {
+   "name": "CHO, Female",
+   "created": "2016-04-18T16:04:34.732",
+   "lastUpdated": "2016-04-18T16:04:34.733",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "apsOixVZlf1"
+    },
+    {
+     "id": "OjIOxG7vgna"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "RgrNGmlMOAJ",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359765",
+   "name": "In Community, Obstructed labour",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "B3xM7LYh0jH"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "rpnukMmWBmK",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359766",
+   "name": "In Community, Post-partum sepsis",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "Et4YOXvUod1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "TsI6OWSobTy",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359776",
+   "name": "At PHU, STI",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "E5g8xQeBvHa"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "CweWgHpMTu7",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359808",
+   "name": "Referred, Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "IqVA7ElOrEw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "iO3MLhE4PHA",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359810",
+   "name": "Referred, STI",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "E5g8xQeBvHa"
+    },
+    {
+     "id": "rSdQZYDmHJm"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "p53iCsRVPSU",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359771",
+   "name": "At PHU, Malaria in 1st trimester (treat with oral quinine",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "o4K5VAp14z9"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "G9XRXHMgId1",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150810",
+   "name": "Non-pregnant, Outreach",
+   "created": "2013-03-19T20:26:02.596",
+   "lastUpdated": "2013-03-19T20:26:02.596",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "wbrDrL2aYEc"
+    },
+    {
+     "id": "ZggZw2XNDaw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "U1PHVSShuWj",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359770",
+   "name": "In Community, Other late complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "sJw2lMoJu1f"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "TW3dSLS3Yez",
+   "attributeValues": []
+  },
+  {
+   "name": "Trained TBA, Male",
+   "created": "2016-04-18T16:04:34.738",
+   "lastUpdated": "2016-04-18T16:04:34.739",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "jRbMi0aBjYn"
+    },
+    {
+     "id": "uZUnebiT5DI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Tk8loZNEo4E",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359811",
+   "name": "Referred, Other early complication",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "Mz5LnqoobUz"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "uh8MUdOumIk",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359817",
+   "name": "Referred, Retained placenta",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "qZIEVbjYDLI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "E4CrE0wh4eN",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359661",
+   "name": "MCH Aides, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "TNYQzTHdoxL"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "L4P9VSgHkF6",
+   "attributeValues": []
+  },
+  {
+   "name": "Untrained TBA, Male",
+   "created": "2016-04-18T16:04:34.743",
+   "lastUpdated": "2016-04-18T16:04:34.743",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "HTHvCohKoXt"
+    },
+    {
+     "id": "jRbMi0aBjYn"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "SeTGOtrbip1",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359793",
+   "name": "Managed at PHU, Hypertension",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "IqVA7ElOrEw"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "jaS34UZLyBe",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359669",
+   "name": "Trained TBA, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "uZUnebiT5DI"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Gmbgme7z9BF",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150807",
+   "name": "Pregnant, School",
+   "created": "2013-03-19T20:26:02.590",
+   "lastUpdated": "2013-03-19T20:26:02.590",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "JR4RSJFjNYl"
+    },
+    {
+     "id": "C1CvTD0GlTU"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "xFRryVwuFWY",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359760",
+   "name": "In Community, Abortion",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "FfQkdfpvaxx"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "RYnkI3dHV2r",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359670",
+   "name": "Untrained TBA, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "HTHvCohKoXt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "HVFCn1yjoGx",
+   "attributeValues": []
+  },
+  {
+   "name": "Trained TBA, Female",
+   "created": "2016-04-18T16:04:34.735",
+   "lastUpdated": "2016-04-18T16:04:34.735",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "apsOixVZlf1"
+    },
+    {
+     "id": "uZUnebiT5DI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "quwbAxfBdQU",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_167660",
+   "name": "Outreach",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "KYYSTxeVw28"
+   },
+   "categoryOptions": [
+    {
+     "id": "wbrDrL2aYEc"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "PT59n8BQbqM",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359757",
+   "name": "In Community, Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "LVVjrz1mFQt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "D9HOVHItnAW",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359781",
+   "name": "At PHU, Post-partum sepsis",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "Fp4gVHbRvEV"
+    },
+    {
+     "id": "Et4YOXvUod1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "AN492NhCwWd",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359815",
+   "name": "Referred, Post-partum sepsis",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "rSdQZYDmHJm"
+    },
+    {
+     "id": "Et4YOXvUod1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "FWuj3rd87jj",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359758",
+   "name": "In Community, Anaemia",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "agNsiNGcGlf"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "lKQatl72hbs",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359783",
+   "name": "At PHU, Retained placenta",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "qZIEVbjYDLI"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "bgKO5mjR3Un",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359671",
+   "name": "Untrained TBA, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "HTHvCohKoXt"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "s3jlIgFCbUb",
+   "attributeValues": []
+  },
+  {
+   "name": "MCH Aides, Male",
+   "created": "2016-04-18T16:04:34.715",
+   "lastUpdated": "2016-04-18T16:04:34.717",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "TNYQzTHdoxL"
+    },
+    {
+     "id": "jRbMi0aBjYn"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "mcwaItVPoeA",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359764",
+   "name": "In Community, Ante-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "weOIzRXoUN4"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "OkTqmleJPNt",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_1150805",
+   "name": "Pregnant, Fixed",
+   "created": "2013-03-19T20:26:02.585",
+   "lastUpdated": "2013-03-19T20:26:02.585",
+   "translations": [],
+   "categoryCombo": {
+    "id": "arTwh07V6qz"
+   },
+   "categoryOptions": [
+    {
+     "id": "JR4RSJFjNYl"
+    },
+    {
+     "id": "qkPbeWaFsnU"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "dcguXUTwenI",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359782",
+   "name": "At PHU, Post-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "b6sKvU8phrc"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Zw24HlQNuKE",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359662",
+   "name": "SECHN, In Community",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "TXGfLxZlInA"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "MaXD86iob3M",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359769",
+   "name": "In Community, Malpresentation",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "vGrKQ90SRZt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "fXLSLTafPAa",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359768",
+   "name": "In Community, Retained placenta",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "wHFX72Y0KXx"
+    },
+    {
+     "id": "qZIEVbjYDLI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "fCEasSwk4iA",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359802",
+   "name": "Managed at PHU, Retained placenta",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "qZIEVbjYDLI"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "mgfOSrzUthX",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359784",
+   "name": "At PHU, Malpresentation",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "vGrKQ90SRZt"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "toku1yGjhnO",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359800",
+   "name": "Managed at PHU, Post-partum sepsis",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "Et4YOXvUod1"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "Lbil2sS54Ik",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359663",
+   "name": "SECHN, At PHU",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "m2jTvAj5kkm"
+   },
+   "categoryOptions": [
+    {
+     "id": "TXGfLxZlInA"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "YEmiuCcgNQI",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359791",
+   "name": "Managed at PHU, Malaria in 2nd or 3rd trimester (treat with ACT)",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "e3oqm527jBS"
+    },
+    {
+     "id": "LVVjrz1mFQt"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "TDb5JyDQqho",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359809",
+   "name": "Referred, Abortion",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "Hz71pt7Eb3e"
+   },
+   "categoryOptions": [
+    {
+     "id": "FfQkdfpvaxx"
+    },
+    {
+     "id": "rSdQZYDmHJm"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "v188IxY1WTh",
+   "attributeValues": []
+  },
+  {
+   "code": "COC_359779",
+   "name": "At PHU, Ante-partum hemmorhage",
+   "created": "2011-12-24T12:24:25.319",
+   "lastUpdated": "2011-12-24T12:24:25.319",
+   "translations": [],
+   "categoryCombo": {
+    "id": "sgoeVsAbF4r"
+   },
+   "categoryOptions": [
+    {
+     "id": "weOIzRXoUN4"
+    },
+    {
+     "id": "Fp4gVHbRvEV"
+    }
+   ],
+   "ignoreApproval": false,
+   "id": "DS13oURyQ5s",
+   "attributeValues": []
+  }
+ ],
+ "dataSets": [
+  {
+   "code": "DS_359593",
+   "name": "Reproductive Health",
+   "created": "2012-11-05T15:51:54.891",
+   "lastUpdated": "2015-02-24T16:03:36.928",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "PHUF 3 - Reproductive health services"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "PHUF 3"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {
+     "B6JNeAQ6akX": {
+      "displayName": "_DATASET_Superuser",
+      "access": "r-rw----",
+      "id": "B6JNeAQ6akX"
+     },
+     "GogLpGmkL0g": {
+      "displayName": "_DATASET_Child Health Program Manager",
+      "access": "r-rw----",
+      "id": "GogLpGmkL0g"
+     },
+     "YCPJDwzbe8T": {
+      "displayName": "Kenya staff",
+      "access": "rwr-----",
+      "id": "YCPJDwzbe8T"
+     },
+     "tH0GcNZZ1vW": {
+      "displayName": "_DATASET_Data entry clerk",
+      "access": "r-rw----",
+      "id": "tH0GcNZZ1vW"
+     },
+     "w900PX10L7O": {
+      "displayName": "_DATASET_M and E Officer",
+      "access": "r-rw----",
+      "id": "w900PX10L7O"
+     },
+     "zz6XckBrLlj": {
+      "displayName": "_DATASET_System administrator (ALL)",
+      "access": "r-rw----",
+      "id": "zz6XckBrLlj"
+     }
+    },
+    "public": "rwr-----"
+   },
+   "shortName": "Reproductive Health",
+   "legendSets": [
+    {
+     "id": "k1JHPfXsJND"
+    }
+   ],
+   "periodType": "Monthly",
+   "dataInputPeriods": [],
+   "dataSetElements": [
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "HZSdnO5fCUc"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "B2ocYtYkPBD"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "zzHwXqxKYy1"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "h8vtacmZL5j"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "Jtf34kNZhzP"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "ybzlGLjWwnK"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "hCVSHjcml9g"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "ncEnqRPHFvk"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "hfdmMSPBgLG"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "SA7WeFZnUci"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "DvEF1SdMORa"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "DUTSJE8MGCw"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "cYeuwXTCPkU"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "FUrCpcvMAmC"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "Ce6kAvaHsxR"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "tn3p7vIxoKY"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "LhoRsqtRn4r"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "V37YqbqpEhV"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "ntzmpYRSKGg"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "fbfJHSPpUQD"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "gQNFkFkObU8"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "tbudfYMNFS5"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "rbkr8PL0rwM"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "k1vnEuKnRYE"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "jWaNoH0X0Am"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "R1WAv9bVXff"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "yTHydhurQQU"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "btSSE4w61kd"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "FE82N2sA0YI"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "QX4ZTUbOt3a"
+     },
+     "dataElement": {
+      "id": "bqK6eSIwo3h"
+     }
+    }
+   ],
+   "indicators": [
+    {
+     "id": "n3fzCxYk3k3"
+    },
+    {
+     "id": "gNAXtpqAqW2"
+    },
+    {
+     "id": "W7MxOZjZ1VC"
+    },
+    {
+     "id": "dy1a1mseGR7"
+    },
+    {
+     "id": "po1QxztD1K1"
+    },
+    {
+     "id": "aEtcFtcJjtZ"
+    }
+   ],
+   "compulsoryDataElementOperands": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   },
+   "mobile": false,
+   "version": 35,
+   "expiryDays": 0.0,
+   "timelyDays": 10.0,
+   "notifyCompletingUser": false,
+   "openFuturePeriods": 0,
+   "openPeriodsAfterCoEndDate": 0,
+   "fieldCombinationRequired": false,
+   "validCompleteOnly": false,
+   "noValueRequiresComment": false,
+   "skipOffline": false,
+   "dataElementDecoration": false,
+   "renderAsTabs": false,
+   "renderHorizontally": false,
+   "compulsoryFieldsCompleteOnly": false,
+   "displayOptions": "{}",
+   "id": "QX4ZTUbOt3a",
+   "attributeValues": []
+  },
+  {
+   "code": "DS_490350",
+   "name": "Population",
+   "created": "2012-07-31T20:58:04.521",
+   "lastUpdated": "2014-09-24T11:34:35.458",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "Population"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "Population"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {
+     "B6JNeAQ6akX": {
+      "displayName": "_DATASET_Superuser",
+      "access": "r-rw----",
+      "id": "B6JNeAQ6akX"
+     },
+     "GogLpGmkL0g": {
+      "displayName": "_DATASET_Child Health Program Manager",
+      "access": "r-rw----",
+      "id": "GogLpGmkL0g"
+     },
+     "tH0GcNZZ1vW": {
+      "displayName": "_DATASET_Data entry clerk",
+      "access": "r-rw----",
+      "id": "tH0GcNZZ1vW"
+     },
+     "w900PX10L7O": {
+      "displayName": "_DATASET_M and E Officer",
+      "access": "r-rw----",
+      "id": "w900PX10L7O"
+     },
+     "zz6XckBrLlj": {
+      "displayName": "_DATASET_System administrator (ALL)",
+      "access": "r-rw----",
+      "id": "zz6XckBrLlj"
+     }
+    },
+    "public": "rwr-----"
+   },
+   "shortName": "Population",
+   "legendSets": [
+    {
+     "id": "k1JHPfXsJND"
+    }
+   ],
+   "periodType": "Yearly",
+   "dataInputPeriods": [],
+   "dataSetElements": [
+    {
+     "dataSet": {
+      "id": "aLpVgfXiz0f"
+     },
+     "dataElement": {
+      "id": "DTVRnCGamkV"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "aLpVgfXiz0f"
+     },
+     "dataElement": {
+      "id": "DTtCy7Nx5jH"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "aLpVgfXiz0f"
+     },
+     "dataElement": {
+      "id": "vg6pdjObxsm"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "aLpVgfXiz0f"
+     },
+     "dataElement": {
+      "id": "WUg3MYWQ7pt"
+     }
+    },
+    {
+     "dataSet": {
+      "id": "aLpVgfXiz0f"
+     },
+     "dataElement": {
+      "id": "h0xKKjijTdI"
+     }
+    }
+   ],
+   "indicators": [],
+   "compulsoryDataElementOperands": [],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   },
+   "mobile": false,
+   "version": 3,
+   "expiryDays": 0.0,
+   "timelyDays": 15.0,
+   "notifyCompletingUser": false,
+   "openFuturePeriods": 12,
+   "openPeriodsAfterCoEndDate": 0,
+   "fieldCombinationRequired": false,
+   "validCompleteOnly": false,
+   "noValueRequiresComment": false,
+   "skipOffline": false,
+   "dataElementDecoration": false,
+   "renderAsTabs": false,
+   "renderHorizontally": false,
+   "compulsoryFieldsCompleteOnly": false,
+   "displayOptions": "{}",
+   "id": "aLpVgfXiz0f",
+   "attributeValues": []
+  }
+ ],
+ "legends": [
+  {
+   "name": "Medium",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 60.0,
+   "endValue": 80.0,
+   "color": "#6baed6",
+   "id": "jEchJpYeJsj"
+  },
+  {
+   "name": "Low",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 30.0,
+   "endValue": 60.0,
+   "color": "#3182BD",
+   "id": "UmOS6jE35Uy"
+  },
+  {
+   "name": "Non reporting",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 0.0,
+   "endValue": 30.0,
+   "color": "#08519C",
+   "id": "jMw9EOicPbm"
+  },
+  {
+   "name": "Excellent",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 90.0,
+   "endValue": 100.0,
+   "color": "#EFF3FF",
+   "id": "baH8XcMGg8d"
+  },
+  {
+   "name": "Invalid",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 100.0,
+   "endValue": 1000.0,
+   "color": "#CCCCCC",
+   "id": "DinVyhLbrJK"
+  },
+  {
+   "name": "High",
+   "created": "2016-10-05T18:25:21.921",
+   "lastUpdated": "2016-10-05T18:25:21.921",
+   "translations": [],
+   "startValue": 80.0,
+   "endValue": 90.0,
+   "color": "#BDD7E7",
+   "id": "FNpcjfIWvZZ"
+  }
+ ],
+ "indicators": [
+  {
+   "name": "Postnatal contact total ",
+   "created": "2014-10-10T17:33:20.071",
+   "lastUpdated": "2014-10-10T17:33:20.077",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Postnatal contact total ",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{LhoRsqtRn4r}+#{k1vnEuKnRYE}",
+   "numeratorDescription": "Postnatal contact total",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "n3fzCxYk3k3",
+   "attributeValues": []
+  },
+  {
+   "name": "Births total",
+   "created": "2014-10-10T17:30:55.637",
+   "lastUpdated": "2014-10-10T17:32:47.821",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Births total",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{gQNFkFkObU8}+#{HZSdnO5fCUc}",
+   "numeratorDescription": "Total births",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "gNAXtpqAqW2",
+   "attributeValues": []
+  },
+  {
+   "name": "IPT doses total",
+   "created": "2014-10-10T17:28:56.346",
+   "lastUpdated": "2014-10-10T17:28:56.358",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "IPT doses total",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{bqK6eSIwo3h}+#{yTHydhurQQU}+#{V37YqbqpEhV}+#{SA7WeFZnUci}",
+   "numeratorDescription": "IPT doses total",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "W7MxOZjZ1VC",
+   "attributeValues": []
+  },
+  {
+   "name": "ANC visits total",
+   "created": "2014-10-10T17:28:15.597",
+   "lastUpdated": "2014-10-10T17:28:15.619",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC visits total",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{fbfJHSPpUQD}+#{cYeuwXTCPkU}+#{Jtf34kNZhzP}",
+   "numeratorDescription": "ANC visits total",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "dy1a1mseGR7",
+   "attributeValues": []
+  },
+  {
+   "name": "Complicated deliveries total",
+   "created": "2014-10-10T17:29:27.257",
+   "lastUpdated": "2014-10-10T17:29:27.264",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "Complicated deliveries total",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{tn3p7vIxoKY}+#{FE82N2sA0YI}+#{R1WAv9bVXff}+#{ncEnqRPHFvk}",
+   "numeratorDescription": "Complicated deliveries total",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "po1QxztD1K1",
+   "attributeValues": []
+  },
+  {
+   "name": "TT doses given total",
+   "created": "2014-10-10T17:30:12.634",
+   "lastUpdated": "2014-10-10T17:34:43.527",
+   "translations": [],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "TT doses given total",
+   "legendSets": [],
+   "annualized": false,
+   "indicatorType": {
+    "id": "JkWynlWMjJR"
+   },
+   "numerator": "#{zzHwXqxKYy1}+#{DUTSJE8MGCw}+#{jWaNoH0X0Am}+#{tbudfYMNFS5}+#{B2ocYtYkPBD}",
+   "numeratorDescription": "TT doses given total",
+   "denominator": "1",
+   "denominatorDescription": "",
+   "url": "",
+   "id": "aEtcFtcJjtZ",
+   "attributeValues": []
+  },
+  {
+   "code": "IN_52462",
+   "name": "ANC 1-3 Dropout Rate",
+   "created": "2012-11-05T09:16:29.054",
+   "lastUpdated": "2013-03-21T11:17:44.926",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC Dropout Rate"
+    },
+    {
+     "locale": "en_GB",
+     "property": "DESCRIPTION",
+     "value": "Indicates the percentage of clients dropping out between the 1st and the 3rd ANC visit. Calculated as the difference between ANC1 and ANC3 by the ANC 1 visits."
+    },
+    {
+     "locale": "fr",
+     "property": "SHORT_NAME",
+     "value": " Taux d'abandon d'ANC 1-3"
+    },
+    {
+     "locale": "fr",
+     "property": "NAME",
+     "value": " Taux d'abandon d'ANC 1-3"
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC Dropout Rate"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC 1-3 Dropout Rate",
+   "description": "Indicates the percentage of clients dropping out between the 1st and the 3rd ANC visit. Calculated as the difference between ANC1 and ANC3 by the ANC 1 visits.",
+   "annualized": false,
+   "indicatorType": {
+    "id": "bWuNrMHEoZ0"
+   },
+   "numerator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
+   "numeratorDescription": "ANC1-ANC3",
+   "denominator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}",
+   "denominatorDescription": "Total 1st ANC visits",
+   "url": "",
+   "id": "ReUHfIn0pTQ",
+   "attributeValues": []
+  },
+  {
+   "name": "ANC 3 Coverage",
+   "created": "2012-11-13T12:51:45.321",
+   "lastUpdated": "2015-04-10T14:32:25.625",
+   "translations": [
+    {
+     "locale": "en_GB",
+     "property": "DESCRIPTION",
+     "value": "Total 3rd ANC visits (Fixed and outreach) by expected number of pregnant women."
+    },
+    {
+     "locale": "en_GB",
+     "property": "NAME",
+     "value": "ANC 3 Coverage"
+    },
+    {
+     "locale": "en_GB",
+     "property": "SHORT_NAME",
+     "value": "ANC 3 Coverage"
+    }
+   ],
+   "createdBy": {
+    "id": "GOLswS44mh8",
+    "code": null,
+    "name": "Tom Wakiki",
+    "displayName": "Tom Wakiki",
+    "username": "system"
+   },
+   "sharing": {
+    "owner": "GOLswS44mh8",
+    "users": {},
+    "userGroups": {},
+    "public": "rw------"
+   },
+   "shortName": "ANC 3 Coverage",
+   "description": "Total 3rd ANC visits (Fixed and outreach) by expected number of pregnant women.",
+   "annualized": true,
+   "indicatorType": {
+    "id": "bWuNrMHEoZ0"
+   },
+   "numerator": "#{Jtf34kNZhzP}",
+   "numeratorDescription": "Total 3rd ANC visits",
+   "denominator": "#{h0xKKjijTdI}",
+   "denominatorDescription": "Estimated number of pregnant women",
+   "id": "sB79w2hiLp8",
+   "attributeValues": []
+  }
+ ]
+}

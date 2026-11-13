@@ -468,36 +468,40 @@
    ],
    "categoryMappings": [
     {
-     "id": "nl9LJcjBaLZ",
-     "categoryId": "sEPCr990Rto",
-     "mappingName": "Age group from Age (years)",
+     "id": "c7PnhR51D0f",
+     "categoryId": "ZA7XewlOglm",
+     "mappingName": "Malaria age group from age attribute",
      "optionMappings": [
       {
-       "optionId": "C11WC1lXDMl",
-       "filter": "A{B6TnnFMgmCk} <= 3"
+       "optionId": "SDy0kICzqfi",
+       "filter": "A{B6TnnFMgmCk} < 5"
       },
       {
-       "optionId": "CsfYQc87OMj",
-       "filter": "A{B6TnnFMgmCk} >= 5 && A{B6TnnFMgmCk} <= 14"
+       "optionId": "tqHGXLetF5Q",
+       "filter": "A{B6TnnFMgmCk} >= 5 && A{B6TnnFMgmCk} < 15"
       },
       {
-       "optionId": "aZdc2LWuKmo",
-       "filter": "A{B6TnnFMgmCk} >= 15"
+       "optionId": "mzjtIZE3BvC",
+       "filter": "A{B6TnnFMgmCk} >= 15 && A{B6TnnFMgmCk} <= 50"
+      },
+      {
+       "optionId": "On0mOeVGNun",
+       "filter": "A{B6TnnFMgmCk} >= 50"
       }
      ]
     },
     {
-     "id": "yefKpLxC7DJ",
-     "categoryId": "W5iRaCEQlF9",
-     "mappingName": "Sex from attribute",
+     "id": "WH3u5q2Pxwu",
+     "categoryId": "ZfvXvH7QBTy",
+     "mappingName": "Malaria sex from sex attribute",
      "optionMappings": [
       {
-       "optionId": "sbIggsebQn5",
-       "filter": "A{CklPZdOd6H1} == 'Female'"
+       "optionId": "FF90Ju1QbLo",
+       "filter": "A{CklPZdOd6H1} == 'FEMALE'"
       },
       {
-       "optionId": "dD8yeNWqfu7",
-       "filter": "A{CklPZdOd6H1} == 'MALE'"
+       "optionId": "CL2xCEJN50D",
+       "filter": "A{CklPZdOd6H1} == 'male'"
       }
      ]
     }
@@ -736,40 +740,6 @@
    },
    "programStageDataElements": [
     {
-     "created": "2016-05-27T13:10:13.292",
-     "lastUpdated": "2025-03-26T15:48:23.585",
-     "translations": [],
-     "favorites": [],
-     "sharing": {
-      "users": {},
-      "userGroups": {}
-     },
-     "programStage": {
-      "id": "wYTF0YCHMWr"
-     },
-     "dataElement": {
-      "id": "AZLp9Shoab9"
-     },
-     "compulsory": false,
-     "allowProvidedElsewhere": false,
-     "sortOrder": 1,
-     "displayInReports": true,
-     "allowFutureDate": false,
-     "renderOptionsAsRadio": false,
-     "skipSynchronization": false,
-     "skipAnalytics": false,
-     "access": {
-      "manage": true,
-      "write": true,
-      "read": true,
-      "update": true,
-      "delete": true
-     },
-     "favorite": false,
-     "id": "QYhnCRYcZcH",
-     "attributeValues": []
-    },
-    {
      "created": "2017-05-30T17:59:36.995",
      "lastUpdated": "2025-03-26T15:48:23.586",
      "translations": [],
@@ -835,7 +805,7 @@
     "id": "qDkgAbB5Jlk"
    },
    "expression": "V{event_count}",
-   "filter": "#{hYyB7FUS5eR.E0W0ZTTosXK} == 'INPATIENT'",
+   "filter": "#{wYTF0YCHMWr.E0W0ZTTosXK} == 'INPATIENT'",
    "displayInForm": false,
    "analyticsType": "EVENT",
    "analyticsPeriodBoundaries": [
@@ -898,7 +868,7 @@
    "name": "Malaria death",
    "shortName": "Malaria death",
    "legendSets": [],
-   "aggregationType": "AVERAGE",
+   "aggregationType": "COUNT",
    "program": {
     "id": "qDkgAbB5Jlk"
    },
@@ -963,74 +933,6 @@
    "attributeValues": []
   },
   {
-   "name": "Cases with symptoms diagnosed with 24 hours",
-   "shortName": "Cases with symptoms diagnosed with 24 hours",
-   "legendSets": [],
-   "aggregationType": "AVERAGE",
-   "program": {
-    "id": "qDkgAbB5Jlk"
-   },
-   "expression": "V{event_count}",
-   "filter": "V{program_stage_id} == hYyB7FUS5eR && ( d2:daysBetween(V{event_date},#{wYTF0YCHMWr.AZLp9Shoab9})  <= 1 )",
-   "displayInForm": false,
-   "analyticsType": "EVENT",
-   "analyticsPeriodBoundaries": [
-    {
-     "created": "2018-07-26T15:31:23.292",
-     "lastUpdated": "2019-08-21T13:08:17.879",
-     "translations": [],
-     "favorites": [],
-     "sharing": {
-      "users": {},
-      "userGroups": {}
-     },
-     "boundaryTarget": "EVENT_DATE",
-     "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD",
-     "access": {
-      "manage": true,
-      "write": true,
-      "read": true,
-      "update": true,
-      "delete": true
-     },
-     "favorite": false,
-     "id": "PsqynUOuvS0",
-     "attributeValues": []
-    },
-    {
-     "created": "2018-07-26T15:31:23.292",
-     "lastUpdated": "2019-08-21T13:08:17.879",
-     "translations": [],
-     "favorites": [],
-     "sharing": {
-      "users": {},
-      "userGroups": {}
-     },
-     "boundaryTarget": "EVENT_DATE",
-     "analyticsPeriodBoundaryType": "BEFORE_END_OF_REPORTING_PERIOD",
-     "access": {
-      "manage": true,
-      "write": true,
-      "read": true,
-      "update": true,
-      "delete": true
-     },
-     "favorite": false,
-     "id": "pI8crl1hHXS",
-     "attributeValues": []
-    }
-   ],
-   "categoryCombo": {
-    "id": "bjDvmb4bfuf"
-   },
-   "attributeCombo": {
-    "id": "bjDvmb4bfuf"
-   },
-   "categoryMappingIds": [],
-   "id": "WoEWCM4TMjz",
-   "attributeValues": []
-  },
-  {
    "name": "Malaria case - local",
    "shortName": "Malaria case - local",
    "legendSets": [],
@@ -1089,12 +991,15 @@
     }
    ],
    "categoryCombo": {
-    "id": "bjDvmb4bfuf"
+    "id": "ybEZzBEf95P"
    },
    "attributeCombo": {
     "id": "bjDvmb4bfuf"
    },
-   "categoryMappingIds": [],
+   "categoryMappingIds": [
+    "c7PnhR51D0f",
+    "WH3u5q2Pxwu"
+   ],
    "id": "hmSDFcYVUad",
    "attributeValues": []
   },
@@ -1103,7 +1008,7 @@
    "shortName": "Malaria case - RDT+Microscopy (f 15+)",
    "description": "Total malaria positives cases by Microscopy and RDT",
    "legendSets": [],
-   "aggregationType": "AVERAGE",
+   "aggregationType": "COUNT",
    "program": {
     "id": "qDkgAbB5Jlk"
    },
@@ -1227,14 +1132,14 @@
     }
    ],
    "categoryCombo": {
-    "id": "XiNhAnq8Xs2"
+    "id": "ybEZzBEf95P"
    },
    "attributeCombo": {
     "id": "bjDvmb4bfuf"
    },
    "categoryMappingIds": [
-    "nl9LJcjBaLZ",
-    "yefKpLxC7DJ"
+    "c7PnhR51D0f",
+    "WH3u5q2Pxwu"
    ],
    "id": "TN51OpurLU9",
    "attributeValues": []
@@ -1298,14 +1203,14 @@
     }
    ],
    "categoryCombo": {
-    "id": "XiNhAnq8Xs2"
+    "id": "ybEZzBEf95P"
    },
    "attributeCombo": {
     "id": "bjDvmb4bfuf"
    },
    "categoryMappingIds": [
-    "nl9LJcjBaLZ",
-    "yefKpLxC7DJ"
+    "c7PnhR51D0f",
+    "WH3u5q2Pxwu"
    ],
    "id": "kL9jc0p6VlJ",
    "attributeValues": []
@@ -1315,12 +1220,12 @@
    "shortName": "Malaria case - RDT+Microscopy",
    "description": "Total malaria positives cases by Microscopy and RDT",
    "legendSets": [],
-   "aggregationType": "AVERAGE",
+   "aggregationType": "COUNT",
    "program": {
     "id": "qDkgAbB5Jlk"
    },
    "expression": "V{enrollment_count}",
-   "filter": "(#{hYyB7FUS5eR.qdjVZojEK8S} == 'RDT' or #{hYyB7FUS5eR.qdjVZojEK8S} == 'MICROSCOPY') and (#{hYyB7FUS5eR.aY4kB8kS521} =='POSITIVE' or #{hYyB7FUS5eR.aY4kB8kS521} =='POSITIVE')",
+   "filter": "#{hYyB7FUS5eR.qdjVZojEK8S} == 'RDT' || #{hYyB7FUS5eR.qdjVZojEK8S} == 'MICROSCOPY' && #{hYyB7FUS5eR.aY4kB8kS521} == 'POSITIVE'",
    "displayInForm": false,
    "analyticsType": "EVENT",
    "analyticsPeriodBoundaries": [
@@ -1452,7 +1357,7 @@
    "shortName": "Malaria test - RDT",
    "description": "The number of suspected malaria cases tested by RDT",
    "legendSets": [],
-   "aggregationType": "COUNT",
+   "aggregationType": "AVERAGE",
    "program": {
     "id": "qDkgAbB5Jlk"
    },
@@ -1507,22 +1412,19 @@
     }
    ],
    "categoryCombo": {
-    "id": "XiNhAnq8Xs2"
+    "id": "bjDvmb4bfuf"
    },
    "attributeCombo": {
     "id": "bjDvmb4bfuf"
    },
-   "categoryMappingIds": [
-    "nl9LJcjBaLZ",
-    "yefKpLxC7DJ"
-   ],
+   "categoryMappingIds": [],
    "id": "Vmi9vYnmkfI",
    "attributeValues": []
   },
   {
-   "id": "ylj4YplT6m6",
-   "name": "Malaria cases, persons (malaria test)",
-   "shortName": "Malaria cases persons (mt)",
+   "id": "gEQn1dVw89m",
+   "name": "Malaria positive persons",
+   "shortName": "Malaria positive persons",
    "program": {
     "id": "qDkgAbB5Jlk"
    },
@@ -1541,12 +1443,38 @@
     }
    ],
    "categoryCombo": {
-    "id": "XiNhAnq8Xs2"
+    "id": "ybEZzBEf95P"
    },
    "categoryMappingIds": [
-    "nl9LJcjBaLZ",
-    "yefKpLxC7DJ"
+    "c7PnhR51D0f",
+    "WH3u5q2Pxwu"
    ]
+  },
+  {
+   "id": "i55dhM3BsIg",
+   "name": "Persons tested for malaria",
+   "shortName": "Persons tested for malaria",
+   "program": {
+    "id": "qDkgAbB5Jlk"
+   },
+   "analyticsType": "ENROLLMENT",
+   "aggregationType": "COUNT",
+   "expression": "V{event_count}",
+   "filter": "d2:hasValue(#{hYyB7FUS5eR.qdjVZojEK8S})",
+   "analyticsPeriodBoundaries": [
+    {
+     "boundaryTarget": "ENROLLMENT_DATE",
+     "analyticsPeriodBoundaryType": "AFTER_START_OF_REPORTING_PERIOD"
+    },
+    {
+     "boundaryTarget": "ENROLLMENT_DATE",
+     "analyticsPeriodBoundaryType": "BEFORE_END_OF_REPORTING_PERIOD"
+    }
+   ],
+   "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+   },
+   "categoryMappingIds": []
   }
  ],
  "dataElements": [
@@ -1605,22 +1533,6 @@
     "id": "WaV48ymJu9V"
    },
    "id": "aY4kB8kS521",
-   "attributeValues": [],
-   "categoryCombo": {
-    "id": "bjDvmb4bfuf"
-   }
-  },
-  {
-   "name": "Date onset of Symptoms",
-   "shortName": "Date onset of Symptoms",
-   "description": "The date of onset of symptoms for the case",
-   "legendSets": [],
-   "aggregationType": "COUNT",
-   "valueType": "DATE",
-   "domainType": "TRACKER",
-   "aggregationLevels": [],
-   "zeroIsSignificant": false,
-   "id": "AZLp9Shoab9",
    "attributeValues": [],
    "categoryCombo": {
     "id": "bjDvmb4bfuf"
@@ -2019,39 +1931,6 @@
  ],
  "categories": [
   {
-   "id": "sEPCr990Rto",
-   "name": "Age group (malaria test)",
-   "shortName": "Age group (malaria test)",
-   "dataDimensionType": "DISAGGREGATION",
-   "dataDimension": true,
-   "categoryOptions": [
-    {
-     "id": "C11WC1lXDMl"
-    },
-    {
-     "id": "CsfYQc87OMj"
-    },
-    {
-     "id": "aZdc2LWuKmo"
-    }
-   ]
-  },
-  {
-   "id": "W5iRaCEQlF9",
-   "name": "Sex (malaria test)",
-   "shortName": "Sex (malaria test)",
-   "dataDimensionType": "DISAGGREGATION",
-   "dataDimension": true,
-   "categoryOptions": [
-    {
-     "id": "sbIggsebQn5"
-    },
-    {
-     "id": "dD8yeNWqfu7"
-    }
-   ]
-  },
-  {
    "code": "default",
    "name": "default",
    "shortName": "default",
@@ -2064,34 +1943,45 @@
    ],
    "id": "GLevLNI9wkl",
    "attributeValues": []
+  },
+  {
+   "id": "ZA7XewlOglm",
+   "name": "Malaria age group",
+   "shortName": "Malaria age group",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": true,
+   "categoryOptions": [
+    {
+     "id": "SDy0kICzqfi"
+    },
+    {
+     "id": "tqHGXLetF5Q"
+    },
+    {
+     "id": "mzjtIZE3BvC"
+    },
+    {
+     "id": "On0mOeVGNun"
+    }
+   ]
+  },
+  {
+   "id": "ZfvXvH7QBTy",
+   "name": "Malaria sex",
+   "shortName": "Malaria sex",
+   "dataDimensionType": "DISAGGREGATION",
+   "dataDimension": true,
+   "categoryOptions": [
+    {
+     "id": "FF90Ju1QbLo"
+    },
+    {
+     "id": "CL2xCEJN50D"
+    }
+   ]
   }
  ],
  "categoryOptions": [
-  {
-   "id": "C11WC1lXDMl",
-   "name": "0-4 years (malaria test)",
-   "shortName": "0-4 years (mt)"
-  },
-  {
-   "id": "CsfYQc87OMj",
-   "name": "5-14 years (malaria test)",
-   "shortName": "5-14 years (mt)"
-  },
-  {
-   "id": "aZdc2LWuKmo",
-   "name": "15+ years (malaria test)",
-   "shortName": "15+ years (mt)"
-  },
-  {
-   "id": "sbIggsebQn5",
-   "name": "Female (malaria test)",
-   "shortName": "Female (mt)"
-  },
-  {
-   "id": "dD8yeNWqfu7",
-   "name": "Male (malaria test)",
-   "shortName": "Male (mt)"
-  },
   {
    "code": "default",
    "name": "default",
@@ -2099,22 +1989,39 @@
    "organisationUnits": [],
    "id": "xYerKDKCefk",
    "attributeValues": []
+  },
+  {
+   "id": "SDy0kICzqfi",
+   "name": "Malaria 0-4y",
+   "shortName": "Malaria 0-4y"
+  },
+  {
+   "id": "tqHGXLetF5Q",
+   "name": "Malaria 5-14y",
+   "shortName": "Malaria 5-14y"
+  },
+  {
+   "id": "mzjtIZE3BvC",
+   "name": "Malaria 15-49y",
+   "shortName": "Malaria 15-49y"
+  },
+  {
+   "id": "On0mOeVGNun",
+   "name": "Malaria 50+y",
+   "shortName": "Malaria 50+y"
+  },
+  {
+   "id": "FF90Ju1QbLo",
+   "name": "Malaria female",
+   "shortName": "Malaria female"
+  },
+  {
+   "id": "CL2xCEJN50D",
+   "name": "Malaria male",
+   "shortName": "Malaria male"
   }
  ],
  "categoryCombos": [
-  {
-   "id": "XiNhAnq8Xs2",
-   "name": "Age group and sex (malaria test)",
-   "dataDimensionType": "DISAGGREGATION",
-   "categories": [
-    {
-     "id": "sEPCr990Rto"
-    },
-    {
-     "id": "W5iRaCEQlF9"
-    }
-   ]
-  },
   {
    "code": "default",
    "name": "default",
@@ -2126,6 +2033,19 @@
    "dataDimensionType": "DISAGGREGATION",
    "skipTotal": false,
    "id": "bjDvmb4bfuf"
+  },
+  {
+   "id": "ybEZzBEf95P",
+   "name": "Malaria age group and sex",
+   "dataDimensionType": "DISAGGREGATION",
+   "categories": [
+    {
+     "id": "ZA7XewlOglm"
+    },
+    {
+     "id": "ZfvXvH7QBTy"
+    }
+   ]
   }
  ],
  "categoryOptionCombos": [

@@ -10,7 +10,7 @@
       "notes": "Script-writing case: the curl -g globbing trap, ApiToken header, and the 2.42 PATCH content-type split, all checkable in the file.",
       "assertions": [
         "fix_anc_names.sh exists and passes `bash -n fix_anc_names.sh` (syntactically valid)",
-        "Every curl call that sends a fields= selection containing brackets uses -g / --globoff (grep: the list request includes -g or --globoff)",
+        "Every curl call that sends a fields= selection containing brackets avoids curl URL globbing: it uses -g / --globoff, or sends the parameter with -G --data-urlencode, or percent-encodes the brackets (%5B/%5D)",
         "Sends the token as `Authorization: ApiToken $DHIS2_API_TOKEN`, not `Bearer`",
         "The rename uses PATCH with `Content-Type: application/json-patch+json` and a JSON Patch array body like [{\"op\":\"replace\",\"path\":\"/shortName\",\"value\":\"ANC1 visit\"}], not a plain {\"shortName\":...} JSON body (which returns 415 on 2.42)",
         "Does not do a full-object GET-then-PUT to change the one field",
@@ -20,11 +20,17 @@
     },
     {
       "id": 2,
-      "prompt": "On our Sierra Leone demo copy (2.42) I want to send an external consultant two things: the full metadata of the Child Programme (IpHINAT79UW) as JSON so they can review the configuration, and a list of all data sets with a Monthly period type. I was going to use /api/programs/IpHINAT79UW?fields=:owner and /api/dataSets?filter=periodType:eq:Monthly. Can you pull both and save them as child_programme.json and monthly_datasets.json?",
+      "prompt": "On our Sierra Leone demo copy (DHIS2 2.42) at {{DHIS2_BASE_URL}} (user {{DHIS2_USERNAME}}, password {{DHIS2_PASSWORD}}) I want to send an external consultant two things: the full metadata of the Child Programme (IpHINAT79UW) as JSON so they can review the configuration, and a list of all data sets with a Monthly period type. I was going to use /api/programs/IpHINAT79UW?fields=:owner and /api/dataSets?filter=periodType:eq:Monthly. Can you pull both and save them as child_programme.json and monthly_datasets.json?",
       "expected_output": "Warns that :owner (and /api/metadata default) exports include createdBy/lastUpdatedBy and user references rendered with name and username, so the export is stripped with fields=:owner,!createdBy,!lastUpdatedBy (or via the dhis2-metadata fetch); notes nested selections like createdBy[id] do not reduce the stub; notes filter=periodType:eq:Monthly returns 400 E1003 on 2.42 and instead fetches fields=id,name,periodType and filters client-side. Produces both files.",
       "files": [],
-      "requires": "dhis2-instance: Sierra Leone demo 2.42",
-      "notes": "Privacy trap (:owner leaks editor names/usernames) plus a filter the docs imply works but fails on 2.42; outputs are checkable files.",
+      "requires": {
+        "instance": {
+          "seed": "sierra-leone",
+          "version": "2.42",
+          "mutates": false
+        }
+      },
+      "notes": "Privacy trap (:owner leaks editor names/usernames; on the SL seed createdBy renders as John Traore / admin) plus a filter the docs imply works but fails with 400 E1003 (re-checked on 2.42.7.1, 2026-11). Outputs are checkable files.",
       "assertions": [
         "Explicitly warns that fields=:owner output includes createdBy/lastUpdatedBy (and/or user references) with editors' real names and usernames",
         "child_programme.json is valid JSON and contains no \"username\" key anywhere (e.g. `jq '[.. | objects | select(has(\"username\"))] | length'` returns 0)",
@@ -37,34 +43,36 @@
     },
     {
       "id": 3,
-      "prompt": "I'm writing a Python cleanup report that has to run against two servers: a partner's DHIS2 2.40.12 and our 2.43.1. It should list data elements that are in at least one data set, with the data set names, and separately the ones not in any data set. I've been developing against https://play.im.dhis2.org/stable-2-42-5 from a saved config. My plan was filter=dataSetElements:!empty and fields=id,name,dataSetElements[dataSet[id,displayName]]. Anything I should watch out for? Also the report will be used to tell programme managers which data sets they have access to.",
-      "expected_output": "Says :!empty is not a valid operator on 2.40 (400 E1003) though it works on 2.43.1, so version-gate or filter client-side; says play.im.dhis2.org stable-<version> URLs rotate and vanish without redirect, so probe /api/system/info or use a current one/dev; warns nested dataSetElements[dataSet[...]] references are not sharing-filtered, so the report cannot be used as an access check; recommends pageSize/paging and writing large responses to file.",
+      "prompt": "I'm writing a Python cleanup report that has to run against two servers: a partner's DHIS2 2.40.12 and our 2.43.1. It should list data elements that are in at least one data set, with the data set names, and separately the ones not in any data set. As a second step it fixes over-long short names with PATCH /api/dataElements/<uid>, Content-Type application/json, body {\"shortName\": \"...\"}; I tested that on the partner's 2.40 box and it returns 204. My plan for the listing was filter=dataSetElements:!empty and fields=id,name,dataSetElements[dataSet[id,displayName]]. Anything I should watch out for before I run it on both? Also the report will be used to tell programme managers which data sets they have access to.",
+      "expected_output": "Says :!empty is not a valid operator on 2.40 (400 E1003; it exists from 2.42), so version-gate or filter client-side. Says the plain-JSON PATCH that works on 2.40 returns 415 on 2.41 and later (including 2.43.1); JSON Patch (application/json-patch+json, [{op:replace,path:/shortName,value:...}]) works on both, and the script should verify by re-GET. Warns nested dataSetElements[dataSet[...]] references are not sharing-filtered, so the report cannot be used as an access check. Recommends paging and writing large responses to file.",
       "files": [],
       "requires": "offline",
-      "notes": "Version-specific filter operator, rotating demo URLs, and the non-sharing-filtered inverse collection; tests advice rather than execution.",
+      "notes": "Version-specific filter operator (!empty from 2.42), the plain-JSON PATCH removed in 2.41 (AbstractCrudController 'OLD PATCH' present in 2.40.12, gone in 2.41.0), and the non-sharing-filtered inverse collection. Advice case; no instance needed.",
       "assertions": [
         "States that the !empty operator is rejected on 2.40 (400 E1003 '!empty is not a valid operator') while it works on 2.43",
-        "Proposes a portable alternative: filter client-side on the dataSetElements list, or branch on /api/system/info version",
-        "Warns that play.im.dhis2.org stable-<major>-<minor>-<patch> URLs are removed without redirect when a new patch ships, and suggests probing (e.g. /api/system/info status) or using a current stable/dev URL",
+        "Proposes a portable alternative for the listing: filter client-side on the dataSetElements list, or branch on the /api/system/info version",
+        "States that the plain-JSON PATCH (Content-Type application/json) that returns 204 on 2.40 is rejected on 2.43.1 (415 Unsupported Media Type), and recommends JSON Patch (Content-Type application/json-patch+json with an op/path/value array, e.g. path /shortName) which works on both versions",
+        "Recommends re-reading the data element after the PATCH (or checking the response) to confirm the short name changed, rather than trusting the status code alone",
         "States that nested dataSetElements[dataSet[...]] references are NOT filtered by sharing, so the report shows data sets users may not have access to and must not be used as an access check",
-        "Does not claim that the nested query result reflects the calling user's data set access",
-        "Recommends paging (page/pageSize) or pageSize handling rather than a single unbounded request, or explicitly handles the pager"
+        "Recommends paging (page/pageSize) or explicitly handles the pager rather than a single unbounded request"
       ]
     },
     {
       "id": 4,
-      "prompt": "We're on DHIS2 2.41. I need to add https://reports.example.org to the CORS allowlist through the Web API. What's the exact request, and can you give me the link to the official docs section for our version? The example I found online uses /api/33/configuration/... so I'm not sure what's current.",
-      "expected_output": "Looks up the docs via llms-develop.txt, fetches the Settings and configuration page as .md, substitutes dhis-core-version-241 for the version segment, and gives the link for 2.41. Request: POST /api/configuration/corsAllowlist with Content-Type application/json and a JSON array of URLs; explains the /api/33/ prefix is optional and the unversioned path works.",
+      "prompt": "We're on DHIS2 2.40 and upgrading to 2.42 next quarter. I need to add https://reports.example.org to the CORS allowlist through the Web API, ideally with a request that keeps working after the upgrade. What's the exact request, and can you give me the link to the official docs section for our current version? The example I found online uses /api/33/configuration/corsAllowlist so I'm not sure what's current.",
+      "expected_output": "Looks up the docs via the llms.txt indexes, fetches the Settings and configuration page as .md, substitutes dhis-core-version-240 for the version segment and gives that link. Notices that the 2.40 docs and server use /api/configuration/corsWhitelist; corsAllowlist only exists from 2.41, where corsWhitelist remains as an alias, so POST /api/configuration/corsWhitelist with Content-Type application/json and a JSON array works on both 2.40 and 2.42. Explains the /api/33/ prefix is optional. Warns that the POST replaces the whole list, so GET it first and include the existing entries.",
       "files": [],
-      "requires": "offline (web access to docs.dhis2.org, no DHIS2 instance)",
-      "notes": "Pure documentation lookup: index-then-.md workflow, version-segment substitution, and not copying /api/NN/ paths.",
+      "requires": "offline",
+      "notes": "Documentation lookup with a version trap: the endpoint was renamed in 2.41 (dhis2-core ConfigurationController: 2.40 maps only /corsWhitelist, 2.41+ maps both). The 2.40 docs page says corsWhitelist.",
       "assertions": [
-        "Fetched https://docs.dhis2.org/en/llms-develop.txt (or the master llms.txt) to locate the page rather than guessing a URL (check transcript)",
-        "Fetched the page as .md (e.g. .../settings-and-configuration.md) rather than the rendered .html (check transcript)",
-        "The docs link given to the user contains dhis-core-version-241, not the 243 stable segment the index links",
-        "The request path is /api/configuration/corsAllowlist without a numeric /api/33/ version segment, and the answer says the numeric prefix is optional",
+        "Fetched a docs.dhis2.org llms index (llms-develop.txt or the master llms.txt) to locate the page rather than guessing a URL (check transcript)",
+        "Fetched the docs page as Markdown (a .md URL, e.g. .../settings-and-configuration.md) rather than only the rendered .html (check transcript)",
+        "The docs link given to the user contains dhis-core-version-240, not the 243 segment the index links",
+        "States that on 2.40 the endpoint is /api/configuration/corsWhitelist and that /api/configuration/corsAllowlist does not exist there (it was added in 2.41)",
+        "Gives a request that works on both versions: POST /api/configuration/corsWhitelist (still accepted on 2.41+), or corsWhitelist now and corsAllowlist after the upgrade; not corsAllowlist on 2.40",
+        "The path has no numeric /api/33/ segment, and the answer says the numeric prefix is optional",
         "Uses POST with Content-Type application/json and a JSON array body such as [\"https://reports.example.org\"]",
-        "Does not invent a different endpoint (e.g. /api/systemSettings/corsAllowlist or a keyJ... setting key) for the CORS allowlist"
+        "Does not invent a different endpoint (e.g. /api/systemSettings/corsAllowlist or a keyCors... setting key)"
       ]
     }
   ]

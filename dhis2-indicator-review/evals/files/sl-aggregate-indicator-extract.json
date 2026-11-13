@@ -12,7 +12,7 @@
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
-   "numerator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
+   "numerator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.V6L425pT3A0}",
    "numeratorDescription": "ANC1-ANC3",
    "denominator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}",
    "denominatorDescription": "Total 1st ANC visits",
@@ -29,7 +29,7 @@
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
-   "numerator": "#{fbfJHSPpUQD}",
+   "numerator": "#{fbfJHSPpUQD}+#{fbfJHSPpUQD.PT59n8BQbqM}",
    "numeratorDescription": "Total ANC 1 visits",
    "denominator": "#{h0xKKjijTdI}",
    "denominatorDescription": "Estimated number of pregnant women",
@@ -58,7 +58,7 @@
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
-   "numerator": "#{ybzlGLjWwnK.LgcyFixed01}+#{ybzlGLjWwnK.PT59n8BQbqM}",
+   "numerator": "#{ybzlGLjWwnK.pq2XI5kz2BY}+#{ybzlGLjWwnK.PT59n8BQbqM}",
    "numeratorDescription": "LLITN given at ANC",
    "denominator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}",
    "denominatorDescription": "ANC firs visit",
@@ -75,7 +75,7 @@
    },
    "numerator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}+#{cYeuwXTCPkU.pq2XI5kz2BY}+#{cYeuwXTCPkU.PT59n8BQbqM}+#{Jtf34kNZhzP.pq2XI5kz2BY}+#{Jtf34kNZhzP.PT59n8BQbqM}+#{hfdmMSPBgLG.pq2XI5kz2BY}+#{hfdmMSPBgLG.PT59n8BQbqM}",
    "numeratorDescription": "Total number of ANC visits",
-   "denominator": "#{LSJ5mKpyEv1.DOC7emLzyRi}+#{LSJ5mKpyEv1.R23h9QZRbRt}+#{nlQztbooKAj.DOC7emLzyRi}+#{nlQztbooKAj.R23h9QZRbRt}+#{q7QXzNnSstn.DOC7emLzyRi}+#{q7QXzNnSstn.DOC7emLzyRi}+#{OKj6vV8hmTP.R23h9QZRbRt}+#{OKj6vV8hmTP.DOC7emLzyRi}",
+   "denominator": "#{LSJ5mKpyEv1.DOC7emLzyRi}+#{LSJ5mKpyEv1.R23h9QZRbRt}+#{nlQztbooKAj.DOC7emLzyRi}+#{nlQztbooKAj.R23h9QZRbRt}+#{q7QXzNnSstn.DOC7emLzyRi}+#{q7QXzNnSstn.R23h9QZRbRt}+#{OKj6vV8hmTP.R23h9QZRbRt}+#{OKj6vV8hmTP.DOC7emLzyRi}",
    "denominatorDescription": "Nurses Aides and Doctors",
    "url": "",
    "id": "Lzg9LtG1xg3"
@@ -88,9 +88,9 @@
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
-   "numerator": "((#{fClA2Erf6IO.Prlt0C1RF0s}+#{fClA2Erf6IO.V6L425pT3A0})-(#{YtbsuPPo010.Prlt0C1RF0s}+#{YtbsuPPo010.V6L425pT3A0}))/(#{fClA2Erf6IO.Prlt0C1RF0s}+#{fClA2Erf6IO.V6L425pT3A0})",
+   "numerator": "#{fClA2Erf6IO.Prlt0C1RF0s}+#{fClA2Erf6IO.V6L425pT3A0}-#{YtbsuPPo010.Prlt0C1RF0s}+#{YtbsuPPo010.V6L425pT3A0}",
    "numeratorDescription": "SUM (Penta1 fixed and outreach) - SUM ( Measles vaccinations among children 0 to 11 months)",
-   "denominator": "1",
+   "denominator": "#{fClA2Erf6IO.Prlt0C1RF0s}+#{fClA2Erf6IO.V6L425pT3A0}",
    "denominatorDescription": "SUM (Penta1 0 to 11 months fixed and outreach)",
    "url": "",
    "id": "d9thHOJMROr"
@@ -102,7 +102,7 @@
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
-   "numerator": "(#{UOlfIjgN8X6.Prlt0C1RF0s}+#{UOlfIjgN8X6.V6L425pT3A0})*(#{BfMAe6Itzgt.REPORTING_RATE}/100)",
+   "numerator": "(#{UOlfIjgN8X6.Prlt0C1RF0s}+#{UOlfIjgN8X6.V6L425pT3A0})*(R{BfMAe6Itzgt.REPORTING_RATE}/100)",
    "numeratorDescription": "SUM ( Fully Immunized among children 0 to 11 months)",
    "denominator": "#{DTVRnCGamkV}",
    "denominatorDescription": "Population <1 year",
@@ -112,7 +112,7 @@
    "code": "IN_52494",
    "name": "Measles Coverage <1y",
    "shortName": "Measles Coverage <1y",
-   "annualized": true,
+   "annualized": false,
    "indicatorType": {
     "id": "bWuNrMHEoZ0"
    },
@@ -127,9 +127,9 @@
    "code": "IN_394449",
    "name": "NVP during labour rate",
    "shortName": "NVP during labour rate",
-   "annualized": false,
+   "annualized": true,
    "indicatorType": {
-    "id": "JkWynlWMjJR"
+    "id": "bWuNrMHEoZ0"
    },
    "numerator": "#{e87Gl0315MV.YBhrfw1dP2J}+#{e87Gl0315MV.u5fU9rr67xo}+#{e87Gl0315MV.LbkJRbDblhe}+#{e87Gl0315MV.z858fbdqWwF}",
    "numeratorDescription": "Women receiving NVP during labour",
@@ -137,22 +137,6 @@
    "denominatorDescription": "Positive tests PMTCT",
    "url": "",
    "id": "GfYjGL16D0W"
-  },
-  {
-   "code": "IN_394127",
-   "name": "PHU delivery rate (by ANC1)",
-   "shortName": "PHU del. rate (by ANC 1)",
-   "description": "Registered deliveries in the PHU by ANC 1st visits.",
-   "annualized": false,
-   "indicatorType": {
-    "id": "bWuNrMHEoZ0"
-   },
-   "numerator": "(#{gQNFkFkObU8.YEmiuCcgNQI}+#{gQNFkFkObU8.L4P9VSgHkF6}+#{gQNFkFkObU8.Gmbgme7z9BF}+#{gQNFkFkObU8.Tzg8I9KyEwd}+#{gQNFkFkObU8.s3jlIgFCbUb}+#{gQNFkFkObU8.PvFFIeF2J9x})*100",
-   "numeratorDescription": "Total live births in the PHU",
-   "denominator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}",
-   "denominatorDescription": "ANC 1st visits",
-   "url": "",
-   "id": "n0GE1ISYrdM"
   }
  ],
  "indicatorTypes": [
@@ -222,7 +206,7 @@
    "code": "DE_23",
    "name": "Penta1 doses given",
    "shortName": "Penta1 doses given",
-   "aggregationType": "SUM",
+   "aggregationType": "COUNT",
    "valueType": "NUMBER",
    "domainType": "AGGREGATE",
    "url": "",
@@ -294,21 +278,6 @@
    }
   },
   {
-   "code": "DE_359657",
-   "name": "Live births",
-   "shortName": "Live births",
-   "aggregationType": "SUM",
-   "valueType": "NUMBER",
-   "domainType": "AGGREGATE",
-   "url": "",
-   "aggregationLevels": [],
-   "zeroIsSignificant": false,
-   "id": "gQNFkFkObU8",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   }
-  },
-  {
    "code": "DE_359599",
    "name": "ANC 4th or more visits",
    "shortName": "ANC 4th or more",
@@ -372,7 +341,7 @@
    "code": "DE_359606",
    "name": "IPT 2nd dose given by TBA",
    "shortName": "IPT 2nd by TBA",
-   "aggregationType": "AVERAGE",
+   "aggregationType": "SUM",
    "valueType": "NUMBER",
    "domainType": "AGGREGATE",
    "url": "",
@@ -402,7 +371,7 @@
    "code": "DE_359600",
    "name": "LLITN given at ANC 1st",
    "shortName": "LITTN at ANC 1st",
-   "aggregationType": "COUNT",
+   "aggregationType": "SUM",
    "valueType": "NUMBER",
    "domainType": "AGGREGATE",
    "url": "",
@@ -803,14 +772,6 @@
       "id": "QX4ZTUbOt3a"
      },
      "dataElement": {
-      "id": "gQNFkFkObU8"
-     }
-    },
-    {
-     "dataSet": {
-      "id": "QX4ZTUbOt3a"
-     },
-     "dataElement": {
       "id": "cYeuwXTCPkU"
      }
     }
@@ -980,21 +941,6 @@
    "id": "KYYSTxeVw28"
   },
   {
-   "code": "BIRTHS",
-   "name": "Births",
-   "categories": [
-    {
-     "id": "KfdsGBcoiCa"
-    },
-    {
-     "id": "cX5k9anHEHd"
-    }
-   ],
-   "dataDimensionType": "DISAGGREGATION",
-   "skipTotal": false,
-   "id": "m2jTvAj5kkm"
-  },
-  {
    "name": "HIV age",
    "categories": [
     {
@@ -1089,50 +1035,6 @@
     }
    ],
    "id": "veGzholzPQm"
-  },
-  {
-   "code": "GENDER",
-   "name": "Gender",
-   "shortName": "Gender",
-   "dataDimensionType": "DISAGGREGATION",
-   "dataDimension": true,
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "id": "cX5k9anHEHd"
-  },
-  {
-   "code": "BIRTHS_ATTENDED",
-   "name": "Births attended by",
-   "shortName": "Births attended by",
-   "dataDimensionType": "DISAGGREGATION",
-   "dataDimension": false,
-   "categoryOptions": [
-    {
-     "id": "TNYQzTHdoxL"
-    },
-    {
-     "id": "TXGfLxZlInA"
-    },
-    {
-     "id": "QgULqw9YDu2"
-    },
-    {
-     "id": "OjIOxG7vgna"
-    },
-    {
-     "id": "uZUnebiT5DI"
-    },
-    {
-     "id": "HTHvCohKoXt"
-    }
-   ],
-   "id": "KfdsGBcoiCa"
   }
  ],
  "categoryOptions": [
@@ -1185,18 +1087,6 @@
    "id": "zs2Ra6sikup"
   },
   {
-   "code": "MLE",
-   "name": "Male",
-   "shortName": "Male",
-   "id": "jRbMi0aBjYn"
-  },
-  {
-   "code": "FMLE",
-   "name": "Female",
-   "shortName": "Female",
-   "id": "apsOixVZlf1"
-  },
-  {
    "code": "AGE15-24",
    "name": "15-24y",
    "shortName": "15-24y",
@@ -1213,42 +1103,6 @@
    "name": ">49y",
    "shortName": ">49y",
    "id": "IG8vRsn0HNl"
-  },
-  {
-   "code": "MIDWIVES",
-   "name": "Midwives",
-   "shortName": "Midwives",
-   "id": "QgULqw9YDu2"
-  },
-  {
-   "code": "UNTRAINED_TBA",
-   "name": "Untrained TBA",
-   "shortName": "Untrained TBA",
-   "id": "HTHvCohKoXt"
-  },
-  {
-   "code": "MCH_AIDES",
-   "name": "MCH Aides",
-   "shortName": "MCH Aides",
-   "id": "TNYQzTHdoxL"
-  },
-  {
-   "code": "SECHN",
-   "name": "SECHN",
-   "shortName": "SECHN",
-   "id": "TXGfLxZlInA"
-  },
-  {
-   "code": "TRAINED_TBA",
-   "name": "Trained TBA",
-   "shortName": "Trained TBA",
-   "id": "uZUnebiT5DI"
-  },
-  {
-   "code": "CHO",
-   "name": "CHO",
-   "shortName": "CHO",
-   "id": "OjIOxG7vgna"
   }
  ],
  "categoryOptionCombos": [
@@ -1363,138 +1217,6 @@
    "id": "DOC7emLzyRi"
   },
   {
-   "code": "COC_359669",
-   "name": "Trained TBA, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "uZUnebiT5DI"
-    },
-    {
-     "id": "Fp4gVHbRvEV"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "Gmbgme7z9BF"
-  },
-  {
-   "name": "SECHN, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "TXGfLxZlInA"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "Ifqide84xSh"
-  },
-  {
-   "name": "Trained TBA, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "uZUnebiT5DI"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "Tk8loZNEo4E"
-  },
-  {
-   "code": "COC_359662",
-   "name": "SECHN, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "TXGfLxZlInA"
-    },
-    {
-     "id": "wHFX72Y0KXx"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "MaXD86iob3M"
-  },
-  {
-   "name": "Midwives, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "QgULqw9YDu2"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "w0tNkmER8Lb"
-  },
-  {
-   "code": "COC_359665",
-   "name": "Midwives, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "QgULqw9YDu2"
-    },
-    {
-     "id": "Fp4gVHbRvEV"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "Tzg8I9KyEwd"
-  },
-  {
-   "name": "CHO, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "OjIOxG7vgna"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "R3oRRwMRfMT"
-  },
-  {
-   "code": "COC_359664",
-   "name": "Midwives, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "QgULqw9YDu2"
-    },
-    {
-     "id": "wHFX72Y0KXx"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "AKQ15Z2uqit"
-  },
-  {
    "code": "COC_167660",
    "name": "Outreach",
    "categoryCombo": {
@@ -1509,203 +1231,6 @@
    "id": "PT59n8BQbqM"
   },
   {
-   "name": "Untrained TBA, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "HTHvCohKoXt"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "SeTGOtrbip1"
-  },
-  {
-   "name": "Midwives, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "QgULqw9YDu2"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "xQbMVHxaUiW"
-  },
-  {
-   "code": "COC_359660",
-   "name": "MCH Aides, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "wHFX72Y0KXx"
-    },
-    {
-     "id": "TNYQzTHdoxL"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "b19Ye0TWs1D"
-  },
-  {
-   "code": "COC_359671",
-   "name": "Untrained TBA, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "HTHvCohKoXt"
-    },
-    {
-     "id": "Fp4gVHbRvEV"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "s3jlIgFCbUb"
-  },
-  {
-   "name": "CHO, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "OjIOxG7vgna"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "RgrNGmlMOAJ"
-  },
-  {
-   "code": "COC_359666",
-   "name": "CHO, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "OjIOxG7vgna"
-    },
-    {
-     "id": "wHFX72Y0KXx"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "w3BcsdjOcfk"
-  },
-  {
-   "name": "MCH Aides, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "TNYQzTHdoxL"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "Gqs7snASTtF"
-  },
-  {
-   "name": "SECHN, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "TXGfLxZlInA"
-    },
-    {
-     "id": "jRbMi0aBjYn"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "NZAKyj67WW2"
-  },
-  {
-   "code": "COC_359668",
-   "name": "Trained TBA, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "uZUnebiT5DI"
-    },
-    {
-     "id": "wHFX72Y0KXx"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "CYHGl18lR0W"
-  },
-  {
-   "name": "Trained TBA, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "uZUnebiT5DI"
-    },
-    {
-     "id": "apsOixVZlf1"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "quwbAxfBdQU"
-  },
-  {
-   "code": "COC_359670",
-   "name": "Untrained TBA, In Community",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "HTHvCohKoXt"
-    },
-    {
-     "id": "wHFX72Y0KXx"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "HVFCn1yjoGx"
-  },
-  {
-   "name": "MCH Aides, Male",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "jRbMi0aBjYn"
-    },
-    {
-     "id": "TNYQzTHdoxL"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "mcwaItVPoeA"
-  },
-  {
    "code": "COC_167661",
    "name": "Fixed",
    "categoryCombo": {
@@ -1718,73 +1243,6 @@
    ],
    "ignoreApproval": false,
    "id": "pq2XI5kz2BY"
-  },
-  {
-   "code": "COC_359661",
-   "name": "MCH Aides, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "Fp4gVHbRvEV"
-    },
-    {
-     "id": "TNYQzTHdoxL"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "L4P9VSgHkF6"
-  },
-  {
-   "name": "Untrained TBA, Female",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "apsOixVZlf1"
-    },
-    {
-     "id": "HTHvCohKoXt"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "vP9xV78M67W"
-  },
-  {
-   "code": "COC_359667",
-   "name": "CHO, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "OjIOxG7vgna"
-    },
-    {
-     "id": "Fp4gVHbRvEV"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "PvFFIeF2J9x"
-  },
-  {
-   "code": "COC_359663",
-   "name": "SECHN, At PHU",
-   "categoryCombo": {
-    "id": "m2jTvAj5kkm"
-   },
-   "categoryOptions": [
-    {
-     "id": "TXGfLxZlInA"
-    },
-    {
-     "id": "Fp4gVHbRvEV"
-    }
-   ],
-   "ignoreApproval": false,
-   "id": "YEmiuCcgNQI"
   },
   {
    "code": "AGE0-14",
@@ -1841,19 +1299,6 @@
    ],
    "ignoreApproval": false,
    "id": "z858fbdqWwF"
-  },
-  {
-   "id": "LgcyFixed01",
-   "name": "Fixed",
-   "categoryCombo": {
-    "id": "LgcyFxOut01"
-   },
-   "categoryOptions": [
-    {
-     "id": "qkPbeWaFsnU"
-    }
-   ],
-   "ignoreApproval": false
   }
  ],
  "constants": [

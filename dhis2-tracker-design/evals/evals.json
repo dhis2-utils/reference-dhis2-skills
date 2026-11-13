@@ -3,35 +3,40 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "We're setting up TB contact tracing in DHIS2 2.41 for a district programme. Each index case has household contacts; every contact is screened once, and those under 5 or with HIV should start TB preventive therapy (TPT) and be followed monthly for 6 months. The programme wants: contacts per index case, % of contacts screened, % eligible contacts started on TPT by age group and sex, TPT completion, and all of that by whether the index case is bacteriologically confirmed. Should contacts be events on the index case or their own tracked entities? What would you build?",
-      "expected_output": "Candidate models (contacts as repeatable stage, every contact as linked TE, hybrid: contacts as events + TE only for those starting TPT); checks reachability of 'by index case confirmation' (lost across relationships unless copied onto the contact); notes 'contacts per index case' is reachable with d2:relationshipCount if contacts are linked TEs, or a stage event count if they are events; on 2.41 age/sex breakdowns need one program indicator per cell (categoryMappings disaggregation is 2.42+); recommends one model with the cost accepted and what would change it; comparison table.",
+      "prompt": "We're setting up TB contact tracing in DHIS2 2.41 for a district programme. Each index case has household contacts; every contact is screened once, and those under 5 or with HIV should start TB preventive therapy (TPT) and be followed monthly for 6 months. The programme wants: contacts per index case, % of contacts screened, % eligible contacts started on TPT by age group and sex, TPT completion, and all of that by whether the index case is bacteriologically confirmed (the lab result often arrives two or three weeks after the index case is registered). Should contacts be events on the index case or their own tracked entities? What would you build?",
+      "expected_output": "Candidate models (contacts as repeatable stage, every contact as linked TE, hybrid: contacts as events + TE only for those starting TPT); checks reachability of 'by index case confirmation' (lost across relationships unless copied onto the contact); notes 'contacts per index case' is reachable with d2:relationshipCount if contacts are linked TEs, or a stage event count if they are events; on 2.41 age/sex breakdowns need one program indicator per cell (categoryMappings disaggregation is 2.42+); recommends one model with the cost accepted and what would change it; comparison table. The copied confirmation must be refreshed when the lab result arrives later (a job or script; rules cannot write across tracked entities). TPT completion is a cohort indicator: starters in a period as the denominator, reported after the 6 months.",
       "files": [],
       "assertions": [
-        "Compares at least two concrete candidate models (e.g. contacts as events/repeatable stage vs contacts as their own linked tracked entities) with trade-offs for each",
+        "Handles the late-arriving lab result: the confirmation copied onto contacts (or read via any other workaround) must be updated when the index case's result changes, by a script/job or manual step, because program rules cannot write to another tracked entity",
         "Recommends one model explicitly and says what cost is accepted or what would change the choice",
         "States that the index case's bacteriological confirmation is not reachable from the contact's indicators across the relationship, and proposes copying it onto the contact (or an equivalent concrete workaround)",
         "Says that on 2.41 the age-group x sex breakdown needs one program indicator per cell (or line lists), because single-indicator disaggregation (categoryMappings) arrives in 2.42",
         "Gives a concrete mechanism for 'contacts per index case' (d2:relationshipCount on the index program, or an event count if contacts are events)",
-        "Defines TPT completion with an explicit cohort/denominator (e.g. contacts who started TPT in a period)",
+        "Defines TPT completion as a cohort measure: contacts who started TPT in a stated period (the denominator), counted as completed when their 6 months are over, with the reporting lag stated",
         "Marks unverified behaviour as such or recommends testing the design on a disposable/test instance"
       ],
-      "requires": "offline"
+      "requires": "offline",
+      "notes": "Analytics reach across relationships and version-specific disaggregation (ProgramCategoryMapping exists from 2.42 in dhis2-core)."
     },
     {
       "id": 2,
-      "prompt": "Can you review our design? Mothers are registered in an ANC program (TET Person), and at delivery the baby is registered as a new Person in our Child Health / EPI program, linked with a 'mother of' relationship. The ministry now wants immunisation coverage broken down by mother's education level and by whether the mother attended 4+ ANC visits. We're on 2.42. Can we get that from analytics, and if not, what should we change without breaking what's there?",
-      "expected_output": "Identifies that PIs in the EPI program cannot reach the mother's attributes or ANC events across the relationship; proposes copying mother's education and an ANC4+ flag onto the child as attributes at registration (or a backend job), with snapshot semantics and a backfill for existing children; suggests verifying on a disposable instance.",
-      "files": [],
-      "assertions": [
-        "States clearly that the requested breakdown is not reachable in 2.42 analytics with the current design, because child-program indicators cannot read the mother's attributes/ANC events across the relationship",
-        "Proposes copying mother's education and an ANC4+ flag onto the child's record (attributes or data values) as the fix",
-        "Includes a backfill for children already registered",
-        "Notes the copied values are snapshots (value at a defined time, may go stale) or defines exactly when they are taken",
-        "Keeps the change additive: no change of tracked entity type, no moving existing data between programs, existing relationship kept",
-        "Notes that program rules cannot read another tracked entity's data, so filling the values needs a script, job or custom app (or manual entry)",
-        "Handles children without a linked mother (e.g. an 'unknown' category rather than 'No')"
+      "prompt": "Can you review our tracker design before we build it? It's in evals/files/oosc-design.md. We're on DHIS2 2.42 and go live in five weeks. Tell me what will not work as intended or what we'll regret, and what to change. Write the review to review.md.",
+      "expected_output": "review.md flags: (1) ORG_UNIT_CODE(...) takes one character per dot, so every Learner ID starts with 'SCH' and does not identify the school (use one dot per character or drop the org unit part; sequences restart per pattern value); (2) Age group is hidden and rule-assigned: web Capture drops the hidden value and the server rejects the save (E1309), so show it read-only instead of hiding; (3) household attributes are not reachable from the follow-up program's indicators across the relationship: copy the needed characteristics onto the child at registration (dated snapshot) plus a backfill; (4) a program indicator cannot count an enrollment in another program: have the registry program assign a 'registered in registry' attribute that is also a (hidden) program attribute of OOSC follow-up; (5) OWNER_AT_END did not work on 2.42.6 (ownership analytics empty): record the current school in an ORG_UNIT data element and use it as orgUnitField, or verify first; (6) tracked-entity working lists with an event-status filter are ignored by web Capture 2.42 (lists every active TE): use a program stage working list; (7) changing the TEXT data element to an option set once data exists makes old values fail validation on the next edit/import (E1125): settle the option set before go-live or clean the pilot values first; (8) on 2.42 one PI per measure with a disaggregation category combo and categoryMappings replaces the 24 per-cell PIs.",
+      "files": [
+        "evals/files/oosc-design.md"
       ],
-      "requires": "offline"
+      "requires": "offline",
+      "assertions": [
+        "review.md says ORG_UNIT_CODE(...) uses only as many characters of the code as there are dots (three), so every Learner ID would start with 'SCH' and not identify the school, and proposes a fix (more dots / a different pattern / dropping the org-unit part)",
+        "review.md flags that the rule-assigned Age group is also hidden, that web Capture then drops the value and the server rejects the save (e.g. E1309 / value must match the calculated value), and recommends showing it read-only instead of hiding it",
+        "review.md says the household attributes (female-headed, distance) cannot be reached by OOSC follow-up program indicators across the relationship, and proposes copying them onto the child (attributes or enrollment data) when it is registered",
+        "review.md says a program indicator in OOSC follow-up cannot count or see enrollments in the Learner registry program, and proposes an attribute assigned in the registry program that is also a program attribute of OOSC follow-up (or another concrete workaround that works on 2.42)",
+        "review.md flags orgUnitField OWNER_AT_END as unreliable on 2.42 (ownership analytics empty / counted at the registering org unit) and recommends an ORG_UNIT data element for the current school or verifying on a test instance first",
+        "review.md flags that a tracked-entity working list filtered on event status is not honoured by web Capture 2.42 and recommends a program stage working list instead",
+        "review.md warns that converting 'Reason out of school' from TEXT to an option set after pilot data exists leaves values that fail validation on later edits or imports (e.g. E1125), and recommends settling the option set before go-live or cleaning/migrating the pilot values",
+        "review.md says that on 2.42 the 24 per-cell program indicators can be replaced by one program indicator per measure with a disaggregation category combo and categoryMappings"
+      ],
+      "notes": "Design review with eight planted traps from the skill's references (generator/registries/analytics-reach/access-and-workflow), most verified on 2.42.6: text-pattern dots, hidden + assigned (E1309), reach across relationships and programs, OWNER_AT_END, TE working lists with event status, E1125 (2.41.10), categoryMappings (2.42+). Replaces a mother/child case that every model passed without the skill."
     },
     {
       "id": 3,
@@ -45,9 +50,27 @@
         "Addresses privacy of disability data concretely (e.g. protected access level, restricted sharing, minimal sensitive fields)",
         "Addresses follow-up by other actors: ownership/transfer, org unit assignment or working lists",
         "States that the data model should stay the same whichever entry tool is used",
-        "Considers how the household is represented (roster, attributes on child, or household entity) with a trade-off"
+        "Considers how the household is represented (roster, attributes on child, or household entity) with a trade-off",
+        "Puts observed facts that can change (disability type or functioning, schooling status, outcomes) in stage data elements rather than tracked entity attributes, so their history is kept"
       ],
-      "requires": "offline"
+      "requires": "offline",
+      "notes": "Registry-first design with poor connectivity and web-only skills; model stays the same across tools."
+    },
+    {
+      "id": 4,
+      "prompt": "We run a household program in DHIS2 2.41 where each child is one event in a repeatable 'Household members' stage, registered at the district org unit. Schools now want to see only 'their' out-of-school children in Capture and transfer them to another school when a child moves. Can we just give schools access to the program and transfer the events, or do we need to restructure? Keep it practical.",
+      "expected_output": "Explains that ownership and transfer apply to a tracked entity in a program (owner org unit per tracked entity + program), not to individual events, so a child held as an event cannot be owned by, listed for, or transferred to a school; giving schools access to the household program exposes whole households. Recommends restructuring additively: keep the roster stage, and register children who need follow-up as their own tracked entities in a follow-up program (hybrid), registered at or transferred to the school; transfer via Capture or PUT /api/tracker/ownership/transfer (2.41 parameters trackedEntity, program, ou); notes program access level (OPEN/AUDITED/PROTECTED/CLOSED) and capture vs search scope for school users; notes existing children need a one-off migration/backfill script because program rules cannot create tracked entities; suggests recording the current school in an ORG_UNIT data element for analytics.",
+      "files": [],
+      "requires": "offline",
+      "notes": "Ownership/transfer semantics: a capable model may suggest moving events between org units or sharing, which neither scopes nor transfers a child.",
+      "assertions": [
+        "States that ownership and ownership transfer are per tracked entity and program (owner org unit), so a child stored as an event in the household's enrollment cannot be transferred or owned by a school on its own",
+        "States that giving schools access to the existing household program would expose whole households (access is all-or-nothing on the parent record)",
+        "Recommends giving the children who need follow-up their own tracked entity in a follow-up program, while keeping (not deleting) the existing roster events",
+        "Describes the transfer mechanism concretely: the Capture transfer action or PUT /api/tracker/ownership/transfer, and if parameters are given for 2.41 they are trackedEntity, program and ou",
+        "Mentions program access level (e.g. PROTECTED or CLOSED) and/or the difference between school users' capture scope and search scope",
+        "Says existing children need a one-off script/import to create their tracked entities, because program rules cannot create tracked entities"
+      ]
     }
   ]
 }

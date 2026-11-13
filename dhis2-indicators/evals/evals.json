@@ -61,28 +61,36 @@
         "Explains the unchanged chart after yesterday's change as cached analytics responses, not as evidence the change didn't matter, and gives a concrete way to bypass the cache: POST /api/maintenance/cacheClear (or Data Administration > Maintenance > clear cache) or a neutral cache-busting query parameter (e.g. &_cb=<timestamp>). Does not require any specific cache duration (the DHIS2 default keyCacheStrategy is CACHE_1_MINUTE; SL demo databases set CACHE_TWO_WEEKS). A parameter that changes the result (e.g. skipRounding) is not a valid cache-buster",
         "States that the Percent indicator type (factor 100) is not the cause and leaves it unchanged",
         "Proposes a verification step specific to PIs: throwaway probe PIs, a line-level /api/analytics/events/query check, or boundary-date test events on both sides of a month edge",
-        "Programmatic: outputs/ contains a fixed metadata JSON file that parses, covers all three program indicators (the cross-stage PI may be replaced by new PIs, and the file must include the replacement), and every program indicator in it that uses event data has non-empty analyticsPeriodBoundaries and a count-type aggregation (not AVERAGE). An answer with no fixed metadata file fails"
+        "Programmatic: the agent wrote a fixed metadata JSON file in its working directory (any folder or name; the prompt names none) that parses, covers all three program indicators (the cross-stage PI may be replaced by new PIs, and the file must include the replacement), contains no unresolved placeholder UIDs, and every program indicator in it that uses event data has non-empty analyticsPeriodBoundaries and a count-type aggregation (not AVERAGE). An answer with no fixed metadata file (only inline snippets or an offer to write one) fails"
       ],
       "requires": "offline",
       "notes": "Debugging case with several independent silent PI bugs (AVERAGE on count, missing boundaries, cross-stage EVENT ref, cache) plus a false lead (indicator type) that must not be blamed."
     },
     {
       "id": 4,
-      "prompt": "Before we copy the Sierra Leone demo's 'ANC 1-3 Dropout Rate' and 'ANC 3 Coverage' indicators into a new national 2.42 system, I want proof they compute what their names say. The SL demo instance is at http://dhis2-agent-sl242:8080 (admin/district). Can you check the definitions and test them properly, and give me a short report with the evidence?",
-      "expected_output": "Fetches both indicators and their types from the SL demo; validates numerators/denominators via GET /api/expressions/description and quotes the returned descriptions; lints referenced DEs (aggregationType, valueType, COCs in the current combo, zeroIsSignificant) and notes ANC 3 Coverage is annualized with an Expected pregnancies denominator; tests on a fresh EMPTY 2.42 instance (not the seeded demo) using the dataset dependency export plus indicators and indicatorTypes separately; enters distinct values per cell across two sibling org units with a zero-denominator case, checks imported+updated equals payload size, runs analytics and polls to completion, computes expected values two ways (engine and intent), checks parent = sum(num)/sum(den) and monthly vs yearly annualization; saves artifacts; reports agreement or the defect.",
-      "files": [],
-      "assertions": [
-        "Validates each numerator and denominator with GET /api/expressions/description and reports the returned status/description for each",
-        "Checks the referenced data elements' configuration (aggregationType, valueType/domainType, and that any #{de.coc} COC belongs to the DE's current category combo), not only the expressions",
-        "Runs the data test on a fresh, empty instance (created without a seed, e.g. via the d2-broker) rather than by entering or reading data on the seeded SL demo",
-        "Imports the dataset dependency export and supplies the indicators and their indicator types separately, then confirms the indicator-type factors on the test instance",
-        "Enters distinct per-cell values (not constants) across at least two sibling org units under one parent, and checks the import with imported + updated == number of data values in the payload",
-        "Computes expected values two independent ways (re-evaluating the stored expression, and from the indicator's meaning) and compares both to analytics output",
-        "Checks the parent org unit value as sum of numerators over sum of denominators, and addresses the annualized flag on ANC 3 Coverage (monthly value scaled vs yearly)",
-        "Triggers analytics and waits for the ANALYTICS_TABLE task to complete before querying (or re-runs it after data changes)"
+      "prompt": "Before we copy the Sierra Leone demo's 'ANC 1-3 Dropout Rate' and 'ANC 3 Coverage' indicators into a new national 2.42 system, I want proof they compute what their names say. I exported the two indicators with the data sets they read (Reproductive Health and Population, dependency exports) from our SL demo copy: evals/files/sl-anc-indicators-export.json. There's a throwaway, empty 2.42 instance for you at {{DHIS2_BASE_URL}} ({{DHIS2_USERNAME}} / {{DHIS2_PASSWORD}}); do whatever you need there. Check the definitions, test them properly, and give me a short report (report.md) with the evidence.",
+      "expected_output": "Reads both indicators and the Per cent type (factor 100) from the export; validates numerators/denominators on the instance via GET /api/expressions/description after importing the metadata and quotes the returned descriptions; lints referenced DEs (ANC 1st/3rd visit SUM on Fixed/Outreach; Expected pregnancies AVERAGE_SUM_ORG_UNIT, yearly, zeroIsSignificant false everywhere) and notes ANC 3 Coverage is annualized over a yearly population-type denominator; imports the data set exports plus indicators and indicator types (sharing skipped, org-unit refs expected to fail), runs categoryOptionComboUpdate and confirms the factor; creates a parent with two or more child org units, assigns the data sets, enters distinct values per cell including a zero-denominator case, checks imported+updated equals payload size, runs analytics and polls to completion, computes expected values two ways (engine and intent), checks parent = sum(num)/sum(den) and the monthly annualization (x 365/days, yearly denominator used as is for a month); saves artifacts; reports agreement or the defect.",
+      "files": [
+        "evals/files/sl-anc-indicators-export.json"
       ],
-      "requires": "dhis2-instance: Sierra Leone demo 2.42 (reference metadata) plus an empty unseeded 2.42 instance from the d2-broker (test)",
-      "notes": "Only live case: exercises the full testing.md method (description endpoints, lint, fresh-instance test, two-way expected values) and the trap of testing on the populated demo."
+      "assertions": [
+        "Validates each numerator and denominator on the instance with GET /api/expressions/description and reports the returned status/description for each",
+        "Checks the referenced data elements' configuration (aggregationType, valueType/domainType, and that each #{de.coc} COC belongs to the DE's current category combo), not only the expressions, and notes that Expected pregnancies (h0xKKjijTdI) is AVERAGE_SUM_ORG_UNIT in a Yearly data set",
+        "Imports the data set dependency exports together with the indicators and their indicator types, and confirms on the instance that the Per cent type (bWuNrMHEoZ0) has factor 100",
+        "Enters distinct per-cell values (not constants) across at least two sibling org units under one parent, and checks the data import with imported + updated == number of data values sent (not only 'no conflicts')",
+        "Computes expected values two independent ways (re-evaluating the stored expression, and from the indicator's meaning) and compares both to analytics output",
+        "Checks the parent org unit value as sum of numerators over sum of denominators (not an average of the children's percentages)",
+        "Addresses annualization of ANC 3 Coverage with a monthly query: the monthly value is scaled by 365/days in the month (or an equivalent annual factor) while the yearly Expected pregnancies value is used as it is for the month, and compares with a yearly query",
+        "Triggers analytics and waits for the ANALYTICS_TABLE task to complete before querying (or re-runs it after data changes)",
+        "report.md exists and states, per indicator, whether analytics matched the expected values, with the numbers"
+      ],
+      "requires": {
+        "instance": {
+          "seed": "empty",
+          "version": "2.42"
+        }
+      },
+      "notes": "Live case on an empty instance: exercises the full testing.md method (description endpoints, DE lint, import with types, distinct data, imported+updated check, two-way expected values, parent recombination, annualization with a yearly AVERAGE_SUM_ORG_UNIT denominator). The export was taken read-only from a Sierra Leone 2.42.7 demo (data set organisationUnits removed)."
     }
   ]
 }
