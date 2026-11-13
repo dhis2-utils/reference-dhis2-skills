@@ -41,7 +41,7 @@ Household with 7 children, 2 out of school, in a PoC (interface time): Android A
 | Capture web on phones/computers | No | None | None | Free to trial where connectivity is good |
 | Web app (PWA), short offline queue | Hours | ~6–8 weeks + pilot | 0.1–0.2 FTE | Encrypted queue of unsent households, sync and purge; common skills (React) |
 | Web app (PWA), offline-first | Yes | ~8–11 weeks + pilot | 0.1–0.2 FTE | Offline unlock with an app PIN; no screenshot blocking |
-| Android app on the DHIS2 SDK | Yes | ~5–8 weeks + pilot | 0.15–0.25 FTE | Offline login, encrypted storage, reserved values and sync come from the SDK; mostly UI work; needs Kotlin + SDK skills; each DHIS2 upgrade needs a compatible SDK. Built with `dhis2-android-sdk-app` |
+| Android app on the DHIS2 SDK | Yes | ~5–8 weeks + pilot | 0.15–0.25 FTE | Offline login, encrypted storage, reserved values and sync come from the SDK; mostly UI work; needs Kotlin + SDK skills; each DHIS2 upgrade needs a compatible SDK |
 | Android app without the SDK | Yes | ~9–12 weeks + pilot | 0.2–0.3 FTE | Rebuilds what the SDK provides; rarely worth it |
 
 Estimates are judgements from one household-enumeration PoC (a narrow listing app), not measurements. A custom listing app removed roughly half the Android interface time (estimated ~3:45 for the same household) mostly by creating followed members from the roster row, prefilling dates, and skipping forced searches.

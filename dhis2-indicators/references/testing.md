@@ -222,12 +222,12 @@ Compare the aggregated value, your engine-layer recomputation of expression+filt
 - **Drop to the database when analytics is mysterious.** If a value is inexplicable, querying the `analytics_*` tables and `datavalue` directly is the fastest way to root-cause it (e.g. confirming whether a zero was stored at all). Ask for read access to the test database, not just the API; a local Docker instance (see `dhis2-test-instances`) gives it to you directly.
 - **Remember the test mutates the instance.** Beyond imported data, you may change DE `aggregationType`/`zeroIsSignificant` and system settings during setup. That is another reason the instance must be fresh and disposable — never carry these changes into a second run or a real system.
 
-## API notes (version-sensitive — confirm against dhis2-docs)
+## API notes (version-sensitive — confirm against dhis2-api)
 
 - Metadata import stats for a single-type import live under `.response.stats`, not `.stats`; a top-level `jq '.stats'` prints null.
 - Poll a *specific* analytics job via `/api/system/tasks/ANALYTICS_TABLE/<jobId>` (the `id` from the trigger response) rather than slicing the whole task list.
 - `GET /api/system/id.json?limit=N` returns valid server-generated UIDs for the org units (and anything else) you create.
-- Changing a single property like `aggregationType` (`PATCH /api/dataElements/<uid>`): use JSON Patch; the version-dependent content-type rules are in the dhis2-docs skill (*Updating single fields*).
+- Changing a single property like `aggregationType` (`PATCH /api/dataElements/<uid>`): use JSON Patch; the version-dependent content-type rules are in the dhis2-api skill (*Updating single fields*).
 
 # Checklist
 

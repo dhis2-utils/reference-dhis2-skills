@@ -35,7 +35,7 @@ Write a table of roles × the three scopes as part of the design; it is also the
   - **AUDITED**: the same, but the access is logged.
   - **PROTECTED**: the user must "break the glass" (give a reason, logged) to get temporary access.
   - **CLOSED**: no access outside the owner's capture scope; transfer is the only route.
-- Analytics by owner was unreliable on 2.42.6 (see `analytics-reach.md`); if "counted where the person is now" matters, record the current service point in a data element as well.
+- Analytics by owner falls back silently to the enrollment org unit when the ownership table is empty (seen on 2.42.6; worked on 2.42.7.1, see `analytics-reach.md`); if "counted where the person is now" matters, use OWNER_AT_END and check that the ownership table is populated after transfers (a copied service-point data element is a last resort, not a default).
 
 ## Several actors following up the same people
 
@@ -43,7 +43,7 @@ Schools, implementing partners and volunteers visiting the same children worked 
 
 ## Working lists and scheduling
 
-- **Program stage working lists** (`programStageWorkingLists`, e.g. follow-up visits OVERDUE / SCHEDULE) work in web Capture 2.42 and Android 3.4.2. Tracked-entity working lists with an event-status criterion were ignored by web Capture 2.42.6 (it listed every active tracked entity).
+- **Program stage working lists** (`programStageWorkingLists`, e.g. follow-up visits OVERDUE / SCHEDULE) work in web Capture 2.42 and Android 3.4.2. Tracked-entity working lists with an event-status criterion are ignored by web Capture (2.42.6, and Capture 107.8.1 on 2.42.7.1): it lists every active tracked entity, and its request carries no event status. The API supports the filter (`eventStatus` with `eventOccurredAfter`/`Before`), so the gap is in Capture.
 - A follow-up stage can be **auto-generated with a minimum days offset** (first visit due 30 days after identification) and **offer the next event on completion** with a standard interval (e.g. 90 days). On Android, "schedule next event" schedules without opening it; on web the new event opens on the Schedule tab.
 - A retention check ("still attending a term later") is just another scheduled follow-up event whose outcome is recorded; model history as events, not as edits of a "last check" field.
 

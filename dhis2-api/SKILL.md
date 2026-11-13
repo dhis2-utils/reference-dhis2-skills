@@ -1,39 +1,33 @@
 ---
-name: dhis2-docs
-description: "Use when working with the DHIS2 Web API or its documentation: writing curl calls or scripts against the API, ad-hoc calls on a live instance, endpoint behaviour and parameters, filter/fields/paging syntax, partial updates (PATCH) and sharing changes, and API differences between DHIS2 versions ('will this call work on 2.40 and 2.43', an endpoint renamed, a 415 or E1003 after an upgrade). Also for looking up docs.dhis2.org: developer guides, implementation or system-administration guidance, DHIS2 concepts. Triggers on requests to connect to a DHIS2 instance, fetch data elements, indicators, organisation units or analytics through the API, find how an endpoint works or what parameters it accepts, check what an API response means, or any question that needs the official DHIS2 docs. For bulk metadata export/transform/import, use dhis2-metadata instead."
+name: dhis2-api
+description: "Use when working with the DHIS2 Web API: writing curl calls or scripts against the API, ad-hoc calls on a live instance, endpoint behaviour and parameters, filter/fields/paging syntax, partial updates (PATCH) and sharing changes, and API differences between DHIS2 versions ('will this call work on 2.40 and 2.43', an endpoint renamed, a 415 or E1003 after an upgrade). Triggers on requests to connect to a DHIS2 instance, fetch data elements, indicators, organisation units or analytics through the API, find how an endpoint works or what parameters it accepts, check what an API response or error code means, or read the developer docs or dhis2-core source for an API detail. For general DHIS2 how-to and concept questions, use a DHIS2 knowledge search (askdhis2) instead; for bulk metadata export/transform/import, use dhis2-metadata."
 ---
 
 ## Overview
 
-Two things in one skill: how to find and fetch official DHIS2 documentation from docs.dhis2.org, and the conventions for making ad-hoc API calls against a live instance. For docs, the site publishes machine-readable indexes (`llms.txt`) and serves every page as Markdown, so every lookup is the same two steps: fetch an index to find the page, then fetch the page as `.md`. Never guess page URLs.
-
-Plain web access is all this needs: WebFetch, `curl`, or any HTTP client. No MCP server is required. If your environment happens to offer a DHIS2 docs search tool, it can help find a page, but quote and link the docs.dhis2.org page itself.
+Conventions and verified quirks for calling the DHIS2 Web API, and where to look up what the API does on a given version. The quick reference below answers the common questions without fetching anything; `references/api-quirks.md` holds behaviour the docs don't state.
 
 ---
 
-## Lookup workflow
+## Looking things up
 
-**1. Fetch the right index:**
+Use the first source that applies, and check the version of whatever you cite.
 
-| Question is about | Index URL | Size |
-|---|---|---|
-| Web API, developer guides, Android SDK, app development | `https://docs.dhis2.org/en/llms-develop.txt` | ~6 KB |
-| Implementation guidance (config, tracker design, data quality, …) | `https://docs.dhis2.org/en/llms-implement.txt` | ~50 KB (~400 pages) |
-| System administration (installation, upgrades, monitoring) | `https://docs.dhis2.org/en/llms-manage.txt` | ~3 KB |
-| End-user app guides (Capture, Maintenance, analytics apps, Android) | `https://docs.dhis2.org/en/llms-use.txt` | ~15 KB |
-| Cross-cutting topics | `https://docs.dhis2.org/en/llms-topics.txt` | ~17 KB |
-| Unsure which section | `https://docs.dhis2.org/llms.txt` (master index, all sections) | ~94 KB |
+**1. DHIS2 knowledge search, if your environment has it.** The DHIS2 knowledge MCP server (public endpoint `https://dhis2docs.mcp.kapa.ai`; tool `search_dhis2_knowledge_sources`) searches the docs, the developer docs, the Community of Practice, Academy material and Jira in one query. Write the query as a full sentence. For an error code or narrow API behaviour the results are often all Jira issues: useful (known bugs, fix versions), but not documentation. Say so when you rely on them, and look for the docs page as well. Results always come back, even when nothing fits; treat weak matches as "not covered".
 
-For API questions, `llms-develop.txt` is almost always the right starting point and is cheap enough to fetch every time.
+**2. The docs pages themselves.** docs.dhis2.org publishes machine-readable indexes and serves every page as Markdown. Fetch an index, then the page it links; never guess page URLs.
 
-**2. Fetch the page the index links.** Index links already end in `.md` and return the Markdown source (`Content-Type: text/markdown`). For a rendered `.html` URL found elsewhere, replace `.html` with `.md`:
+| Question is about | Index URL |
+|---|---|
+| Web API, developer guides, Android SDK, app development | `https://docs.dhis2.org/en/llms-develop.txt` (~6 KB) |
+| Implementation, system administration, end-user apps | `https://docs.dhis2.org/en/llms-implement.txt`, `llms-manage.txt`, `llms-use.txt` |
+| Unsure which section | `https://docs.dhis2.org/llms.txt` (master index, ~94 KB) |
 
-```
-https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-243/metadata.html   ← rendered page
-https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-243/metadata.md    ← fetch this
-```
+Index links already end in `.md`. For a rendered `.html` URL found elsewhere, replace `.html` with `.md`. Some pages (e.g. `metadata.md`) are very large. If a summarising fetch tool truncates them, save the page with `curl -s <url> -o page.md` and `grep -n` for the section.
 
-Some pages (e.g. `metadata.md`) are very large. If a summarising fetch tool truncates them, save the page with `curl -s <url> -o page.md` and `grep -n` for the section.
+**3. dhis2-core source**, when the docs don't settle it (see *Reading DHIS2 core source* below).
+
+**4. A live check** on a disposable instance (`dhis2-test-instances`), when behaviour matters more than what anyone wrote down. Record the version you checked.
 
 ## Versions
 

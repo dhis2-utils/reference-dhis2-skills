@@ -49,14 +49,14 @@ import.
 
 | Topic | Behaviour | What to do |
 |---|---|---|
-| Text pattern | `ORG_UNIT_CODE(...)` = first **three** characters | One dot per character: `ORG_UNIT_CODE(..........)` |
+| Text pattern | `ORG_UNIT_CODE(...)` = first **three** characters; codes with the same prefix share one sequence; a code shorter than the dots fails with HTTP 500 (2.42.7.1) | One dot per character: `ORG_UNIT_CODE(..........)` |
 | Generated values | New sequences start at `00001` per pattern value | Put synthetic data in a separate range (`-9xxxx`) |
 | MULTI_TEXT in indicators | PIs have `contains()` and `containsItems()` since 2.41, **without** the `d2:` prefix (validating `d2:contains` fails, which misled the first build) | `containsItems(#{stage.de}, 'R07')` for an exact item match (below) |
-| Hidden + assigned | Web drops a hidden field's value; the server's rule engine then rejects the save (E1309) | Never hide a field that a rule assigns; show it read-only |
+| Hidden + assigned | Web dropped a hidden field's value and the server rejected the save (E1309); clients resolve the hide/assign conflict differently between versions | Never hide a field that a rule assigns; show it read-only |
 | PI disaggregation | Works in 2.42 (`categoryCombo` + `categoryMappingIds`, mappings on the program) | Use it; it replaced ~60 PIs per option. Querying a PI by a category it lacks gives a raw SQL error (E7145). |
 | PI changes | Analytics keeps the old definition | `POST /api/maintenance/cacheClear` after changing PIs |
-| `orgUnitField: OWNER_AT_END` | Ownership analytics table stayed empty despite transfers | Use an org-unit data element as the PI's org unit field |
-| Rule-assigned attribute left out of a tracker import | E1019 "Only ProgramAttributes are allowed for Enrollment" (whole enrollment dropped), although it is a program attribute; a different value gives E1309 | Every API writer sends the value the rule would assign |
+| `orgUnitField: OWNER_AT_END` | Ownership analytics table stayed empty despite transfers, so values fell back to the enrollment org unit (it worked on 2.42.7.1) | Use OWNER_AT_END and verify it with a few transfers; an org-unit data element only as a last resort where ownership analytics is shown broken |
+| Rule-assigned attribute left out of a tracker import | E1019 "Only ProgramAttributes are allowed for Enrollment" (whole enrollment dropped), although it is a program attribute; a different value gives E1309. On 2.42.7.1 an omitted value was filled in by the server (warning E1310) | Every API writer sends the value the rule would assign |
 | New stage + its HIDEFIELD/SETMANDATORYFIELD rules in one metadata update | E4047 "DataElement … is not linked to any ProgramStageDataElement": the check uses the stored stage fields, not the payload's | Import once without `programRules`/`programRuleActions`, then in full (`import_package.py` does this) |
 | Enrollment geometry via tracker import | Rejected with E1074 even with featureType POINT | Import without it; set `enrollment.geometry` by SQL |
 | Server rules on import | `/api/tracker` runs program rules; mandatory/error actions reject imports | Useful check; make synthetic data satisfy every rule, compute assigned values yourself |

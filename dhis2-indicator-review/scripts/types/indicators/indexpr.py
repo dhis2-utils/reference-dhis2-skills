@@ -20,7 +20,7 @@ Rules (the ids are the behaviour ids):
   A2  denominator 0 or null -> no value.
   A3  a stored zero reaches analytics only when the data element has zeroIsSignificant=true and the system setting
       keyIncludeZeroValuesInAnalytics is on (otherwise it is missing, not 0) -> Engine(zero_visible=...).
-  A4  division by zero inside a side gives NaN (the analytics row carries "NaN"; no E7132 on 2.43.2).
+  A4  division by zero inside a side gives NaN (the analytics row carries "NaN"; no E7132, 2.40.12-2.43.2.1).
   A5  parent org units: each operand is aggregated over the org units first, then the sides are divided
       (sum(num)/sum(den), not the mean of facility values).
   A6  aggregation over time and org units by the data element's aggregationType: SUM, COUNT (number of values),

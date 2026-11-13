@@ -36,7 +36,7 @@ Parent tracked entity (household) with a repeatable stage, one event per member 
 Parent tracked entity plus one tracked entity per member, joined by a relationship type (parent → member). Each member has its own program (identification, follow-up).
 
 - **Fits**: every member is followed individually over time (all children in a cohort; every contact of an index case); members move independently of the parent.
-- **Analytics**: member indicators see only the member's own program and attributes. **Parent characteristics are not reachable** from the member's indicators unless copied onto the member. Relationship-based counts are limited; plan on "no joins across the relationship".
+- **Analytics**: member indicators see only the member's own program and attributes. **Parent characteristics are not reachable** from the member's indicators unless copied onto the member. Relationship-based counts are limited: `d2:relationshipCount()` works in a PI, and enrollment analytics (`/api/analytics/enrollments/query` and `/aggregate`, Line Listing) can break members down by a parent program indicator through a `<relationshipTypeUid>.<programIndicatorUid>` dimension (2.42.7.1), but program indicators, dashboards and Data Visualizer cannot (E7124 as `dx`). For indicators, plan on "no joins across the relationship".
 - **Entry cost**: highest. In Capture Android each member goes through the relationship "create new" sequence (search across all programs of the type, pick program, org unit); web is one form. Measured in a household-enumeration PoC: this design was the slowest on Android.
 - **Pitfalls**: a searchable record for every member, including those who need nothing; if a registry exists, members registered here may duplicate it (see `registries.md`).
 

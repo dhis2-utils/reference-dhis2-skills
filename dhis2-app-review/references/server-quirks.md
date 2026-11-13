@@ -115,10 +115,10 @@ Verified working for scalar fields, whole-collection `add` (`program.categoryMap
 Three caveats (verified 2.40–2.43):
 
 - **JSON Patch re-validates the whole object**, so it can **409 on pre-existing integrity issues unrelated to the change** (`E6012` "attribute not assigned to type", `E6000` "program has more than one program instance", …). Old production metadata — exactly what bulk admin tools target — trips this constantly, so a tool under review will legitimately fail on some objects. Dedicated endpoints skip it.
-- **Never patch `/sharing`.** JSON Patch on `/sharing` returns 200 but leaves public access unchanged; use `PUT /api/sharing?type=<singular>&id=<uid>` (facts and recipe: `dhis2-docs` skill). Flag any app that patches sharing. A full `PUT` of the object with a `sharing` block *does* apply public access (verified on 2.40.12 and 2.43.1).
+- **Never patch `/sharing`.** JSON Patch on `/sharing` returns 200 but leaves public access unchanged; use `PUT /api/sharing?type=<singular>&id=<uid>` (facts and recipe: `dhis2-api` skill). Flag any app that patches sharing. A full `PUT` of the object with a `sharing` block *does* apply public access (verified on 2.40.12 and 2.43.1).
 - **Permission-denied paths need a limited user.** On some seeds the `admin` user holds `ALL` (unlike the Sierra Leone demo), and so does a freshly created empty instance's `admin`. `ALL` bypasses sharing, so a flow that restricts sharing to provoke an error never sees one. Create a throwaway user without `ALL` for these tests. A flow that tightens sharing must restore it in a `finally`: one run skipped its own restore after the expected error never appeared, and left the object unreadable for everyone else.
 - **Provenance settles "was this ours or the seed's?"** `GET /api/<type>/<id>?fields=created,lastUpdated,createdBy[username],lastUpdatedBy[username]` shows when an object appeared and who created it. Check it before forming a theory about unexpected objects on a test instance.
-- **Plain-JSON partial PATCH is version-split** (204 on 2.40, 415 on 2.41+; details in the `dhis2-docs` skill). If a tool uses plain JSON, test both sides of the 2.41 boundary.
+- **Plain-JSON partial PATCH is version-split** (204 on 2.40, 415 on 2.41+; details in the `dhis2-api` skill). If a tool uses plain JSON, test both sides of the 2.41 boundary.
 
 ## Validating program rule conditions cheaply
 
@@ -140,7 +140,7 @@ Don't assume a "minimal baseline tracker import succeeds cleanly" on demo progra
 
 - **`POST /api/apps`** returns `201` on 2.42+ but `204` on ≤2.41 — accept any
   2xx, don't hard-check one code. `DELETE /api/apps/<key>` returns `204`.
-- **CORS allowlist**: the POST replaces the whole list and the endpoint name depends on the version (recipe: `dhis2-docs` skill); `PUT` returns 405, and there is no CORS key under `/api/systemSettings`. Every fresh instance starts with an empty allowlist, so a cross-origin dev server hits a CORS block once per instance.
+- **CORS allowlist**: the POST replaces the whole list and the endpoint name depends on the version (recipe: `dhis2-api` skill); `PUT` returns 405, and there is no CORS key under `/api/systemSettings`. Every fresh instance starts with an empty allowlist, so a cross-origin dev server hits a CORS block once per instance.
 
 ## `/api/authorities` returns 500 on a freshly booted 2.41.x
 

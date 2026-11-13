@@ -64,8 +64,7 @@ once rephrased generically ("two instances booting at once starve each other").
 
 **Never use the public play servers (play.dhis2.org / play.im.dhis2.org) for testing or
 verification** in skills or evals. They are shared and public, and others change them
-constantly. The exception is `dhis2-bug-report`, which reproduces bugs there because a
-public, reproducible instance is what a ticket needs.
+constantly.
 
 ## Facts and evals
 

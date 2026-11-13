@@ -565,7 +565,7 @@ SQL safety checklist:
 ## 7. Naming conventions — deterministic fixes ONLY (own track)
 
 Reference: the metadata naming conventions in the DHIS2 implementation guidance on docs.dhis2.org
-(look them up with the dhis2-docs skill). This process applies **only the deterministic,
+(look them up with the dhis2-api skill). This process applies **only the deterministic,
 objectively-correct naming fixes**, and keeps them as a **separate track/playbook** from the integrity
 fixes (they change end-user-visible labels, so an admin may apply/review them on a different cadence).
 Object **UIDs don't change on rename**, so forms/visualizations/rules keep working — renames are
@@ -592,7 +592,7 @@ attribute not assigned to that object type, `E6012`). Fall back to a full-object
 instance of a general rule: **JSON-Patch and full-object writes re-validate the whole object**, so on
 the messy metadata this skill targets they 409 over pre-existing issues unrelated to the change.
 Dedicated endpoints skip that revalidation — e.g. sharing changes should go through
-`PUT /api/sharing?type=<singular>&id=<uid>` (recipe in the `dhis2-docs` skill), never a patch of
+`PUT /api/sharing?type=<singular>&id=<uid>` (recipe in the `dhis2-api` skill), never a patch of
 `/sharing` (which also silently ignores `public`/`external` keys).
 
 ## 8. Self-inflicted-wound watch-list

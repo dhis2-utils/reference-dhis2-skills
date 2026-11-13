@@ -1,9 +1,0 @@
-.tmp
-compiled
-build
-manifest.webapp
-node_modules
-.vscode
-bin
-d2auth.json
-.env

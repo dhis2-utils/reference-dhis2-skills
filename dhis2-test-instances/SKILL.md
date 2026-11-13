@@ -1,6 +1,6 @@
 ---
 name: dhis2-test-instances
-description: Get a disposable DHIS2 instance to test against and know what is safe to do on it — find one the environment provides, start one locally with Docker (empty or seeded with the Sierra Leone demo database), know when it is ready, or ask the user. Use whenever a task needs a live DHIS2 to verify or try something (an import, an indicator value, an app, an API behaviour, a version difference) and no disposable instance has been given; when the user proposes the public play/demo server for verifying their own changes; when asking where to test; or before running destructive tests against a staging or shared server. Triggers on "spin up a DHIS2", "set up 2.41 and 2.42 in Docker", "test this on a clean 2.42", "just use play for this", "is there a test server I can use", "how do I know it's ready", "reset the test database". Other dhis2-* skills defer to this one for provisioning. Reproducing a suspected DHIS2 bug on play for a ticket is dhis2-bug-report.
+description: Get a disposable DHIS2 instance to test against and know what is safe to do on it — find one the environment provides, start one locally with Docker (empty or seeded with the Sierra Leone demo database), know when it is ready, or ask the user. Use whenever a task needs a live DHIS2 to verify or try something (an import, an indicator value, an app, an API behaviour, a version difference) and no disposable instance has been given; when the user proposes the public play/demo server for verifying their own changes; when asking where to test; or before running destructive tests against a staging or shared server. Triggers on "spin up a DHIS2", "set up 2.41 and 2.42 in Docker", "test this on a clean 2.42", "just use play for this", "is there a test server I can use", "how do I know it's ready", "reset the test database". Other dhis2-* skills defer to this one for provisioning.
 ---
 
 # DHIS2 test instances
@@ -115,9 +115,8 @@ skill work (imports, indicators, app tests, fixes, version comparisons). Other p
 change it constantly, it resets on its own schedule, and anything you write there is
 public. That holds even when the user asks for it and even for read-only checks: the
 data, the version and the analytics tables on play are not under your control, so a
-result there proves nothing about the user's instance. Say why, and decline. The one
-exception is reproducing a suspected DHIS2 bug for a ticket (dhis2-bug-report), where a
-public, reproducible instance is the point.
+result there proves nothing about the user's instance. Say why, and decline. (Reproducing a suspected DHIS2 bug for a
+public ticket is the one place play belongs; that is outside these skills.)
 
 Declining play is not the end of the task. Offer a concrete alternative (a local Docker
 instance seeded with the Sierra Leone demo of the user's version, or a test instance the
@@ -153,5 +152,5 @@ anything you can already see is wrong, such as a UID that doesn't match the obje
 If the user needs to look at the instance or a dev server you started, bind it to a port
 their browser can reach. Your environment may document forwarded ports for this. Tell
 them the exact URL. A dev server on another origin also needs that origin in the
-instance's CORS allowlist (recipe and the version-specific endpoint name: `dhis2-docs`
+instance's CORS allowlist (recipe and the version-specific endpoint name: `dhis2-api`
 skill; the POST replaces the whole list).

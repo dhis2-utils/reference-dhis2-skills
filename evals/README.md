@@ -10,12 +10,12 @@ and **for which models**?
 ```bash
 # Prerequisites: Python 3.10+; the `claude` CLI (logged in) for Claude models;
 # `vibe` (pip install mistral-vibe) + MISTRAL_API_KEY for Mistral-hosted models.
-python3 evals/run_evals.py --skills dhis2-docs dhis2-indicators \
+python3 evals/run_evals.py --skills dhis2-api dhis2-indicators \
     --models opus sonnet glm --conditions with_skill without_skill
 python3 evals/report.py evals/results/<run-id>     # writes REPORT.md + summary.json
 ```
 
-Useful flags: `--cases dhis2-docs:1,3` (pick cases), `--offline-only`, `--jobs 4`
+Useful flags: `--cases dhis2-api:1,3` (pick cases), `--offline-only`, `--jobs 4`
 (parallel runs), `--timeout 1200` (seconds per run), `--grader opus`.
 
 Models are defined in `evals/models.json`. To add a model, add an entry with a runner
@@ -62,7 +62,7 @@ says it did:
 
 ```json
 {
-  "skill_name": "dhis2-docs",
+  "skill_name": "dhis2-api",
   "evals": [
     {
       "id": 1,

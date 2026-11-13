@@ -45,8 +45,6 @@ A full comparison of six tracker designs with recorded flows took about 20 agent
 | Getting, resetting and labelling instances | `dhis2-test-instances` |
 | Expression syntax, indicator testing | `dhis2-indicators` |
 | Bulk import/export, dummy data, import errors | `dhis2-metadata` |
-| A custom Android app as one of the options | `dhis2-android-sdk-app` |
-| Findings turned into platform bug reports | `dhis2-bug-report` |
 | Web app testing patterns | `dhis2-app-review` (`references/playwright-patterns.md`) |
 | Report as a published page, diagrams | `references/reporting-and-sharing.md` for what worked; any page-publishing tool the environment has |
 | Testers' deck | the organisation's slide template and whatever slide tooling is available |

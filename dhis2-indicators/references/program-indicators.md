@@ -41,7 +41,7 @@ This decides the unit of analysis:
 
 The classic bug: counting something per enrollment using EVENT type, which multiplies by the number of events. When the question is about people/cases, use ENROLLMENT; when it's about visits/records, use EVENT. Test a repeatable stage with two events to expose the difference.
 
-In ENROLLMENT type you can still reference event data elements (`#{stage.de}`); analytics uses the value from the **latest event of that stage in the enrollment that has a non-null value**, among events inside the PI's event-date boundaries (`.stageOffset(n)` picks an earlier one). On 2.42 only boundaries whose target is exactly `EVENT_DATE` limit this lookup and the `d2:count*` functions; `ENROLLMENT_DATE`, `INCIDENT_DATE` and `PS_EVENTDATE:<stage>` boundaries decide which enrollments fall in the period but leave the lookup reading the whole enrollment (dhis2-core 2.42 `DefaultStatementBuilder.getProgramIndicatorEventInEnrollmentSelectSql`, `ProgramIndicator.getStart/EndEventBoundary`). "Had a danger sign at a visit in this quarter" therefore needs `EVENT_DATE` boundaries, not a `PS_EVENTDATE` pair. **Without an `EVENT_DATE` boundary, "latest" includes events after the reporting period** (verified 2.43.2): a client active in Q1 who died in Q2 reads as dead when you query Q1. Indicators meaning "status at the end of the period" (active, on treatment, currently) need an `EVENT_DATE` / `BEFORE_END_OF_REPORTING_PERIOD` boundary, which limits the lookup to events up to the period end, besides their enrollment-date boundary.
+In ENROLLMENT type you can still reference event data elements (`#{stage.de}`); analytics uses the value from the **latest event of that stage in the enrollment that has a non-null value**, among events inside the PI's event-date boundaries (`.stageOffset(n)` picks an earlier one). On 2.42 only boundaries whose target is exactly `EVENT_DATE` limit this lookup and the `d2:count*` functions; `ENROLLMENT_DATE`, `INCIDENT_DATE` and `PS_EVENTDATE:<stage>` boundaries decide which enrollments fall in the period but leave the lookup reading the whole enrollment (dhis2-core 2.42 `DefaultStatementBuilder.getProgramIndicatorEventInEnrollmentSelectSql`, `ProgramIndicator.getStart/EndEventBoundary`; probed on 2.42.7.1 and 2.43.2.1: with a `PS_EVENTDATE` pair, an enrollment with stage events in February (value 1) and April (value 2) reads 2 for Q1, and `d2:count` gives 2). "Had a danger sign at a visit in this quarter" therefore needs `EVENT_DATE` boundaries, not a `PS_EVENTDATE` pair. **Without an `EVENT_DATE` boundary, "latest" includes events after the reporting period** (verified 2.42.7.1, 2.43.2): a client active in Q1 who died in Q2 reads as dead when you query Q1. Indicators meaning "status at the end of the period" (active, on treatment, currently) need an `EVENT_DATE` / `BEFORE_END_OF_REPORTING_PERIOD` boundary, which limits the lookup to events up to the period end, besides their enrollment-date boundary.
 
 **2.43 changed the SQL engine**: the system setting `experimentalAnalyticsSqlEngineEnabled` defaults to true on 2.43 (false on 2.42). With it on, all boundaries apply to the event rows (enrollment- and incident-date boundaries too), and in ENROLLMENT PIs a missing event value is coalesced instead of read as null. Verified on 2.43.2 with probe PIs, the coalescing is narrower than "everything blank is 0":
 
@@ -76,7 +76,7 @@ Operands available in the expression (and filter):
 
 - `#{programStageUID.dataElementUID}` — a data element value from a stage.
 - `A{trackedEntityAttributeUID}` — a tracked entity attribute (enrollment-level).
-- `V{...}` — built-in variables: `event_date`, `enrollment_date`, `incident_date`, `due_date`, `completed_date`, `value_count`, `zero_pos_value_count`, `event_count`, `enrollment_count`, `program_stage_name`, `current_date`, `org_unit_count`, `tei_count`, and others (check `dhis2-docs` for the full list on your version).
+- `V{...}` — built-in variables: `event_date`, `enrollment_date`, `incident_date`, `due_date`, `completed_date`, `value_count`, `zero_pos_value_count`, `event_count`, `enrollment_count`, `program_stage_name`, `current_date`, `org_unit_count`, `tei_count`, and others (check `dhis2-api` for the full list on your version).
 - `C{constantUID}` — a constant.
 - `d2:` functions — see below.
 - Operators `+ - * /`, parentheses, comparison `< <= > >= == !=`, logical `&& || !`, numeric/string literals.
@@ -87,7 +87,7 @@ Operands available in the expression (and filter):
 - `d2:hasValue(#{stage.de})` — true if the value is present (distinguish blank from zero).
 - `d2:count(#{stage.de})` — number of events with a value for that element.
 - `d2:countIfValue(#{stage.de}, value)` / `d2:countIfCondition(#{stage.de}, "expr")` — conditional counts across events.
-- The `d2:count*` functions count events of the stage in the enrollment **within the PI's `EVENT_DATE` boundaries only** (2.42.6 `ProgramCountFunction`: `getStart/EndEventBoundary` match `boundaryTarget == EVENT_DATE`). With only enrollment-date or `PS_EVENTDATE:<stage>` boundaries they count across the whole enrollment, whatever the reporting period.
+- The `d2:count*` functions count events of the stage in the enrollment **within the PI's `EVENT_DATE` boundaries only** (2.42.6 `ProgramCountFunction`: `getStart/EndEventBoundary` match `boundaryTarget == EVENT_DATE`; probed on 2.42.7.1 and 2.43.2.1). With only enrollment-date or `PS_EVENTDATE:<stage>` boundaries they count across the whole enrollment, whatever the reporting period.
 - `d2:daysBetween(start, end)`, `d2:weeksBetween`, `d2:monthsBetween`, `d2:yearsBetween` — date differences (e.g. `d2:daysBetween(V{enrollment_date}, #{stage.visitDate})`).
 - `d2:zing(x)` (negative→0), `d2:oizp(x)` (0 if zero/neg else 1), `d2:zpvc(...)` (count of zero-or-positive values).
 
@@ -97,7 +97,7 @@ The full set accepted in program indicator expressions and filters on 2.40–2.4
 
 String literals may use double quotes, which is how to write an option code containing an apostrophe: `#{s.model} == "CBD's"`.
 
-Confirm signatures against `dhis2-docs` for your version — the set grows release to release. **Validate before concluding a function is missing**: `POST /api/programIndicators/filter/description` (or `/expression/description`) with the candidate, and try the unprefixed form too (next section).
+Confirm signatures against `dhis2-api` for your version — the set grows release to release. **Validate before concluding a function is missing**: `POST /api/programIndicators/filter/description` (or `/expression/description`) with the candidate, and try the unprefixed form too (next section).
 
 ## Multi-select (MULTI_TEXT) values
 
@@ -213,7 +213,7 @@ Failures caused by mappings:
 - A `null` entry in a PI's `categoryMappingIds` gives HTTP 500 with an empty message; removing the null fixes it.
 - A disaggregation category with no mapping on the program gives HTTP 409 "disaggregation category … needs a category mapping in the program".
 
-**Reuse existing categories and category options** — category options are shared objects, so a new category for disaggregation can be assembled from options that already exist in other categories; don't mint duplicates. Field-level details are version-sensitive — check the program-indicator disaggregation section of the docs (`dhis2-docs` skill) for your version.
+**Reuse existing categories and category options** — category options are shared objects, so a new category for disaggregation can be assembled from options that already exist in other categories; don't mint duplicates. Field-level details are version-sensitive — check the program-indicator disaggregation section of the docs (`dhis2-api` skill) for your version.
 
 ## Materializing PIs as aggregate data (tracker-to-aggregate)
 
@@ -226,6 +226,7 @@ The alternative to referencing `I{programIndicatorUID}` live in aggregate indica
 - **Null treated as zero** — blank is not zero, but ENROLLMENT filters on 2.43 compare a blank number as 0 and blank text as `''` (see the ENROLLMENT section). Guard every numeric range with `d2:hasValue`.
 - **Status at period end read from a later event** — ENROLLMENT PIs without an `EVENT_DATE` boundary read events after the period.
 - **Offset without `offsetPeriodType`** — silently ignored; the cohort PI counts the current period.
+- **Division by zero aborts the whole request.** A PI expression is SQL, so `#{s.a} / #{s.b}` with `b = 0` on any row returns `409 E7132` for the entire analytics request, including the other items in it (verified on 2.40.12, 2.41.11, 2.42.7.1 and 2.43.2.1). Guard it: `if(#{s.b} != 0, #{s.a} / #{s.b}, 0)` works on 2.40.12 and 2.42.7.1. E7132 is also what any other SQL data error in analytics reports (DHIS2-22033), so check the inputs when there is no division.
 - **Unbracketed `&&`/`||`**, option names instead of codes, `contains()` over-matching.
 - **Broken definitions import fine** — the metadata import does not validate PI filters or expressions; a filter with an unsupported function imports with status OK and only fails in analytics. And the description endpoints pass some filters that still fail as SQL (`#{x} == '2nd PCR' <= 2`). Validate *and* run an analytics query.
 - **Mapping gaps and overlaps** drop records from disaggregated EVENT PIs' totals (see the disaggregation section).

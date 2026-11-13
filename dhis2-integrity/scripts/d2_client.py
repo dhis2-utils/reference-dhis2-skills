@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Auto-logging DHIS2 HTTP client shared by the cleanup scripts.
 
-Auth via env vars (same convention as the dhis2-docs skill):
+Auth via env vars (same convention as the dhis2-api skill):
   DHIS2_BASE_URL   e.g. http://localhost:8080   (no /api suffix)
   DHIS2_API_TOKEN  -> sent as 'Authorization: ApiToken <token>'
   or DHIS2_USERNAME + DHIS2_PASSWORD  -> HTTP basic auth

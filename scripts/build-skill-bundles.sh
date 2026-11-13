@@ -9,7 +9,7 @@
 #
 # Usage:
 #   scripts/build-skill-bundles.sh                 # default: the offline-friendly skills
-#   scripts/build-skill-bundles.sh dhis2-docs ...  # explicit skill list
+#   scripts/build-skill-bundles.sh dhis2-api ...  # explicit skill list
 #
 # Output: dist/<skill>.zip
 
@@ -21,7 +21,7 @@ OUT_DIR="$REPO_ROOT/dist"
 # Skills that remain useful without live-instance access (knowledge +
 # file-based workflows). The app, prototyping and test-instance skills lose
 # too much without a shell, a build/test loop or a live instance.
-DEFAULT_SKILLS=(dhis2-docs dhis2-indicators dhis2-integrity dhis2-metadata dhis2-tracker-design)
+DEFAULT_SKILLS=(dhis2-api dhis2-indicators dhis2-integrity dhis2-metadata dhis2-tracker-design)
 
 EXCLUDES=(
   "*/references/schemas-v*.json"

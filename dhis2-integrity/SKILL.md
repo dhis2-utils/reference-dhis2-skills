@@ -10,7 +10,7 @@ description: >-
   a fixed dump or a reviewed change package. Typical phrasings: "make our instance pass the
   integrity checks", "dedupe these combos without losing data", "what's broken in this metadata
   export". Not for authoring new metadata or expressions, exporting, debugging one analytics
-  number, provisioning instances or app work (dhis2-metadata, dhis2-indicators, dhis2-docs,
+  number, provisioning instances or app work (dhis2-metadata, dhis2-indicators, dhis2-api,
   dhis2-test-instances), or auditing a set of indicators for meaning or values
   (dhis2-indicator-review).
 ---
@@ -97,7 +97,7 @@ Advisory is the common real case: agents rarely get write access to a national s
 ## Setup
 
 - Connection: `.env` or env vars `DHIS2_BASE_URL` plus `DHIS2_API_TOKEN` or `DHIS2_USERNAME`/`DHIS2_PASSWORD` (older `.env` files with `DHIS2_USER`/`DHIS2_PASS` still work)
-  (the dhis2-docs convention). All bundled scripts read them.
+  (the dhis2-api convention). All bundled scripts read them.
 - A disposable instance for dump mode or for proving fixes: **dhis2-test-instances** (empty instance,
   same version as the source).
 - Direct SQL (optional): `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD` for the instance's

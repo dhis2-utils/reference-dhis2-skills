@@ -13,7 +13,7 @@ numerator with no data gives no value or 0:
   --factor       indicator type factor (an indicator type with that factor must exist; default 1)
   --annualized   annualized probes;  --decimals N  stored decimals (default: unset)
   --pe / --ou    periods and org units queried (default cfg.test_period and cfg.root + cfg.facilities); one request per
-                 probe with every ou and pe as dimensions, so a division by zero (E7132) shows on the whole request
+                 probe with every ou and pe as dimensions, so an E7132 (a division by zero inside subExpression()) shows on the whole request
   --skip-rounding  query with skipRounding=true (shows the unrounded value)
   --keep         keep the probe indicators (named ZZZTEMP ...)
 

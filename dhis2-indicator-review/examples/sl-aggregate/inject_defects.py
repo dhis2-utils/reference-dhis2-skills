@@ -8,8 +8,8 @@ lint checks, the import safeguards and the clear fix patterns get exercised. The
                      "ANC LLITN coverage" reads #{LLITN given at ANC 1st . <legacy Fixed>} -> the term never has data
   D2 *100 on Percent "PHU delivery rate (by ANC1)" numerator wrapped as (…)*100 on the Per cent type (×100 twice)
   D3 rate as Number  "NVP during labour rate" moved to the Number (factor 1) type -> reads 0.85 instead of 85
-  D4 inner division  "Dropout rate Penta 1 - Measles": numerator ((P1)-(M))/(P1), denominator 1 -> E7132 when
-                     Penta 1 is 0 for an org unit/period, and Σ of ratios instead of a pooled rate at parents
+  D4 inner division  "Dropout rate Penta 1 - Measles": numerator ((P1)-(M))/(P1), denominator 1 -> NaN when
+                     Penta 1 is 0 for an org unit/period (A4)
   D5 DE aggregation  "LLITN given at ANC 1st" aggregationType COUNT, "IPT 2nd dose given by TBA" AVERAGE
   D6 closed periods  "Child Health" gets one dataInputPeriod (2025-01 only): every 2026 value is rejected (E7643)
                      unless the import strips it
