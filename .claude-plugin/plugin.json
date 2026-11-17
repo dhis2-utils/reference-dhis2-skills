@@ -1,0 +1,32 @@
+{
+  "name": "dhis2-skills",
+  "displayName": "DHIS2 Skills",
+  "description": "Reference Agent Skills for working with DHIS2 2.40-2.43: Web API, metadata, indicators, integrity remediation, tracker design, app review, proofs of concept, and docs audit, style and contribution.",
+  "author": {
+    "name": "HISP Centre, University of Oslo"
+  },
+  "homepage": "https://github.com/dhis2-utils/reference-dhis2-skills",
+  "repository": "https://github.com/dhis2-utils/reference-dhis2-skills",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "dhis2",
+    "health-information",
+    "agent-skills"
+  ],
+  "skills": [
+    "./askdhis2",
+    "./dhis2-api",
+    "./dhis2-app-review",
+    "./dhis2-docs-audit",
+    "./dhis2-docs-contribution",
+    "./dhis2-docs-style",
+    "./dhis2-indicator-review",
+    "./dhis2-indicators",
+    "./dhis2-integrity",
+    "./dhis2-metadata",
+    "./dhis2-prototyping",
+    "./dhis2-test-instances",
+    "./dhis2-tracker-design"
+  ],
+  "mcpServers": "./askdhis2/.mcp.json"
+}

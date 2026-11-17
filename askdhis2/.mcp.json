@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dhis2docs": {
+      "type": "http",
+      "url": "https://dhis2docs.mcp.kapa.ai"
+    }
+  }
+}

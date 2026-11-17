@@ -1,0 +1,218 @@
+{
+  "skill_name": "dhis2-docs-audit",
+  "notes": "Seeded-defect evals built from real documentation misses. Each needs github.com access. They run as offline cases: the live checks some assertions reward use the public play.im.dhis2.org instances, a deliberate exception to the AGENTS.md rule for this skill (see SKILL.md pass F), so no provisioned instance is requested. Run with and without the skill; a good run catches the defect AND reports verdict, evidence and scope. Every eval also carries the three shared assertions at the end of its list.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Here's the program indicator functions table from our docs: d2:addDays, d2:ceil, d2:condition, d2:count, d2:countIfValue, d2:countIfZeroPos, d2:daysBetween, d2:floor, d2:hasValue, d2:left, d2:length, d2:modulus, d2:monthsBetween, d2:oizp, d2:right, d2:round, d2:split, d2:substring, d2:validatePattern, d2:weeksBetween, d2:yearsBetween, d2:zing, d2:zpvc, d2:zScoreHFA, d2:zScoreWFA, d2:zScoreWFH, d2:minutesBetween, d2:relationshipCount, d2:extractDataMatrixValue. Can you check it's right against 2.43?",
+      "expected_output": "Enumerates the program indicator registration map (ExpressionMapBuilder + ParserUtils common set) at the 2.43 branch, diffs both directions, and reports functions present in source but missing from the table (for example d2:maxValue, d2:minValue, contains, containsItems, removeZeros, avg/count/max/min/stddev/sum/variance) as well as any listed function that is not registered.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Uses dhis2-core registration maps at the 2.43 branch as evidence, not the ANTLR grammar or other docs",
+        "Runs direction B (source → page) and lists functions that are registered but missing from the table",
+        "Names at least three of: d2:maxValue, d2:minValue, contains, containsItems, removeZeros",
+        "States explicitly that both directions were run",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Reports that the list omits the common registered functions (for example if, isNull, greatest/least, contains) and not only d2: functions",
+        "Sends the section's worked examples through a validator (or reads them) and reports broken examples, or lists this as not done",
+        "Reports which of the listed functions are program-rule-only and rejected for program indicators at 2.43 (grader verifies the list against the 2.43 registration maps)",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Diffing importexport-app.md between the 2.43 docs branch and current, the Data Import step changed from 'Click the Import button' to 'Click the Start import button'. Add a version note saying the button was renamed after 2.43.",
+      "expected_output": "Declines to add the note on the strength of the docs diff alone. Checks the import-export-app source (i18n strings / page component) at the tag bundled with 2.43 and at current, or reports the claim as Unverified. Recognises that the docs diff cannot tell a UI change from a stale older branch.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Does not write a version note based only on the docs-vs-docs diff",
+        "Checks the app's own source strings at version-pinned tags, or marks the claim Unverified with the check that would settle it",
+        "Mentions that an uncorrected older branch produces the same diff as a real rename",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Tries the live check through play.im.dhis2.org (API or UI) or states which route was tried and failed",
+        "Identifies which docs branches need the backport",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The current docs for Data Import mention a 'Skip audit' option that the 2.43 docs don't. Was Skip audit added after 2.43? I want to mark it as new.",
+      "expected_output": "Compares ImportOptions.java (skipAudit) in dhis2-core between the 2.43 and master branches, finds it on both, and concludes the older docs were incomplete, not that the option is new. No 'new in' marker.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Checks dhis2-core ImportOptions (or equivalent params class) on both branches",
+        "Concludes skipAudit exists on both branches and the difference is a doc gap, not a version difference",
+        "Classifies the finding type as doc gap rather than real version difference",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Establishes which app version core 2.43.0 actually bundles (apps-to-bundle.json at the tag or /api/apps on a pinned instance)",
+        "Mentions that the option depends on the F_SKIP_DATA_IMPORT_AUDIT (or ALL) authority",
+        "Checks whether the test user on the live instance holds the authority before treating the checkbox as absent or present",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Our Metadata Management chapter says: 'Merging is only available for a small number of object types: category options, data elements and indicators.' Does that look right?",
+      "expected_output": "Flags the sentence as a high-risk negative/universal claim, enumerates src/pages/*/Merge.tsx in dhis2/metadata-management-app, finds every merge screen, and also reports the backend floor per type or marks it out of scope.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Identifies the claim as negative or universal and treats it as high risk",
+        "Enumerates merge screens from the metadata-management-app source (src/pages/*/Merge.tsx or equivalent)",
+        "Reports the number of merge screens it found in the source and names each object type (grader verifies against src/pages/*/Merge.tsx on the default branch)",
+        "Checks or explicitly scopes out whether a released tag contains each screen",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Dates each merge screen by its page file (not by an authority string), and the indicators screen is dated to v0.28.0 or later, or the date is marked unverified",
+        "Reports that the app does not gate merge screens by core version and gives backend floors per type, with the confidence level stated",
+        "Accounts for reverts when dating screens (for example the indicators screen in v0.25.0, reverted, back in v0.28.0)",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "In configure-metadata.md there's a link [Support for JavaScript in custom forms](#support-for-javascript-in-custom-forms). I grepped dhis2-docs and can't find that heading. Is it a dead link?",
+      "expected_output": "Does not call the link dead from a dhis2-docs grep. Requests the published URL and/or searches the federated repos, and finds the heading in dhis2/aggregate-data-entry-app docs/custom-forms-legacy-plugin.md. The link is valid via auto-slug.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Names the corpus of the original search and says it is incomplete",
+        "Checks the published docs.dhis2.org URL or the federated repos",
+        "Concludes the anchor resolves (target in aggregate-data-entry-app) and the link should not be changed",
+        "Mentions or logs this as a false-positive pattern",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "The Import/Export docs list an Async option under Metadata Import advanced options but not under Data Import or Event Import. That looks like a gap. Can you confirm and draft the missing option text?",
+      "expected_output": "Reads the import-export-app form helpers and finds isAsync hardcoded to true for Data and Event Import, read from form values only for Metadata Import. Concludes there is no toggle to document; withdraws the gap. No drafted text.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Reads src/pages/*/form-helper.js (or equivalent) in import-export-app",
+        "Finds that async is a hardcoded constant for Data Import and Event Import",
+        "Concludes the doc is correct and does not draft text for a non-existent option",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Recommends no new option text and, at most, a note that Data and Event Import always run asynchronously",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "For the User Profile app docs: API tokens gained a name field and HEAD-method support, both gated to DHIS2 2.43+. Please write the version note.",
+      "expected_output": "Checks user-profile-app source. Confirms the HEAD-method option is gated (serverVersion minor >= 43) but finds the token name field renders unconditionally. Refutes half of the claim and writes a note only for the HEAD method.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Checks each component's version gate separately in user-profile-app source",
+        "Confirms the HEAD-method gate at 2.43",
+        "Refutes the claim that the name field is gated",
+        "The version note (if written) covers only the HEAD method",
+        "Each finding has a verdict from the skill's verdict set and cites file and branch",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Places the version note on the page that holds the token-creation steps (dhis2-docs personal-access-tokens.md) or names every page that needs it",
+        "Attempts a live check on pinned play instances via the API (admin:district) or states which route failed",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Our flattened Import/Export page has a note 'Version 2.40 and earlier: XML format is available for metadata, event and tracked entity import.' A reviewer says XML was actually removed in 2.39. Update the note to 2.39 everywhere.",
+      "expected_output": "Treats the challenge as a signal, not a verdict. Dates each section's XML removal from import-export-app history (git log -S, first containing tag, map app version to core) and checks an external record. Finds metadata XML removed in the 2.39 era but event/tracked-entity XML lasting until app v101.0.0 (2.41), so boundaries differ per section. Reports which part of the challenge held.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Does not change every note to 2.39 without checking",
+        "Dates the change from code history with a first containing tag",
+        "Treats boundaries per section and finds they differ between metadata and event/tracked-entity import",
+        "Seeks at least one external record (Jira fix version, release notes) for the boundary",
+        "Reports which parts of the challenge held and which did not",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Checks the supported-versions list (for example dhis2-releases downloads/v1/versions/stable.json) and uses it in the recommendation",
+        "Recommends removing version notes whose boundary predates the oldest supported version, or states why not",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "The regression suite (cases 0013–0015) says Data Import's CSV format has no 'first row is header' control, confirmed live on 2026-09-15. Add a known-issue caveat to the Data Import docs.",
+      "expected_output": "Checks import-export-app source at current HEAD and finds FirstRowIsHeader rendered for CSV, the same pattern as Metadata Import. Reports Conflicting evidence with both sources and dates, recommends a fresh live check on a pinned instance as the tie-breaker, lists it as an open item (and adds it to the debt register, if one is kept), and does not add the caveat yet.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Checks the app source rather than relying on the regression note alone",
+        "Gives the verdict Conflicting and cites both signals with dates",
+        "Names a specific tie-breaking check (live check on a pinned instance)",
+        "Does not add the caveat to the docs while evidence conflicts",
+        "Adds or proposes a debt register entry (or lists the item under open items if no register is kept)",
+        "Does not run git inside someone else's working checkout (clones into a scratch directory)",
+        "Explains that the checkbox only appears after the CSV format is selected, as a possible cause of the conflict",
+        "Notes that the Data Import section does not document the first-row-is-header option at all",
+        "Tests actual import behaviour with the default checkbox value (for example a dryRun CSV import) and reports the result",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Our indicator docs list these functions for indicator expressions: if, isNull, isNotNull, firstNonNull, greatest, least, log, log10, removeZeros, contains, containsItems. Is anything missing or wrong for 2.43?",
+      "expected_output": "Enumerates the indicator registration map (DefaultExpressionService indicator items + ParserUtils common set) at 2.43, checks both directions, and reports registered items missing from the list (for example is, null, orgUnit.ancestor/group/dataSet/program, subExpression, [days], .aggregationType/.maxDate/.minDate/.periodOffset/.yearToDate, periodInYear, yearToDate) with evidence.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Uses the indicator registration map in dhis2-core at 2.43 as evidence, not the grammar or other docs",
+        "Runs source → list and reports at least four registered indicator items missing from the list",
+        "Every item it reports as missing is actually registered for indicators at 2.43 (grader verifies)",
+        "Every listed function is checked and the result stated",
+        "Sends at least one expression to a live validator or states it did not",
+        "Notices whether the published page already documents the items reported as missing, and does not propose adding items that are already there",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "The Data Quality app docs say outlier detection supports two algorithms: Z-score and Modified Z-score. Is that right for 2.43?",
+      "expected_output": "Checks the outlier detection algorithm enum/params in dhis2-core at 2.43 and the Data Quality app source at the bundled tag, in both directions, and reports any algorithm the list omits (for example min-max values) or confirms the list, naming the corpus and version.",
+      "files": [],
+      "requires": "offline",
+      "assertions": [
+        "Checks the backend algorithm list in dhis2-core at 2.43 (enum or params class)",
+        "Checks what the Data Quality app offers at the version bundled with 2.43 (app source at a tag or live instance)",
+        "Reports the correct set of algorithms for 2.43 (grader verifies against source)",
+        "Distinguishes backend capability from what the app UI exposes, if they differ",
+        "Identifies the docs page(s) that carry the claim or states that it could not",
+        "States version boundaries at patch level where relevant (for example INVALID_NUMERIC present from 2.42.1), or marks the boundary unverified",
+        "The reply itself (not only a side file) lists every check that was blocked, skipped or limited in scope",
+        "No factual claim in the reply is contradicted by the run's own evidence or by independent verification",
+        "Does not claim register or file updates that were not actually written"
+      ]
+    }
+  ]
+}
