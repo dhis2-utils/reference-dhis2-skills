@@ -1,0 +1,58 @@
+{
+  "skill_name": "dhis2-json-tree",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm fixing the dhis2-core JSON data value import (json-tree 1.12.0 is the dependency). Since 2.43 moved this reader from Jackson to json-tree, clients that worked on 2.42 break: \"value\": 5 must be stored as \"5\" (and 5.50 as \"5.50\"); a numeric categoryOptionCombo like 123 (idScheme=CODE) is silently dropped to null; \"followup\" (lower-case u, which 2.42 and the 2.43 export write) must be read when \"followUp\" is absent; booleans must accept true/false, \"true\"/\"false\" in any case, 1/0, and \"\" as no value, anything else a 400; a dataValues entry that is not an object must be a 400. Here is the current reader:\n\n```java\nString ds = dvs.getString(\"dataSet\").string();\nString ou = dvs.getString(\"orgUnit\").string();\nJsonString aoc = dvs.getString(\"attributeOptionCombo\");\nString aocId = aoc.isString() ? aoc.string() : null;\nMap<String, String> aocMap = aoc.isObject() ? aoc.asMap(JsonString.class).toMap(JsonString::string) : null;\nBoolean dryRun = dvs.getBoolean(\"dryRun\").bool();\nJsonArray dataValues = dvs.get(\"dataValues\");\nif (dataValues.exists())\n  for (JsonObject dv : dataValues.values(Index.SKIP)) {\n    JsonString coc = dv.getString(\"categoryOptionCombo\");\n    values.add(new DataEntryValue.Input(\n        dv.getString(\"dataElement\").string(),\n        coc.isString() ? coc.string() : null,\n        coc.isObject() ? coc.asMap(JsonString.class).toMap(JsonString::string) : null,\n        dv.getString(\"value\").string(),\n        dv.getBoolean(\"followUp\").bool(),\n        dv.getBoolean(\"deleted\").bool()));\n  }\n```\n\nWrite the fixed version to fixed_reader.java and tell me which parts of the bug report actually needed code changes.",
+      "expected_output": "Recognises that json-tree 1.9+ string() already returns the JSON text of numbers and booleans, so \"value\": 5 needs no change; the numeric COC/AOC bug comes from the strict isString() guard and is fixed by branching on isObject() and calling string(). Adds a followup fallback, an isObject() check per dataValues entry, and a boolean helper that only adds 1/0 and \"\" on top of json-tree's bool() (which already accepts \"true\"/\"false\" in any case). Does not add generic text()/elements()/object()/textMap() helpers or type() switches.",
+      "files": [],
+      "requires": "offline",
+      "notes": "Replay of dhis2-core PR #26219, where the reviewer asked to remove the 'access as string' helpers. Baseline (no skill) verified string() was lenient and still wrote a jsonText() helper with a switch on type(), calling the coercion 'version-specific'.",
+      "assertions": [
+        "fixed_reader.java exists",
+        "Reads the value (and other scalar ids) with getString(..).string() or get(..).string() directly, not through a self-written helper that switches on type() or reads node().getDeclaration()/node().textValue()",
+        "Contains no self-written method whose purpose is converting a JsonValue scalar to String (e.g. text(), jsonText(), asText(), scalarText())",
+        "Replaces the `coc.isString() ? coc.string() : null` guard (and the same for attributeOptionCombo) with a branch on isObject() (e.g. `coc.isObject() ? null : coc.string()`)",
+        "States that \"value\": 5 already works with json-tree's string() (since 1.9) and needed no code change, or equivalent",
+        "Any boolean helper handles only the cases json-tree's bool() rejects (numbers 1/0 and the empty string) and delegates to bool() for the rest, rather than re-implementing \"true\"/\"false\" parsing",
+        "Rejects a non-object dataValues entry via an isObject() check (or equivalent) so it becomes a 400",
+        "Reads followup when followUp is absent",
+        "Keeps one-pass iteration with values(Index.SKIP) (or values()) and does not add an exists()/isArray() pre-check before the loop"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write a reader in Java for this tracker-style import body using json-tree (org.hisp.dhis:json-tree 1.12.0, already a dependency of dhis2-core):\n\n{\"importStrategy\":\"CREATE_AND_UPDATE\",\"events\":[{\"event\":\"a1b2c3\",\"program\":\"P1\",\"occurredAt\":\"2026-01-03\",\"completed\":true,\"dataValues\":[{\"dataElement\":\"DE1\",\"value\":12},{\"dataElement\":\"DE2\",\"value\":null},{\"dataElement\":\"DE3\",\"value\":\"x\"}],\"geometry\":{\"type\":\"Point\",\"coordinates\":[10.1,59.9]}}]}\n\nRules: events can have millions of entries (bodies up to 1 GB), so hand them one at a time to a Consumer<EventInput>. A missing \"value\" means leave unchanged, \"value\": null means clear it. value may be a string, number or boolean; numbers keep their exact JSON text. completed is optional (default false), occurredAt optional (LocalDate), importStrategy optional enum (CREATE, UPDATE, CREATE_AND_UPDATE, DELETE), default CREATE_AND_UPDATE. Malformed JSON, a non-object event or an event without an id must throw IllegalArgumentException naming the entry. Keep geometry as raw JSON text. Save it as TrackerJsonReader.java with records EventInput and DataValueInput and `static void read(InputStream in, Consumer<EventInput> onEvent)`.",
+      "expected_output": "Loads the body once (readAllBytes / JsonNode.of(byte[], UTF_8, null, Index.AUTO_SKIP or SKIP)), forces a syntax check with root.node().endIndex(), and iterates events with values(Index.SKIP). Uses string() for the scalar value (numbers keep their text), exists()/isNull() for the missing vs null distinction, booleanValue(false) for completed, parsed(LocalDate::parse) or a user-type interface for occurredAt and the enum, isObject() for the non-object check, and toJson() for geometry. Does not write its own JSON tokenizer and does not drop to node().getDeclaration()/textValue() for values.",
+      "files": [],
+      "requires": "offline",
+      "notes": "Baseline (no skill) wrote a ~250-line hand-rolled JSON scanner to 'stream', used node().getDeclaration()/textValue() and explicit type() checks because 'string() is lenient', and used no user types or accessors.",
+      "assertions": [
+        "TrackerJsonReader.java exists",
+        "Does not contain a hand-written JSON tokenizer/scanner (no character-level parsing of braces, brackets, quotes or escapes); all parsing goes through json-tree",
+        "Iterates events with values(Index.SKIP) (or values() / an equivalent explicitly non-caching iteration), not a plain for-each or stream() over the JsonArray",
+        "Forces a whole-document syntax check (e.g. root.node().endIndex()) or explicitly explains how malformed JSON is detected",
+        "Reads the data value text with string() (or getString(..).string()), not with a switch on type() or node().getDeclaration()/node().textValue()",
+        "Distinguishes missing from null for value using exists() and isNull() (or equivalent), not isUndefined() alone",
+        "Reads geometry as raw JSON via toJson() (or equivalent) rather than rebuilding it",
+        "Reads completed with a default of false without an explicit type check (e.g. getBoolean(\"completed\").booleanValue(false))",
+        "Checks that each event is an object (isObject()) before reading it"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review this json-tree code from a PR and tell me what you'd change (json-tree 1.12.0):\n\n```java\n@CheckForNull\nprivate static String text(@Nonnull JsonValue value) {\n  if (value.isUndefined() || value.isNull()) return null;\n  if (value.isString()) return value.as(JsonString.class).string();\n  if (value.isNumber() || value.isBoolean()) return value.toJson();\n  throw new IllegalArgumentException(\"Property `%s` must be a string, number or boolean but was: %s\".formatted(value.path(), value.type()));\n}\n\n@Nonnull\nprivate static Streamable<? extends JsonValue> elements(@Nonnull JsonValue value) {\n  if (value.isUndefined() || value.isNull()) return Streamable.empty();\n  if (!value.isArray()) throw new IllegalArgumentException(\"Property `%s` must be an array but was: %s\".formatted(value.path(), value.type()));\n  return value.asArray().values(Index.SKIP);\n}\n\npublic interface JsonFlags extends JsonObject {\n  default boolean followUp() { return getBoolean(\"followUp\").bool(); }\n  int priority();\n}\n```",
+      "expected_output": "Says text() duplicates json-tree's string(), which since 1.9 returns the text of numbers and booleans, null for missing/null and throws JsonTreeException (with path) for arrays/objects, so call sites should use getString(k).string(). Says elements() duplicates values(Index.SKIP), which returns empty for missing/null and throws with the path for non-arrays. Flags that followUp() unboxes a null bool() into an NPE when the member is missing (use booleanValue(false) or Boolean), and that the abstract int priority() throws JsonAccessException when priority is missing.",
+      "files": [],
+      "requires": "offline",
+      "notes": "Review-direction case: the helpers are the ones removed in PR #26219; the interface has two unboxing traps.",
+      "assertions": [
+        "Says text() is redundant because json-tree string() already returns numbers/booleans as their JSON text and null for missing/null (and throws for arrays/objects)",
+        "Says elements() is redundant because values(Index.SKIP) already returns an empty result for missing/null and throws for non-arrays with the path in the message",
+        "Flags that followUp() returning primitive boolean from bool() throws NullPointerException when followUp is missing or null, and suggests booleanValue(false) or a Boolean return",
+        "Flags that abstract `int priority()` throws (JsonAccessException) when priority is missing, and suggests Integer or a default method",
+        "Does not recommend keeping the helpers for 'clearer error messages' without noting that json-tree exceptions already include the path"
+      ]
+    }
+  ]
+}
