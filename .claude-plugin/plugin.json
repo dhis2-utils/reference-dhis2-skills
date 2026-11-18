@@ -23,6 +23,7 @@
     "./dhis2-indicator-review",
     "./dhis2-indicators",
     "./dhis2-integrity",
+    "./dhis2-json-tree",
     "./dhis2-metadata",
     "./dhis2-prototyping",
     "./dhis2-test-instances",
