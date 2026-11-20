@@ -1,0 +1,76 @@
+{
+  "skill_name": "dhis2-core-pr-description",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm about to open a PR on dhis2/dhis2-core for the change in dhis2-core-pr-description/evals/files/week53_fix.diff (branch name, commits and the Jira text are at the top of the file). Write the PR title into pr_title.txt and the PR description into pr_description.md, ready to paste into GitHub. You wrote most of this fix with me.",
+      "expected_output": "A title like 'fix: Reject week 53 in years without it [DHIS2-12345]'. A description that follows the dhis2-core fix template: optional link line, a **Jira** line with the full https://dhis2.atlassian.net/browse/DHIS2-12345 URL, then ### Problem, ### Solution, ### Proof (and optionally ### Caveats), no Test/Testing section, no other sections, at most 250 words, short STE sentences, naming DataValueSetImportValidator / PeriodType.getPeriodFromIsoString as entry points, Proof naming the new test, and 'AI Assisted' as the last line.",
+      "files": ["evals/files/week53_fix.diff"],
+      "requires": "offline",
+      "notes": "Fix template from dhis2/wow-backend pr-templates. Traps: a Testing section, ## headings, a bare Jira key instead of the full URL, missing AI Assisted line, padding past 250 words.",
+      "assertions": [
+        "pr_title.txt starts with `fix: ` followed by a capitalised imperative subject, with no trailing period, and contains DHIS2-12345",
+        "pr_description.md has exactly these section headings, in this order, all at h3 (`### `): Problem, Solution, Proof, with an optional Caveats after Proof; it has no other headings (no Summary, Changes, Testing, Notes, and no h1/h2)",
+        "pr_description.md has no section with the name Test, Tests or Testing; the new test is named inside the Proof section",
+        "pr_description.md has a Jira line in the form `**Jira**: https://dhis2.atlassian.net/browse/DHIS2-12345` (full URL, not only the key)",
+        "The Problem or Solution section names at least one code entry point, for example `DataValueSetImportValidator`, `validateDataValuePeriodExists` or `PeriodType.getPeriodFromIsoString`",
+        "The Problem states the user-visible effect: the import of a 2023W53 value gives HTTP 500 / a NullPointerException instead of a conflict",
+        "pr_description.md has at most 250 words by `wc -w` (headings included)",
+        "The last non-empty line of pr_description.md is exactly `AI Assisted`",
+        "No hint text from the template remains (for example '1-3 sentences', '(optional', 'full link to the Jira')"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A colleague wrote the PR description in dhis2-core-pr-description/evals/files/long_feat_description.md for a dhis2-core PR titled 'Parquet export for analytics'. The backend team now has PR description rules and reviewers are complaining it is too long. Rewrite it to follow the rules and save the result as pr_description.md, plus the corrected title in pr_title.txt. Keep anything a reviewer really needs.",
+      "expected_output": "Title 'feat: Add Parquet export for analytics [DHIS2-23456]' (feat prefix, capitalised, Jira key). Description uses the feat template: **Jira** line with full URL, ### What, ### Why, ### How, and ### Caveats for the +9 MB war size and in-memory limit; drops the Testing section and the Changes list; stays at or below 250 words (ideally about 150); STE style without filler like 'basically', 'simply', 'in order to'; names the endpoints and ParquetGridRenderer.",
+      "files": ["evals/files/long_feat_description.md"],
+      "requires": "offline",
+      "notes": "Rewrite case. The source is ~480 words with ## Summary/Changes/Testing/Notes. Traps: keeping a Testing section, keeping ## headings, losing the war-size and memory caveats, keeping filler words.",
+      "assertions": [
+        "pr_title.txt starts with `feat: `, has a capitalised imperative subject, and contains DHIS2-23456",
+        "pr_description.md uses h3 headings What, Why, How in this order, plus optionally Caveats; it has no Summary, Changes, Testing or Notes heading and no h1/h2",
+        "pr_description.md has at most 250 words by `wc -w`",
+        "The Jira line uses the full URL https://dhis2.atlassian.net/browse/DHIS2-23456",
+        "A Caveats section keeps the war file growth (about 9 MB, hadoop-common) and the in-memory limit for very large grids",
+        "The How section names how to use the feature: the `.parquet` endpoint(s) (for example `/api/analytics.parquet`) or the media type",
+        "The text contains none of the filler words 'basically', 'simply', 'in order to', 'brand new'",
+        "The description does not list every changed file or the test classes as a separate list (the 14-unit-test detail and the manual DuckDB run are dropped or reduced to nothing)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Here are my notes for a dhis2-core performance PR: dhis2-core-pr-description/evals/files/dedupe_perf_notes.md. Draft the PR title (pr_title.txt) and description (pr_description.md) following the backend team's PR template rules. I wrote the code myself, no AI.",
+      "expected_output": "Title 'perf: Cache org unit paths in user org unit checks [DHIS2-34567]' with capitalised subject. Description uses the perf template: **Jira** full URL, ### Problem naming DefaultOrganisationUnitService.isInUserHierarchy and the per-event SELECT, ### Solution with the request-scoped cache and same behaviour, ### Results with the before/after numbers AND the method (Sierra Leone demo DB 2.42, 50k events, 3 runs median, pg_stat_statements) and the perf test TrackerImportOrgUnitPerfTest#import50kEvents. No Test/Testing section. No 'AI Assisted' line. At most 250 words.",
+      "files": ["evals/files/dedupe_perf_notes.md"],
+      "requires": "offline",
+      "notes": "Perf template: Results must state the method. Traps: lower-case title subject copied from notes, a Testing section for OrgUnitPathCacheTest, adding 'AI Assisted' when the user said no AI.",
+      "assertions": [
+        "pr_title.txt starts with `perf: ` followed by a capitalised subject (for example 'Cache', not 'cache') and contains DHIS2-34567",
+        "pr_description.md has h3 headings Problem, Solution, Results in this order and no other headings (no Testing, Tests, Summary, Caveats)",
+        "The Problem names `DefaultOrganisationUnitService.isInUserHierarchy` (or the class) and says it runs one org unit SELECT per event",
+        "The Results section gives before/after numbers (212 s to 61 s, and/or 50,113 to 312 SELECTs)",
+        "The Results section explains the method: the dataset (Sierra Leone demo, 2.42), the load (50,000 events) and how it was measured (median of 3 runs and/or pg_stat_statements)",
+        "The description names the performance test `TrackerImportOrgUnitPerfTest` (class or class#method)",
+        "pr_description.md does not contain the line `AI Assisted`",
+        "pr_description.md has at most 250 words by `wc -w`"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Quick one for a dhis2-core PR: I bumped jackson-databind from 2.17.2 to 2.18.1 in the root pom because of CVE-2025-00000 (made-up id for now, Jira DHIS2-45678). Nothing else changed and all tests pass. What title prefix should I use and what should the description look like? Just give me the text.",
+      "expected_output": "Uses the `chore:` prefix (build and dependency changes use chore, not build: or fix:), a capitalised title with the Jira key, and a description with a **Jira** full-URL line and a single ### What section of 1-3 short sentences: what changes (2.17.2 to 2.18.1), why (the CVE), and the entry point (root pom.xml). No Testing section and no claim about tests.",
+      "files": [],
+      "requires": "offline",
+      "notes": "Build changes use chore. Traps: `build:` or `deps:` prefix, a Testing section saying 'all tests pass', extra Why/How sections the chore template does not have.",
+      "assertions": [
+        "Recommends the `chore:` prefix, not `build:`, `deps:` or `fix:`",
+        "The suggested title has a capitalised imperative subject and includes DHIS2-45678",
+        "The description has exactly one section heading, `### What`",
+        "The description has a Jira line with the full URL https://dhis2.atlassian.net/browse/DHIS2-45678",
+        "The description has no Test/Testing section and does not add a line like 'all tests pass'",
+        "The What section states the version change (2.17.2 to 2.18.1) and the reason (the CVE) in at most about 3 sentences"
+      ]
+    }
+  ]
+}

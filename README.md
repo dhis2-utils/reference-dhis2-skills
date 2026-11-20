@@ -29,6 +29,7 @@ is a folder with a `SKILL.md`, plus references, scripts and evals.
 | `dhis2-docs-audit` | Fact-check DHIS2 documentation against the evidence that decides behaviour (source, live instance, release notes) and report claim by claim. |
 | `dhis2-docs-style` | Edit or review DHIS2 docs prose for tone, plain language and technical level for non-native English readers. |
 | `dhis2-docs-contribution` | Prepare and submit a documentation change to dhis2/dhis2-docs or an app repo's docs/user folder: screenshots, formatting check, branch, commit and PR. |
+| `dhis2-core-pr-description` | Write or review dhis2-core PR titles and descriptions to the backend team's templates (dhis2/wow-backend `pr-templates/`), with a checker script. |
 
 **Not covered:** building apps (App Platform web apps, vanilla tool-template tools, Android apps
 on the DHIS2 Android SDK) and filing DHIS2 bug reports; use the official developer documentation at

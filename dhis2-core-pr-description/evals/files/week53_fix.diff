@@ -1,0 +1,52 @@
+# Branch: fix/DHIS2-12345-week-53
+# Commits:
+#   fix: Reject week 53 in years without it [DHIS2-12345]
+#   test: Add week 53 import tests
+#
+# Jira DHIS2-12345 (reporter): "Importing a data value set with period 2023W53
+# returns HTTP 500 Internal Server Error with a NullPointerException in the logs.
+# Expected: the row is rejected with a conflict and the rest of the import runs."
+
+diff --git a/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidator.java b/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidator.java
+--- a/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidator.java
++++ b/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidator.java
+@@ -212,9 +212,17 @@ public class DataValueSetImportValidator {
+   private static void validateDataValuePeriodExists(
+       DataValueEntry dataValue, ImportContext context, DataSetContext dataSetContext, DataValueContext valueContext) {
+-    Period period = PeriodType.getPeriodFromIsoString(dataValue.getPeriod());
+-    if (period.getStartDate().after(context.getNow())) {
++    Period period = PeriodType.getPeriodFromIsoString(dataValue.getPeriod());
++    if (period == null) {
++      // e.g. 2023W53: ISO year 2023 has only 52 weeks, so the parser returns null
++      context.addConflict(valueContext.getIndex(), DataValueImportConflict.PERIOD_NOT_VALID, dataValue.getPeriod());
++      return;
++    }
++    if (period.getStartDate().after(context.getNow())) {
+       context.addConflict(valueContext.getIndex(), DataValueImportConflict.PERIOD_IN_FUTURE, dataValue.getPeriod());
+     }
+   }
+diff --git a/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueImportConflict.java b/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueImportConflict.java
+--- a/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueImportConflict.java
++++ b/dhis-2/dhis-services/dhis-service-dxf2/src/main/java/org/hisp/dhis/dxf2/datavalueset/DataValueImportConflict.java
+@@ -88,6 +88,7 @@ public enum DataValueImportConflict {
+   PERIOD_IN_FUTURE(ErrorCode.E7641, "Period: `{0}` is after latest open future period"),
++  PERIOD_NOT_VALID(ErrorCode.E7648, "Period: `{0}` is not a valid period"),
+   PERIOD_AFTER_DATA_ELEMENT_PERIODS(ErrorCode.E7642, "Period: `{0}` is after latest open future period for data element: `{1}`"),
+diff --git a/dhis-2/dhis-test-integration/src/test/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidatorTest.java b/dhis-2/dhis-test-integration/src/test/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidatorTest.java
+--- a/dhis-2/dhis-test-integration/src/test/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidatorTest.java
++++ b/dhis-2/dhis-test-integration/src/test/java/org/hisp/dhis/dxf2/datavalueset/DataValueSetImportValidatorTest.java
+@@ -340,6 +340,24 @@ class DataValueSetImportValidatorTest {
++  @Test
++  void testValidateDataValuePeriodExists_Week53InYearWithout53Weeks() {
++    DataValueEntry dataValue = createRandomDataValue().setPeriod("2023W53");
++    ImportContext context = createMinimalImportContext(null).build();
++    assertTrue(validator.skipDataValue(dataValue, context, dataSetContext, valueContext));
++    assertConflict(ErrorCode.E7648, "Period: `2023W53` is not a valid period", context, dataValue.getPeriod());
++  }
++
++  @Test
++  void testValidateDataValuePeriodExists_Week53InYearWith53Weeks() {
++    DataValueEntry dataValue = createRandomDataValue().setPeriod("2020W53");
++    ImportContext context = createMinimalImportContext(null).build();
++    assertFalse(validator.skipDataValue(dataValue, context, dataSetContext, valueContext));
++  }

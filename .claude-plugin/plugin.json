@@ -1,7 +1,7 @@
 {
   "name": "dhis2-skills",
   "displayName": "DHIS2 Skills",
-  "description": "Reference Agent Skills for working with DHIS2 2.40-2.43: Web API, metadata, indicators, integrity remediation, tracker design, app review, proofs of concept, and docs audit, style and contribution.",
+  "description": "Reference Agent Skills for working with DHIS2 2.40-2.43: Web API, metadata, indicators, integrity remediation, tracker design, app review, proofs of concept, docs audit, style and contribution, and dhis2-core PR descriptions.",
   "author": {
     "name": "HISP Centre, University of Oslo"
   },
@@ -17,6 +17,7 @@
     "./askdhis2",
     "./dhis2-api",
     "./dhis2-app-review",
+    "./dhis2-core-pr-description",
     "./dhis2-docs-audit",
     "./dhis2-docs-contribution",
     "./dhis2-docs-style",
